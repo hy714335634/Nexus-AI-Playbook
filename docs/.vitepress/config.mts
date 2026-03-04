@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  base: '/playbook/',
   title: 'Nexus-AI',
   description: '用自然语言构建 AI Agent — 产品使用手册',
   lang: 'zh-CN',
