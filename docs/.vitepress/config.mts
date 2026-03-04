@@ -9,7 +9,7 @@ export default defineConfig({
   cleanUrls: true,
 
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/playbook/logo.svg' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/playbook/default_logo.png' }],
     ['meta', { name: 'theme-color', content: '#6366f1' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }],
@@ -21,7 +21,7 @@ export default defineConfig({
   },
 
   themeConfig: {
-    logo: '/logo.svg',
+    logo: '/default_logo.png',
     siteTitle: 'Nexus-AI',
 
     nav: [

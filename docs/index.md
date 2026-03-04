@@ -6,7 +6,7 @@ hero:
   text: "产品使用手册"
   tagline: 用自然语言构建 AI Agent — 8 个专业 AI 协作，从想法到可用 Agent，只需几分钟
   image:
-    src: /logo.svg
+    src: /default_logo.png
     alt: Nexus-AI
   actions:
     - theme: brand

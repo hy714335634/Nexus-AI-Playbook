@@ -921,3 +921,14 @@ body {
 .nx-card-glow:hover::after {
   opacity: 0.15;
 }
+
+
+/* ---------- Logo Round Corners ---------- */
+.VPNavBarTitle .logo,
+.VPSidebar .logo {
+  border-radius: 10px !important;
+}
+
+.VPHero .VPImage.image-src {
+  border-radius: 20px !important;
+}
