@@ -1,0 +1,13 @@
+{
+  "name": "nexus-playbook-screenshots",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "install-browsers": "playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0",
+    "js-yaml": "^4.1.0"
+  }
+}
