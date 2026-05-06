@@ -1,0 +1,64 @@
+# Nexus-AI 源码仓库路径（相对于 scripts/ 目录）
+source_repo:
+  path: "../../Nexus-AI"
+  default_branch: "main"
+
+# 文档生成模型偏好
+models:
+  default: "claude-sonnet-4-6"        # 日常生成
+  complex: "claude-opus-4-7"          # 架构 / 大范围变更
+
+# 输出语言（顺序 = 输出顺序）
+languages:
+  - zh
+  - en
+
+# 源码变更 → 文档 映射（支持文件级 path 与模块级 glob）
+mappings:
+  - id: "mcp-feature"
+    description: "MCP Server 相关功能"
+    watches:
+      - "mcp_server/**"
+      - "config/mcp/**"
+      - "nexus_utils/mcp/**"
+    docs:
+      - path: "manual/mcp.md"
+        prompt: "feature-update.md"
+        model: "default"
+    screenshots:
+      - "mcp-config-page"
+
+  - id: "agent-creation"
+    description: "Agent 创建流程"
+    watches:
+      - "api/v2/routers/agents.py"
+      - "api/v2/services/agent_build_service.py"
+      - "agents/system_agents/agent_build_workflow/**"
+      - "web/app/create/**"
+    docs:
+      - path: "manual/create-agent.md"
+        prompt: "feature-update.md"
+        model: "default"
+    screenshots:
+      - "create-agent"
+      - "quick-create"
+      - "guided-create"
+
+  - id: "config-reference"
+    description: "主配置文件参考"
+    watches:
+      - "config/default_config.yaml"
+    docs:
+      - path: "admin/settings.md"
+        prompt: "config-reference.md"
+        model: "default"
+    screenshots: []
+
+# 截图配置
+screenshots:
+  enabled: "auto"                     # auto | always | never
+  base_url: "http://localhost:3000"
+  output_dir: "../docs/public/images" # 相对 scripts/ 路径
+  login:
+    user: "admin"
+    password: "nexus"
