@@ -16,6 +16,8 @@ v2 的范围扩展为：
 - **首次全量生成** 5 个全新章节（基于现有 Nexus-AI 源码）：`/features/`、`/integrations/`、`/tutorials/`、`/developer/`、`/reference/`
 - **统一的工作框架**：同一套 scripts/ 同时支持"全量"和"增量"两种模式
 - **演进路径清晰**：从当前的"半自动"（生成草稿 → 人工 review → 合并）演进到将来的"全自动"（定时/hook 触发 → 直接写入 docs 或 PR）
+- **作为 Wiki/CMS 的接口强化**：端用户侧的可发现性、可反馈性、LLM 友好度（详见 §1.5）
+- **长期运营所需的自动化强化**：签名跳过、人工编辑保护、成本预估、审计、部分重生成（详见 §2.5）
 - v1 的 sidebar (`/guide/`、`/manual/`、`/overview/`、`/admin/`、FAQ) **保持不动**
 - v1 已实现的 scripts/ 大部分代码复用，仅需扩展
 
@@ -72,6 +74,71 @@ docs/
 ```
 
 原"使用手册"、"了解更多"下拉保留，新增的章节每个都是一级顶部 nav。
+
+### 1.5 端用户接口强化（作为 Wiki/CMS 的体验）
+
+这一层是"用户读到的东西好不好用"。MVP 实现以下 4 项：
+
+#### 1.5.1 `/llms.txt` 与 `/llms-full.txt`
+
+VitePress 构建后，自动产出两份 LLM 友好的聚合文件：
+
+- `/llms.txt` —— 轻量索引，列出所有文档标题 + URL + 一句描述（类似 sitemap，但给 LLM 看）
+- `/llms-full.txt` —— 全部文档正文的单文件聚合（供一次性塞入 LLM context）
+
+这样 Claude Code、Cursor、ChatGPT 等工具可以一次性加载整个 Playbook 做 context；高级用户也能直接下载。
+
+**实现方式：** `scripts/lib/llms_txt.sh` 在全量/增量 run 结束时聚合 `docs/**/*.md`（跳过 `en/`、模板、隐藏文件），写入 `docs/public/llms.txt` 和 `llms-full.txt`。
+
+#### 1.5.2 每篇文档的"新鲜度标记"
+
+每篇生成的文档头部 frontmatter 写入：
+
+```yaml
+---
+title: MCP 服务器
+sync:
+  source_commit: abc123de
+  source_files:
+    - mcp_server/handlers.py
+    - config/mcp/system_mcp_server.json
+  generated_at: 2026-05-07T08:30:00Z
+  generated_by: docs-sync v2
+---
+```
+
+VitePress 的 Layout 里（在自定义 theme 或页面组件）读取 frontmatter，在标题下显示：
+
+> 📅 本页基于 Nexus-AI commit `abc123de` 生成于 2026-05-07（如发现过时，请 [报告问题](...)）
+
+**实现方式：** 生成 prompt 约束 Claude 输出 frontmatter；主题层（`docs/.vitepress/theme/`）加一个小组件渲染该信息。
+
+#### 1.5.3 Edit on GitHub / Report issue
+
+VitePress 内置 `themeConfig.editLink`。config.mts 里配置：
+
+```js
+editLink: {
+  pattern: 'https://github.com/hy714335634/Nexus-AI-Playbook/edit/main/docs/:path',
+  text: '在 GitHub 上编辑此页'
+}
+```
+
+外加自定义的 "Report issue" 链接（页脚或页头），链到 GitHub Issues 带预填模板。
+
+**实现方式：** 一次性在 `config.mts` 配置（不是每次 sync 的工作），MVP 人工加上。
+
+#### 1.5.4 术语表 `/glossary/`
+
+`/glossary/index.md` 中英双版，收录 Nexus-AI 全部专有名词：Magician Agent、Orchestrator、Stage、Skill、Bridge、Sandbox、Valkey Stream Relay 等。每条术语：
+
+```markdown
+### Magician Agent（对话魔术师）
+
+在对话发起时动态匹配/构建最合适的 Agent 以响应用户问题。详见 [对话测试](/manual/chat#智能对话路由)。
+```
+
+**实现方式：** 新增一个 chapter `glossary`，其 prompt 让 Claude 扫描所有源码+现有文档中出现的专有名词，产出一份结构化术语表。首次全量生成，后续增量运行也会更新。
 
 ---
 
@@ -211,7 +278,114 @@ screenshots:
 - 如果某源文件在 diff 中，且匹配某 chapter doc 的 sources，触发该文档的增量更新
 - 增量更新使用 `<chapter>-update.md` prompt（基于现有文档做修订），不是 `<chapter>-overview.md` 全量生成 prompt
 
-### 2.5 Sidebar 管理策略
+### 2.5 自动化机制强化（维护者侧）
+
+这一层是"长期运营的效率与安全"。MVP 实现以下 5 项：
+
+#### 2.5.1 per-doc 内容签名（避免无效生成）
+
+每次生成文档时，计算其所有 `sources` 文件内容的 sha256 聚合签名，写入 `scripts/state/signatures/<chapter>__<slug>.sha`。
+
+下次 sync 时：
+- 先重新计算签名
+- 如果签名未变 → 跳过生成（避免无效 API 调用）
+- 如果签名变化 → 进入正常生成流程
+
+**例外：** `--force-regenerate` flag 忽略签名，全部重做。
+
+这大幅降低全量/增量 run 的成本（尤其是长期维护中大部分文档不动的场景）。
+
+#### 2.5.2 人工编辑保护
+
+**核心约束：** Wiki 必须允许人工直接编辑 `docs/` 下的文档（修错字、补内容、微调措辞），且下一次 sync 不能无条件覆盖这些编辑。
+
+策略（两层）：
+
+1. **整页保护：** frontmatter 里加 `sync.protected: true` → 该文档完全不再自动生成
+2. **段落保护：** 文档中用 HTML 注释标记保护区：
+   ```markdown
+   <!-- HUMAN-EDIT-START: custom-intro -->
+   这一段是人工精心写的介绍，下次 sync 请保留。
+   <!-- HUMAN-EDIT-END: custom-intro -->
+   ```
+   生成 prompt 里明确要求 Claude：**扫描目标文档中所有 `HUMAN-EDIT-START/END` 块，把它们原封不动地保留在新文档的相同上下文位置**。
+
+signatures 在段落保护场景下需要区分对待：source 变但 human block 完好 → 正常覆盖其他部分；source 未变 → 直接跳过。
+
+#### 2.5.3 成本预估与 dry-run preview
+
+新增 flag：
+
+```bash
+./scripts/sync.sh --full --chapter features --estimate
+```
+
+仅计算：
+- 本次会触发多少篇文档（基于签名对比）
+- 每篇 context 的 token 数（调用 tokenizer；若没有现成 tokenizer，用字符数 ÷ 4 的粗估）
+- 按配置的 model 单价估算总成本
+
+输出示例：
+
+```
+Chapter 'features' will generate 3 of 6 docs (3 skipped by signature):
+  - mcp-server        ~14k tokens  ~$0.08
+  - sandbox           ~22k tokens  ~$0.13
+  - workflow-engine   ~18k tokens  ~$0.10
+  Total: ~$0.31  (Sonnet default)
+```
+
+不实际调用 Claude。用户确认后再去掉 `--estimate` 真正运行。
+
+#### 2.5.4 运行审计日志
+
+每次 `sync.sh` 实际运行时（不是 --estimate / --dry-run），写一份：
+
+```
+scripts/state/runs/2026-05-07T08-30-00Z.json
+```
+
+内容：
+
+```json
+{
+  "timestamp": "2026-05-07T08:30:00Z",
+  "mode": "full",
+  "chapter": "features",
+  "trigger": "cli",
+  "source_commit": "abc123",
+  "docs": [
+    {"slug": "mcp-server", "status": "generated", "tokens": 14320, "model": "claude-sonnet-4-6", "cost_usd": 0.08, "human_blocks_preserved": 2},
+    {"slug": "sandbox", "status": "skipped_signature", "signature": "deadbeef..."},
+    {"slug": "workflow-engine", "status": "failed", "error": "..."}
+  ],
+  "total_cost_usd": 0.21,
+  "total_elapsed_s": 87,
+  "exit_code": 0
+}
+```
+
+这份日志是阶段 2/3/4 自动化的基础数据源（用于通知、看板、回滚）。
+
+#### 2.5.5 部分重生成
+
+新增 flag 支持更细粒度的目标：
+
+```bash
+./scripts/sync.sh --full --chapter features --doc mcp-server       # 只重做这一篇
+./scripts/sync.sh --full --chapter features --force-regenerate     # 忽略签名，全章节重做
+./scripts/sync.sh --regenerate-index --chapter features            # 只重做 index
+```
+
+这对 MVP 阶段频繁迭代 prompt、修 bug 很关键。
+
+#### 2.5.6 留给阶段 B 的钩子（不实现但预留）
+
+- **质量门 (quality gates)：** 生成后自动检查 zh/en 结构对齐、无悬空链接、frontmatter 完整。可以加 `scripts/lib/quality_check.sh` 骨架但不强制。
+- **变更通知：** Slack / email 通知。审计日志已经准备好，阶段 2 加个 notify 脚本即可。
+- **多层审核：** PR 模式下多人 review，目前不涉及。
+
+### 2.6 Sidebar 管理策略
 
 VitePress 的 sidebar 写在 `docs/.vitepress/config.mts`。自动更新配置文件风险大，采用以下策略：
 
@@ -237,6 +411,7 @@ v2 新增以下 prompt 模板（都在 `scripts/prompts/` 下）：
 | `developer-guide.md` | 全量生成 developer 章节文档 | 面向开发者，可以出现架构名词、目录结构、扩展点 |
 | `reference.md` | 全量生成 reference 章节文档 | 结构化、表格化，不需要叙事（CLI help 转表、配置项转表、API endpoint 转表） |
 | `chapter-index.md` | 生成章节的 index.md | 列出本章节所有文档的简要介绍 |
+| `glossary.md` | 生成 `/glossary/` 术语表 | 从源码+现有文档中扫描专有名词，按字母顺序结构化输出 |
 
 所有 prompt 统一约束：
 
@@ -245,6 +420,8 @@ v2 新增以下 prompt 模板（都在 `scripts/prompts/` 下）：
 - 中英文对齐
 - UI 相关插入 `<!-- SCREENSHOT: ... -->` 占位符
 - 输出到 `OUTPUT_ZH` / `OUTPUT_EN` 指定绝对路径
+- **输出 frontmatter 必须包含 `sync` 节** (见 §1.5.2)
+- **保留 `HUMAN-EDIT-START/END` 块**：生成前从现有文档中提取所有此类块；生成时将它们原位保留（见 §2.5.2）
 
 ---
 
@@ -304,16 +481,31 @@ Nexus-AI-Playbook/
 │   ├── integrations/       # NEW
 │   ├── tutorials/          # NEW
 │   ├── developer/          # NEW
-│   └── reference/          # NEW
+│   ├── reference/          # NEW
+│   ├── glossary/           # NEW: 术语表（中英双版）
+│   │   ├── index.md
+│   │   └── en/index.md
+│   ├── public/
+│   │   ├── (现有 images/ 等保留)
+│   │   ├── llms.txt        # NEW: 轻量索引 (for LLMs)
+│   │   └── llms-full.txt   # NEW: 全量聚合 (for LLMs)
+│   └── .vitepress/
+│       └── theme/
+│           ├── (现有保留)
+│           └── SyncFreshness.vue  # NEW: 文档"新鲜度标记"小组件
 │
 ├── scripts/
 │   ├── (v1 保留: config.yaml, sync.sh, lib/*, prompts/*, screenshots/*, state/*)
 │   ├── lib/
 │   │   ├── (v1 保留)
-│   │   ├── resolve.sh       # NEW: Stage 0 for --full mode, expand chapter to doc list
-│   │   ├── full_generate.sh # NEW: --full mode orchestration (wraps prepare + generate)
-│   │   ├── index_gen.sh     # NEW: generate chapter index.md
-│   │   └── sidebar_gen.sh   # NEW: generate sidebar JSON fragment to drafts/sidebar/
+│   │   ├── resolve.sh         # NEW: Stage 0 for --full, expand chapter→docs
+│   │   ├── full_generate.sh   # NEW: --full mode orchestration
+│   │   ├── signatures.sh      # NEW: compute/compare content sha256 per doc
+│   │   ├── estimate.sh        # NEW: token & cost estimation (no API call)
+│   │   ├── index_gen.sh       # NEW: chapter index.md generator
+│   │   ├── sidebar_gen.sh     # NEW: sidebar JSON fragment generator
+│   │   ├── llms_txt.sh        # NEW: aggregate docs/*.md → llms.txt / llms-full.txt
+│   │   └── audit.sh           # NEW: write state/runs/<ts>.json
 │   ├── prompts/
 │   │   ├── (v1 保留: style-guide.md, feature-update.md, config-reference.md)
 │   │   ├── feature-overview.md     # NEW
@@ -321,10 +513,12 @@ Nexus-AI-Playbook/
 │   │   ├── tutorial.md             # NEW
 │   │   ├── developer-guide.md      # NEW
 │   │   ├── reference.md            # NEW
-│   │   └── chapter-index.md        # NEW
+│   │   ├── chapter-index.md        # NEW
+│   │   └── glossary.md             # NEW: 术语表扫描与编写
 │   └── state/
 │       ├── (v1 保留: last_sync.json, work/, errors.log, changes.json)
-│       └── runs/                   # NEW: per-run audit logs (演进路径预留)
+│       ├── signatures/              # NEW: per-doc sha256 (<chapter>__<slug>.sha)
+│       └── runs/                    # NEW: per-run audit logs (JSON)
 │
 └── drafts/
     ├── (v1 保留结构)
@@ -333,6 +527,7 @@ Nexus-AI-Playbook/
     ├── tutorials/          # NEW
     ├── developer/          # NEW
     ├── reference/          # NEW
+    ├── glossary/           # NEW
     ├── sidebar/            # NEW: generated sidebar fragments (chapter-scoped JSON)
     └── summary.json        # NEW: machine-readable summary for automation
 ```
@@ -347,15 +542,26 @@ v1 的 flags 全部保留。v2 新增：
 |------|------|
 | `--full` | 进入全量模式 |
 | `--chapter <name>` | 指定要处理的章节（全量模式必填；增量模式可选过滤） |
+| `--doc <slug>` | 在 `--full --chapter` 基础上进一步限定到一篇文档 |
 | `--list-chapters` | 列出 config.yaml 中所有章节 |
 | `--regenerate-index` | 只重新生成某章节的 index.md |
 | `--regenerate-sidebar` | 只重新生成 sidebar 片段 |
+| `--estimate` | 仅估算本次 run 的文档数与成本，不调用 Claude |
+| `--force-regenerate` | 忽略 signatures，强制重新生成 |
+| `--emit-llms-txt` | 重新生成 `docs/public/llms.txt` 与 `llms-full.txt`（run 结束默认也会做） |
 
 示例：
 
 ```bash
 # 一次性生成 features 章节所有文档
 ./scripts/sync.sh --full --chapter features
+
+# 先估算再跑
+./scripts/sync.sh --full --chapter features --estimate
+./scripts/sync.sh --full --chapter features
+
+# 只重做单篇
+./scripts/sync.sh --full --chapter features --doc mcp-server
 
 # 列出章节
 ./scripts/sync.sh --list-chapters
@@ -370,11 +576,13 @@ v1 的 flags 全部保留。v2 新增：
 
 ### 阶段 A（MVP，本次实施）
 
-- 扩展 `config.yaml` 加入 `chapters` 配置，填充 5 个章节的 docs 清单
-- 新增 6 个 prompt 模板
-- 新增 `--full` / `--chapter` / `--list-chapters` 三个 flag 及对应 lib 脚本
-- 新增 `sidebar_gen.sh` 和 `index_gen.sh`
-- 人工在 `docs/.vitepress/config.mts` 添加 5 个新章节的顶级 nav + 空 sidebar 占位
+- 扩展 `config.yaml` 加入 `chapters` 配置，填充 5 个章节（+ glossary）的 docs 清单
+- 新增 7 个 prompt 模板（feature-overview / integration-guide / tutorial / developer-guide / reference / chapter-index / glossary）
+- 新增 flag：`--full`、`--chapter`、`--doc`、`--list-chapters`、`--regenerate-index`、`--regenerate-sidebar`、`--estimate`、`--force-regenerate`、`--emit-llms-txt`
+- 新增 lib：`resolve.sh`、`full_generate.sh`、`signatures.sh`、`estimate.sh`、`index_gen.sh`、`sidebar_gen.sh`、`llms_txt.sh`、`audit.sh`
+- 生成 prompt 中约束 frontmatter `sync:*` 字段与 `HUMAN-EDIT-START/END` 保留逻辑
+- VitePress 主题新增 `SyncFreshness.vue` 组件，每页显示新鲜度
+- `config.mts` 新增 `editLink` 配置与 5 个新章节 + glossary 的顶级 nav + 空 sidebar 占位（人工一次性）
 - 分章节执行全量生成 —— review —— 合并
 
 ### 阶段 B（后续迭代，不在本次范围）
@@ -402,14 +610,20 @@ v1 的 flags 全部保留。v2 新增：
 本 v2 MVP 成功的判据：
 
 1. `./scripts/sync.sh --full --chapter features` 一次运行产出 `drafts/features/` 下 6-8 个中文文档 + 等量英文镜像 + `index.md` + sidebar 片段
-2. 其他 4 个章节（`integrations`、`tutorials`、`developer`、`reference`）同样能通过一次命令完成
+2. 其他 4 个章节（`integrations`、`tutorials`、`developer`、`reference`）+ 1 个附加章节 `glossary` 同样能通过一次命令完成
 3. 生成的文档：
    - 符合 `style-guide.md`（面向终端用户，除 developer 外）
    - 中英文结构对齐
    - 真实引用源码中的特性（不编造）
-4. 人工在 `docs/.vitepress/config.mts` 合并 sidebar 片段后，VitePress `npm run docs:dev` 能正常渲染 5 个新章节
+   - 每篇 frontmatter 含 `sync.source_commit`、`sync.source_files`、`sync.generated_at`
+4. 人工在 `docs/.vitepress/config.mts` 合并 sidebar 片段后，VitePress `npm run docs:dev` 能正常渲染 5 个新章节与 glossary；"新鲜度标记"组件在每页正常显示
 5. v1 的增量同步功能仍可正常工作（回归）
-6. `drafts/summary.json` 产出结构化信息，为将来自动化做好准备
+6. `drafts/summary.json` 与 `state/runs/<ts>.json` 产出结构化信息
+7. **Wiki 维护能力验证：**
+   - 跑一次 sync → 人工在某篇生成的文档中加一个 `HUMAN-EDIT-START/END` 块 + 改一行 frontmatter 外的文字 → 再跑一次 sync（强制重做）→ 验证 HUMAN-EDIT 块原封不动，其他部分按代码更新
+   - 跑一次 `--estimate` → 不调用 API，输出预估文档数和 token/成本
+   - signatures 在源码无变更时使 sync 跳过已处理文档
+8. `docs/public/llms.txt` 和 `llms-full.txt` 可访问（构建后 URL `/playbook/llms.txt` 返回聚合索引）
 
 ---
 
