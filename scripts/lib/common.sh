@@ -31,3 +31,61 @@ abs_source_repo() {
     rel="$(yaml_get '.source_repo.path' | tr -d '"')"
     (cd "$SCRIPTS_DIR" && cd "$rel" && pwd)
 }
+
+# ===== v2 additions =====
+
+SIGNATURES_DIR="$STATE_DIR/signatures"
+RUNS_DIR="$STATE_DIR/runs"
+DOCS_DIR="$REPO_ROOT/docs"
+LLMS_TXT_DIR="$REPO_ROOT/docs/public"
+
+export SIGNATURES_DIR RUNS_DIR DOCS_DIR LLMS_TXT_DIR
+
+mkdir -p "$SIGNATURES_DIR" "$RUNS_DIR" 2>/dev/null || true
+
+# run_id — timestamp used for a single sync.sh invocation's audit trail
+_RUN_ID=""
+run_id() {
+    if [ -z "$_RUN_ID" ]; then
+        _RUN_ID="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
+    fi
+    echo "$_RUN_ID"
+}
+
+# chapter_doc_slugs <chapter-id> — prints one slug per line for the given chapter
+chapter_doc_slugs() {
+    local ch="$1"
+    yaml_get ".chapters.\"$ch\".docs[].slug" | tr -d '"'
+}
+
+# chapter_exists <chapter-id> — exits 0 if yes, 1 if no
+chapter_exists() {
+    local ch="$1"
+    local out
+    out="$(yaml_get ".chapters | has(\"$ch\")" 2>/dev/null || true)"
+    [ "$out" = "true" ]
+}
+
+# doc_sources <chapter-id> <slug> — prints each source pattern on its own line
+doc_sources() {
+    local ch="$1" slug="$2"
+    yaml_get ".chapters.\"$ch\".docs[] | select(.slug==\"$slug\") | .sources[]" | tr -d '"'
+}
+
+# doc_title <chapter-id> <slug> <lang>  — lang in {zh,en}
+doc_title() {
+    local ch="$1" slug="$2" lang="$3"
+    yaml_get ".chapters.\"$ch\".docs[] | select(.slug==\"$slug\") | .title_$lang" | tr -d '"'
+}
+
+# chapter_title <chapter-id> <lang>
+chapter_title() {
+    local ch="$1" lang="$2"
+    yaml_get ".chapters.\"$ch\".title_$lang" | tr -d '"'
+}
+
+# chapter_prompt_default <chapter-id>
+chapter_prompt_default() {
+    local ch="$1"
+    yaml_get ".chapters.\"$ch\".prompt_default" | tr -d '"'
+}
