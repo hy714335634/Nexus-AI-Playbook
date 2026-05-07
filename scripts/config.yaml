@@ -54,6 +54,160 @@ mappings:
         model: "default"
     screenshots: []
 
+# 章节定义（v2 新增）
+# 每个章节声明：输出目录、prompt 默认模板、本章节包含的文档列表
+# 每篇文档的 sources 是相对 Nexus-AI 仓库根的 glob/path 列表
+chapters:
+  features:
+    title_zh: "功能特性"
+    title_en: "Features"
+    output_dir: "features"
+    prompt_default: "feature-overview.md"
+    docs:
+      - slug: "mcp-server"
+        title_zh: "MCP 服务器"
+        title_en: "MCP Server"
+        sources: ["nexus_utils/mcp/mcp_server/**", "nexus_utils/mcp/**"]
+      - slug: "sandbox"
+        title_zh: "Sandbox 沙箱运行时"
+        title_en: "Sandbox Runtime"
+        sources: ["nexus_utils/sandbox/**"]
+      - slug: "workflow-engine"
+        title_zh: "工作流引擎"
+        title_en: "Workflow Engine"
+        sources: ["nexus_utils/workflow/**", "config/workflows.yaml"]
+      - slug: "observability"
+        title_zh: "可观测性"
+        title_en: "Observability"
+        sources: ["nexus_utils/observability/**"]
+      - slug: "multimodal"
+        title_zh: "多模态处理"
+        title_en: "Multimodal Processing"
+        sources: ["nexus_utils/multimodal_processing/**"]
+      - slug: "bridge"
+        title_zh: "Bridge 多连接"
+        title_en: "Bridge Multi-Connection"
+        sources: ["nexus_utils/bridge/**"]
+      - slug: "event-scheduler"
+        title_zh: "事件调度"
+        title_en: "Event Scheduler"
+        sources: ["nexus_utils/event_scheduler/**", "config/eventschedule_config.yaml"]
+
+  integrations:
+    title_zh: "集成"
+    title_en: "Integrations"
+    output_dir: "integrations"
+    prompt_default: "integration-guide.md"
+    docs:
+      - slug: "aws-bedrock"
+        title_zh: "AWS Bedrock 模型接入"
+        title_en: "AWS Bedrock Models"
+        sources: ["nexus_utils/agent_factory.py", "config/model_catalog.yaml", "config/default_config.yaml"]
+      - slug: "mcp-clients"
+        title_zh: "外部 MCP 服务器集成"
+        title_en: "External MCP Servers"
+        sources: ["nexus_utils/mcp/mcp_client/**", "config/mcp/**"]
+      - slug: "sso-saml"
+        title_zh: "SSO 单点登录 (SAML 2.0)"
+        title_en: "SSO (SAML 2.0)"
+        sources: ["api/v2/auth/**"]
+      - slug: "data-stores"
+        title_zh: "数据存储层（Aurora / Valkey / DDB / SQS / S3）"
+        title_en: "Data Stores (Aurora / Valkey / DynamoDB / SQS / S3)"
+        sources: ["api/v2/database/**", "config/default_config.yaml"]
+      - slug: "deployment"
+        title_zh: "CloudFormation 一键部署"
+        title_en: "CloudFormation Deployment"
+        sources: ["infrastructure/**", "nexus-cli"]
+
+  tutorials:
+    title_zh: "教程"
+    title_en: "Tutorials"
+    output_dir: "tutorials"
+    prompt_default: "tutorial.md"
+    docs:
+      - slug: "hermes-analyst"
+        title_zh: "构建一个 Hermes 分析 Agent"
+        title_en: "Build a Hermes Analyst Agent"
+        sources: ["agents/generated_agents/hermes_analyst_agent_2026a96a/**", "prompts/generated_agents_prompts/hermes_analyst_agent_2026a96a/**"]
+      - slug: "tech-blog-generator"
+        title_zh: "构建一个技术博客生成 Agent"
+        title_en: "Build a Tech Blog Generator Agent"
+        sources: ["agents/generated_agents/tech_blog_generator_05b957e9/**", "prompts/generated_agents_prompts/tech_blog_generator_05b957e9/**"]
+      - slug: "first-chat"
+        title_zh: "从零体验：第一次对话"
+        title_en: "From Zero: Your First Chat"
+        sources: ["agents/system_agents/magician.py", "api/v2/routers/sessions.py"]
+
+  developer:
+    title_zh: "开发者指南"
+    title_en: "Developer Guide"
+    output_dir: "developer"
+    prompt_default: "developer-guide.md"
+    docs:
+      - slug: "architecture-overview"
+        title_zh: "架构总览"
+        title_en: "Architecture Overview"
+        sources: ["CLAUDE.md", "README.md", "architecture/**"]
+      - slug: "contributing"
+        title_zh: "贡献指南"
+        title_en: "Contributing"
+        sources: ["CONTRIBUTING.md"]
+      - slug: "local-setup"
+        title_zh: "本地开发环境搭建"
+        title_en: "Local Development Setup"
+        sources: ["setup_env_alinux2023.sh", "pyproject.toml", "requirements.txt", "README.md"]
+      - slug: "extending-agents"
+        title_zh: "扩展 Agent 与工具"
+        title_en: "Extending Agents and Tools"
+        sources: ["nexus_utils/agent_factory.py", "agents/template_agents/**", "tools/**"]
+
+  reference:
+    title_zh: "参考"
+    title_en: "Reference"
+    output_dir: "reference"
+    prompt_default: "reference.md"
+    docs:
+      - slug: "cli-commands"
+        title_zh: "nexus-cli 命令参考"
+        title_en: "nexus-cli Command Reference"
+        sources: ["nexus-cli", "nexus_utils/cli/**"]
+      - slug: "config-options"
+        title_zh: "配置项参考"
+        title_en: "Configuration Reference"
+        sources: ["config/default_config.yaml", "config/logging_config.yaml", "config/eventschedule_config.yaml"]
+      - slug: "api-endpoints"
+        title_zh: "API 端点参考"
+        title_en: "API Endpoint Reference"
+        sources: ["api/v2/main.py", "api/v2/routers/**"]
+      - slug: "deploy-params"
+        title_zh: "部署参数参考"
+        title_en: "Deployment Parameters"
+        sources: ["infrastructure/**", "nexus-cli"]
+
+  glossary:
+    title_zh: "术语表"
+    title_en: "Glossary"
+    output_dir: "glossary"
+    prompt_default: "glossary.md"
+    docs:
+      - slug: "index"
+        title_zh: "Nexus-AI 术语表"
+        title_en: "Nexus-AI Glossary"
+        sources: ["CLAUDE.md", "README.md", "nexus_utils/**", "agents/system_agents/**"]
+
+# 运行策略
+run:
+  signatures_dir: "signatures"
+  runs_dir: "runs"
+  pricing:
+    default:
+      input_per_mtok: 3.0
+      output_per_mtok: 15.0
+    complex:
+      input_per_mtok: 15.0
+      output_per_mtok: 75.0
+
 # 截图配置
 screenshots:
   enabled: "auto"                     # auto | always | never
