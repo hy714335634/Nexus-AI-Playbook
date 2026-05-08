@@ -500,7 +500,7 @@ Run:
 python3 -c "import yaml; d=yaml.safe_load(open('scripts/config.yaml')); print('chapters:', list(d['chapters'].keys())); print(sum(len(c['docs']) for c in d['chapters'].values()), 'docs total')"
 ```
 
-Expected output: `chapters: ['getting-started', 'using', 'features', 'integrations', 'guides', 'developer', 'reference']` and `51 docs total`.
+Expected output: `chapters: ['getting-started', 'using', 'features', 'integrations', 'guides', 'developer', 'reference']` and `55 docs total`.
 
 Note: that's 7 top-level keys, but `using/` plays dual role (new sidebar category housing pre-existing manual content). The sidebar will render 7 headers.
 
