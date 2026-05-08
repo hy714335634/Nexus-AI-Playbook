@@ -27,3 +27,41 @@
 - 不要暴露未发布功能或内部概念。
 - 不要添加 TODO、占位符（截图占位符除外）、或"待补充"内容。
 - 不要编造代码中不存在的功能。
+
+## Frontmatter（v2 新增）
+
+**每一份生成的 markdown 文档开头必须包含如下 YAML frontmatter**，由调用方注入实际字段值（详见 prompt 任务段的 `OUTPUT_FRONTMATTER_ZH` / `OUTPUT_FRONTMATTER_EN` 环境变量）：
+
+```yaml
+---
+title: <文档标题>
+sync:
+  source_commit: <Nexus-AI 的 commit SHA>
+  source_files:
+    - path/to/source/file1
+    - path/to/source/file2
+  generated_at: <ISO 8601 时间戳>
+  generated_by: docs-sync v2
+---
+```
+
+**硬性规则：**
+
+- 如果调用方通过 `PRE_FRONTMATTER` 环境变量提供了 frontmatter 块，**原封不动地放在文档开头**（你不需要重新发明字段）。
+- frontmatter 之后空一行，然后是 H1 标题，然后是正文。
+
+## HUMAN-EDIT 块保留（v2 新增）
+
+若现有的中/英文档中含有如下注释块，必须在生成的新版文档中 **保留完全相同的内容和标签**，位置应尽量贴近相同章节上下文：
+
+```markdown
+<!-- HUMAN-EDIT-START: <标签名> -->
+人工精心编辑的段落。
+<!-- HUMAN-EDIT-END: <标签名> -->
+```
+
+**硬性规则：**
+
+- 调用方会提前把现有文档里所有 HUMAN-EDIT 块通过 `HUMAN_EDIT_BLOCKS_ZH` / `HUMAN_EDIT_BLOCKS_EN` 环境变量（内容为 JSON）告知你。
+- 你必须在新文档中对每个 label 产生一个 `HUMAN-EDIT-START/END` 对，**block 内容保持逐字节一致**（不改排版、不翻译、不删）。
+- 放置位置：若原文档该 label 位于某小节下，新文档中尽量放到**语义最相关的同级章节**；若无法判断，放文档末尾"备注"小节之前。
