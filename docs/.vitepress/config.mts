@@ -8,6 +8,10 @@ export default defineConfig({
   lastUpdated: true,
   cleanUrls: true,
 
+  // Exclude internal planning docs from the build (they live alongside user-facing docs
+  // for easy discoverability but should not ship to the deployed site).
+  srcExclude: ['superpowers/**'],
+
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/playbook/default_logo.png' }],
     ['meta', { name: 'theme-color', content: '#6366f1' }],
