@@ -1,32 +1,65 @@
-# 任务：基于源代码全量生成 Developer Guide 章节中的一篇
+# 任务：生成 Developer Guide 章节中的一篇**参考级**开发者文档
 
-你是 Nexus-AI 的文档工程师。这份文档 **面向开发者**（不是终端用户），可以引用架构名词、目录结构、扩展点、源码路径。
+你是 Nexus-AI 的资深技术写作工程师。这份文档面向**想阅读、扩展、贡献代码的开发者**，必须做到**彻底、穷举、作为技术参考**来写，而不是高层综述。
 
 ## 输入
 
-- `style-guide.md` — 必读。**注意：** developer 章节**允许**包含代码细节、类名、包路径，这是 style-guide 的例外情况。
-- `sources.md` — 开发者相关的源文件（CLAUDE.md、CONTRIBUTING.md、架构文档、setup 脚本等）。
-- `current-doc-zh.md` / `current-doc-en.md` — 已有文档。
+- `style-guide.md` — 必读。**注意：** developer 章节**允许并鼓励**包含代码细节、类名、方法签名、包路径、源码引用。这是 style-guide 的例外。
+- `sources.md` — 开发者相关的源文件（聚合内容）。
+- `current-doc-zh.md` / `current-doc-en.md` — 现有文档。
 - `sync-fields.md` — frontmatter 值。
 
-## 任务
+## 核心原则
 
-1. 目标读者：想阅读/修改/扩展 Nexus-AI 代码的开发者。
-2. 按下述结构输出中英双版：
-   - （frontmatter）
-   - H1
-   - **适用读者** — 1 段
-   - **核心概念** — 列出开发者需要了解的概念（Agent / Stage / Skill / Workflow 等）
-   - **代码结构** — 目录树 + 每个目录做什么
-   - **关键扩展点** — 如何添加自定义 Agent / Tool / Skill
-   - **开发流程** — 从 clone 到提交 PR
-   - **延伸阅读** — 其它相关文档链接
-3. 保留 HUMAN-EDIT 块。
+**"详尽" > "简洁"。** 开发者文档是用来**查**的，不是用来"读完理解"的。他们会用 ⌘F 搜索某个类名/方法名。所以：
+
+- **穷举**，不省略。如果源码里有 30 个 router，每个都要列。
+- **精确引用源码路径**。格式：`api/v2/routers/agents.py:45`。
+- **保留代码签名**。函数名、参数、返回类型、装饰器要列全。
+- **展示真实代码**，不要生造。所有代码块都来自 sources.md。
+- **表格 + 清单 + 图式伪代码**，能形式化就形式化。
+
+## 通用结构（按文档类型灵活调整）
+
+每篇文档至少包含以下章节（根据主题略作增删，但**不能省略必要部分**）：
+
+1. **frontmatter**（见 style-guide）
+2. **H1 标题**
+3. **概述** — 2-3 段。说明这块代码/子系统的**职责**、**边界**、**主要入口**。
+4. **文件组织（File Layout）** — 列出此文档覆盖的所有目录与关键文件，用表格：`路径 | 责任 | 依赖`
+5. **核心类型 / 类 / 数据结构** — 穷举源码中的 class / dataclass / TypedDict / Pydantic model，列字段与含义：
+
+   ```markdown
+   ### `AgentFactoryConfig` (nexus_utils/agent_factory.py:123)
+
+   | 字段 | 类型 | 默认 | 说明 |
+   |------|------|------|------|
+   | `model_id` | `str` | `"us.anthropic.claude-..."` | Bedrock 模型 ID |
+   | ... | ... | ... | ... |
+   ```
+
+6. **关键函数 / 方法** — 按源文件组织，每个公有 API 一张表：名称、签名、职责、典型调用位置、异常行为
+7. **调用关系 / 数据流** — 用 mermaid 或文本流程展示（如 "API Router → Service → DAO → DynamoDB"）
+8. **扩展点（Extending）** — **开发者最关心的部分**：
+   - 如何添加新的 X？分步说明（改哪个文件、实现哪个接口、注册到哪里）
+   - 哪些接口/基类需要继承
+   - 约束与陷阱（线程安全、异步、幂等要求）
+9. **常见调试 / 故障排查** — 日志关键词、常见异常含义、诊断命令
+10. **延伸阅读** — 相关文档链接、源码 anchor
+
+## 硬性要求
+
+- **所有源码引用必须来自 sources.md 中存在的内容**，严禁编造类名、方法、路径。
+- **中英文版本必须结构完全对齐**：同样的表格数量、同样的章节、同样的代码块。只翻译自然语言散文部分；代码/类名/签名不翻译。
+- 保留 `HUMAN-EDIT-START/END` 块（见 style-guide）。
+- frontmatter 使用调用方提供的 `PRE_FRONTMATTER_ZH` / `PRE_FRONTMATTER_EN` 块，原样放在文档顶部。
+- 不要空客气话（"这是一个强大的..."），直接列事实。
+- 不要虚构未来能力或"计划中"特性。
 
 ## 输出
 
-写入 `OUTPUT_ZH` / `OUTPUT_EN`。
+将结果写入 `OUTPUT_ZH` 与 `OUTPUT_EN` 指定的绝对路径。
 
 ## 完成
 
-打印：`DONE: wrote <OUTPUT_ZH> and <OUTPUT_EN>`
+成功写入两个文件后，打印一行：`DONE: wrote <OUTPUT_ZH> and <OUTPUT_EN>`
