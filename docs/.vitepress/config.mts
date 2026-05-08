@@ -1,5 +1,150 @@
 import { defineConfig } from 'vitepress'
 
+// Single persistent sidebar used across every docs route.
+// Groups are rendered as collapsible categories in Hermes style.
+const SIDEBAR = [
+  {
+    text: '🚀 快速开始',
+    collapsed: false,
+    items: [
+      { text: '5 分钟快速上手', link: '/getting-started/quickstart' },
+      { text: '安装 Nexus-AI', link: '/getting-started/installation' },
+      { text: 'AWS 环境准备', link: '/getting-started/aws-setup' },
+      { text: '升级与卸载', link: '/getting-started/updating' },
+      { text: '学习路径', link: '/getting-started/learning-path' },
+    ]
+  },
+  {
+    text: '📖 使用 Nexus-AI',
+    collapsed: true,
+    items: [
+      { text: '工作台', link: '/using/dashboard' },
+      { text: '创建 Agent', link: '/using/create-agent' },
+      { text: '构建进度', link: '/using/build-progress' },
+      { text: '对话', link: '/using/chat' },
+      { text: '项目管理', link: '/using/projects' },
+      { text: 'Agent 管理', link: '/using/manage-agents' },
+      { text: '工具库', link: '/using/tools' },
+      { text: 'MCP 服务器', link: '/using/mcp' },
+    ]
+  },
+  {
+    text: '⚡ 功能特性',
+    collapsed: true,
+    items: [
+      { text: '概览', link: '/features/' },
+      {
+        text: 'Core',
+        collapsed: true,
+        items: [
+          { text: '工具与工具集', link: '/features/tools-toolsets' },
+          { text: '技能系统', link: '/features/skills-system' },
+          { text: 'Agent Factory', link: '/features/agent-factory' },
+          { text: '提示词模板', link: '/features/prompt-templates' },
+        ]
+      },
+      {
+        text: 'Runtime',
+        collapsed: true,
+        items: [
+          { text: 'Sandbox 沙箱', link: '/features/sandbox' },
+          { text: '工作流引擎', link: '/features/workflow-engine' },
+          { text: '多 Agent 图/群', link: '/features/multi-agent' },
+          { text: '流式响应中继', link: '/features/stream-relay' },
+        ]
+      },
+      {
+        text: 'Automation',
+        collapsed: true,
+        items: [
+          { text: '事件调度', link: '/features/event-scheduler' },
+          { text: 'Bridge 多连接', link: '/features/bridge' },
+        ]
+      },
+      {
+        text: 'Observability',
+        collapsed: true,
+        items: [
+          { text: '可观测性', link: '/features/observability' },
+          { text: '指标与计费', link: '/features/metrics-billing' },
+          { text: '日志', link: '/features/logging' },
+        ]
+      },
+    ]
+  },
+  {
+    text: '🔌 集成',
+    collapsed: true,
+    items: [
+      { text: '集成总览', link: '/integrations/overview' },
+      { text: 'AWS Bedrock 模型接入', link: '/integrations/aws-bedrock' },
+      { text: '外部 MCP 服务器', link: '/integrations/mcp-clients' },
+      { text: 'Agent as MCP Tool', link: '/integrations/mcp-server' },
+      { text: 'SSO (SAML 2.0)', link: '/integrations/sso-saml' },
+      { text: '数据存储', link: '/integrations/data-stores' },
+    ]
+  },
+  {
+    text: '📚 使用指南',
+    collapsed: true,
+    items: [
+      { text: '技巧与最佳实践', link: '/guides/tips' },
+      { text: '构建 Hermes 分析 Agent', link: '/guides/build-hermes-analyst' },
+      { text: '构建技术博客生成 Agent', link: '/guides/build-tech-blog' },
+      { text: '在 Nexus-AI 中使用 MCP', link: '/guides/use-mcp-with-nexus' },
+    ]
+  },
+  {
+    text: '👨‍💻 开发者指南',
+    collapsed: true,
+    items: [
+      { text: '贡献指南', link: '/developer/contributing' },
+      {
+        text: 'Architecture',
+        collapsed: true,
+        items: [
+          { text: '架构总览', link: '/developer/architecture-overview' },
+          { text: 'API 层架构', link: '/developer/api-layer' },
+          { text: 'Worker 架构', link: '/developer/worker' },
+          { text: 'Stage 引擎', link: '/developer/stage-engine' },
+        ]
+      },
+      {
+        text: 'Extending',
+        collapsed: true,
+        items: [
+          { text: '添加 Agent', link: '/developer/adding-agents' },
+          { text: '添加工具', link: '/developer/adding-tools' },
+          { text: '添加技能', link: '/developer/adding-skills' },
+        ]
+      },
+      {
+        text: 'Internals',
+        collapsed: true,
+        items: [
+          { text: '会话存储', link: '/developer/session-storage' },
+          { text: '动态 Prompt 构建', link: '/developer/dynamic-prompt' },
+        ]
+      },
+    ]
+  },
+  {
+    text: '📋 参考',
+    collapsed: true,
+    items: [
+      { text: 'nexus-cli 命令', link: '/reference/cli-commands' },
+      { text: '配置项', link: '/reference/config-options' },
+      { text: '环境变量', link: '/reference/environment-variables' },
+      { text: 'API 端点', link: '/reference/api-endpoints' },
+      { text: '部署参数', link: '/reference/deploy-params' },
+      { text: 'IAM 权限', link: '/reference/iam-policies' },
+      { text: '模型目录', link: '/reference/model-catalog' },
+      { text: '术语表', link: '/reference/glossary' },
+      { text: 'FAQ 与故障排查', link: '/reference/faq' },
+    ]
+  },
+]
+
 export default defineConfig({
   base: '/playbook/',
   title: 'Nexus-AI',
@@ -8,9 +153,12 @@ export default defineConfig({
   lastUpdated: true,
   cleanUrls: true,
 
-  // Exclude internal planning docs from the build (they live alongside user-facing docs
-  // for easy discoverability but should not ship to the deployed site).
-  srcExclude: ['superpowers/**'],
+  // Exclude internal planning docs and preview scratch area from the build.
+  srcExclude: ['superpowers/**', 'preview/**'],
+
+  // Many sidebar links point at docs that will be generated in later batches.
+  // Ignore dead internal links for now; tighten after all batches land.
+  ignoreDeadLinks: true,
 
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/playbook/default_logo.png' }],
@@ -28,113 +176,23 @@ export default defineConfig({
     logo: '/default_logo.png',
     siteTitle: 'Nexus-AI',
 
+    // Minimal top nav — sidebar is the primary navigation.
     nav: [
       { text: '首页', link: '/' },
-      { text: '快速上手', link: '/guide/login' },
+      { text: '文档', link: '/getting-started/quickstart' },
       {
-        text: '使用手册',
-        items: [
-          { text: '🏠 工作台', link: '/manual/dashboard' },
-          { text: '🤖 创建 Agent', link: '/manual/create-agent' },
-          { text: '📊 构建进度', link: '/manual/build-progress' },
-          { text: '📋 项目管理', link: '/manual/projects' },
-          { text: '🗂️ 管理 Agent', link: '/manual/manage-agents' },
-          { text: '💬 对话测试', link: '/manual/chat' },
-          { text: '🔧 能力工具', link: '/manual/tools' },
-          { text: '🔌 MCP 服务器', link: '/manual/mcp' },
-        ]
-      },
-      { text: '功能特性', link: '/features/' },
-      { text: '集成', link: '/integrations/' },
-      { text: '教程', link: '/tutorials/' },
-      { text: '开发者', link: '/developer/' },
-      { text: '参考', link: '/reference/' },
-      {
-        text: '了解更多',
+        text: '快速链接',
         items: [
           { text: '💡 平台概述', link: '/overview/what-is-nexus' },
-          { text: '⚙️ 构建原理', link: '/overview/how-it-works' },
           { text: '🛡️ 管理员指南', link: '/admin/settings' },
-          { text: '📖 术语表', link: '/glossary/' },
-          { text: '❓ 常见问题', link: '/faq' },
+          { text: '🚀 引导教程', link: '/guide/login' },
         ]
       },
     ],
 
+    // Persistent sidebar shown across all docs routes.
     sidebar: {
-      '/guide/': [
-        {
-          text: '🚀 快速上手',
-          items: [
-            { text: '登录系统', link: '/guide/login' },
-            { text: '认识工作台', link: '/guide/workspace' },
-            { text: '创建第一个 Agent', link: '/guide/first-agent' },
-          ]
-        }
-      ],
-      '/manual/': [
-        {
-          text: '📋 日常使用',
-          items: [
-            { text: '工作台', link: '/manual/dashboard' },
-            { text: '创建 Agent', link: '/manual/create-agent' },
-            { text: '构建进度', link: '/manual/build-progress' },
-            { text: '项目管理', link: '/manual/projects' },
-          ]
-        },
-        {
-          text: '🤖 Agent 管理',
-          items: [
-            { text: '管理 Agent', link: '/manual/manage-agents' },
-            { text: '对话测试', link: '/manual/chat' },
-          ]
-        },
-        {
-          text: '🔧 能力工具',
-          items: [
-            { text: '工具库', link: '/manual/tools' },
-            { text: 'MCP 服务器', link: '/manual/mcp' },
-          ]
-        },
-      ],
-      '/overview/': [
-        {
-          text: '💡 平台介绍',
-          items: [
-            { text: '什么是 Nexus-AI', link: '/overview/what-is-nexus' },
-            { text: '构建原理', link: '/overview/how-it-works' },
-          ]
-        }
-      ],
-      '/admin/': [
-        {
-          text: '🛡️ 管理员指南',
-          items: [
-            { text: '系统设置', link: '/admin/settings' },
-            { text: '用户管理', link: '/admin/users' },
-          ]
-        }
-      ],
-      '/features/': [
-        { text: '⚡ 功能特性', items: [] }
-      ],
-      '/integrations/': [
-        { text: '🔌 集成', items: [] }
-      ],
-      '/tutorials/': [
-        { text: '📚 教程', items: [] }
-      ],
-      '/developer/': [
-        { text: '👨‍💻 开发者指南', items: [] }
-      ],
-      '/reference/': [
-        { text: '📋 参考', items: [] }
-      ],
-      '/glossary/': [
-        { text: '📖 术语表', items: [
-          { text: 'Nexus-AI 术语表', link: '/glossary/' }
-        ] }
-      ],
+      '/': SIDEBAR,
     },
 
     socialLinks: [
