@@ -5,16 +5,20 @@
 
 ## 当前阶段
 
-**阶段：** v3 Batch 1 (Getting Started) 已完成。剩余 3 个 batch 待生成。
+**阶段：** v3 Batches 1+2+3 已完成。只剩 Batch 4（Developer + Reference + Guides）。
 
 - ✅ Restructure: 7-category persistent Hermes-style sidebar (`5bed523`)
 - ✅ /manual/ → /using/ migration with HUMAN-EDIT preservation (`eeb69bb`)
-- ✅ Batch 1 (Getting Started, Opus 4.7): 5 zh + 5 en + 2 index merged to `docs/` (`b867282`)
-- ✅ Developer/Reference prompts rewritten for reference-grade detail (`861086b`)
-- ✅ Developer/Reference sources expanded (`2234933`)
-- ⏳ Batch 2: Using (refresh for 8 existing docs) — separate plan
-- ⏳ Batch 3: Features + Integrations (~19 pages) — separate plan
-- ⏳ Batch 4: Developer + Reference + Guides (~23 pages) — separate plan
+- ✅ Batch 1 (Getting Started, Opus 4.7): 5 zh + 5 en + index (`b867282`)
+- ✅ Batch 2 (Using, Opus 4.7): 8 zh + 8 en + index；每页 human_blocks=1（HUMAN-EDIT 保留成功）(`6521481`)
+- ✅ Batch 3a (Features, Opus 4.7): 13 zh + 13 en + index (`6521481`)
+- ✅ Batch 3b (Integrations, Opus 4.7): 6 zh + 6 en + index (`6521481`)
+- ⏳ Batch 4: Developer + Reference + Guides (~23 pages, ~$50-60) — 待指令
+
+**产出汇总（截至当前）：**
+- 32 个中文文档 + 32 个英文文档 + 4 个章节 index + 2 个 llms.txt 聚合
+- `/getting-started/` (5) + `/using/` (8) + `/features/` (13) + `/integrations/` (6)
+- `docs/public/llms.txt` = 51 entries
 
 **Active versions:**
 - Spec v2: `docs/superpowers/specs/2026-05-07-playbook-docs-sync-v2-design.md`
