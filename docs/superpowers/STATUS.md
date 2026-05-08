@@ -5,13 +5,28 @@
 
 ## 当前阶段
 
-**阶段：** Spec v2 已完成，待写 Implementation Plan v2。
+**阶段：** v3 Batch 1 (Getting Started) 已完成。剩余 3 个 batch 待生成。
 
-**当前版本：**
-- Spec v2（有效）：`docs/superpowers/specs/2026-05-07-playbook-docs-sync-v2-design.md`
-- Spec v1（仅作历史参考，已被 supersede）：`docs/superpowers/specs/2026-05-06-playbook-docs-sync-design.md`
-- Plan v1（仅作历史参考）：`docs/superpowers/plans/2026-05-06-playbook-docs-sync.md`
-- Plan v2：**待写**
+- ✅ Restructure: 7-category persistent Hermes-style sidebar (`5bed523`)
+- ✅ /manual/ → /using/ migration with HUMAN-EDIT preservation (`eeb69bb`)
+- ✅ Batch 1 (Getting Started, Opus 4.7): 5 zh + 5 en + 2 index merged to `docs/` (`b867282`)
+- ✅ Developer/Reference prompts rewritten for reference-grade detail (`861086b`)
+- ✅ Developer/Reference sources expanded (`2234933`)
+- ⏳ Batch 2: Using (refresh for 8 existing docs) — separate plan
+- ⏳ Batch 3: Features + Integrations (~19 pages) — separate plan
+- ⏳ Batch 4: Developer + Reference + Guides (~23 pages) — separate plan
+
+**Active versions:**
+- Spec v2: `docs/superpowers/specs/2026-05-07-playbook-docs-sync-v2-design.md`
+- Plan v3: `docs/superpowers/plans/2026-05-08-playbook-docs-sync-v3.md`
+- Model: `global.anthropic.claude-opus-4-7` (switched from Sonnet for quality priority)
+- Sidebar: 7 categories, persistent across all routes
+- Content: Getting Started live at `/getting-started/*` (zh+en)
+
+**Historical (superseded):**
+- Spec v1: `docs/superpowers/specs/2026-05-06-playbook-docs-sync-design.md`
+- Plan v1: `docs/superpowers/plans/2026-05-06-playbook-docs-sync.md`
+- Plan v2: `docs/superpowers/plans/2026-05-07-playbook-docs-sync-v2.md`
 
 ## 进展时间线
 
