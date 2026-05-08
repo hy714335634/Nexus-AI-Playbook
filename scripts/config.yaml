@@ -5,8 +5,8 @@ source_repo:
 
 # 文档生成模型偏好
 models:
-  default: "claude-sonnet-4-6"        # 日常生成
-  complex: "claude-opus-4-7"          # 架构 / 大范围变更
+  default: "global.anthropic.claude-opus-4-7"               # 使用 Opus 4.7 — 质量优先
+  complex: "global.anthropic.claude-opus-4-7"               # 架构 / 大范围变更
 
 # 输出语言（顺序 = 输出顺序）
 languages:
@@ -265,43 +265,94 @@ chapters:
       - slug: "contributing"
         title_zh: "贡献指南"
         title_en: "Contributing"
-        sources: ["CONTRIBUTING.md"]
+        sources:
+          - "CONTRIBUTING.md"
+          - "CLAUDE.md"
+          - "pyproject.toml"
+          - ".python-version"
       - slug: "architecture-overview"
         title_zh: "架构总览"
         title_en: "Architecture Overview"
-        sources: ["CLAUDE.md", "README.md", "architecture/**"]
+        sources:
+          - "CLAUDE.md"
+          - "README.md"
+          - "architecture/**"
+          - "api/v2/main.py"
+          - "api/v2/config.py"
+          - "worker/main.py"
+          - "nexus_utils/agent_factory.py"
+          - "nexus_utils/magician.py"
       - slug: "api-layer"
         title_zh: "API 层架构"
         title_en: "API Layer"
-        sources: ["api/v2/main.py", "api/v2/routers/**"]
+        sources:
+          - "api/v2/main.py"
+          - "api/v2/config.py"
+          - "api/v2/routers/**"
+          - "api/v2/services/**"
+          - "api/v2/models/**"
+          - "api/v2/core/**"
+          - "api/v2/utils/**"
+          - "api/v2/auth/**"
+          - "api/v2/database/**"
       - slug: "worker"
         title_zh: "Worker 架构"
         title_en: "Worker"
-        sources: ["worker/**"]
+        sources:
+          - "worker/**"
+          - "nexus_utils/workflow/**"
+          - "config/workflows.yaml"
       - slug: "stage-engine"
         title_zh: "Stage 引擎"
         title_en: "Stage Engine"
-        sources: ["nexus_utils/workflow/**"]
+        sources:
+          - "nexus_utils/workflow/**"
+          - "config/workflows.yaml"
+          - "agents/system_agents/**"
       - slug: "adding-agents"
         title_zh: "添加 Agent"
         title_en: "Adding Agents"
-        sources: ["agents/template_agents/**", "nexus_utils/agent_factory.py"]
+        sources:
+          - "agents/template_agents/**"
+          - "agents/system_agents/**"
+          - "nexus_utils/agent_factory.py"
+          - "nexus_utils/safe_agent_factory.py"
+          - "nexus_utils/agent_validation.py"
+          - "prompts/template_prompts/**"
+          - "config/model_catalog.yaml"
       - slug: "adding-tools"
         title_zh: "添加工具"
         title_en: "Adding Tools"
-        sources: ["nexus_utils/skill/**", "tools/**"]
+        sources:
+          - "nexus_utils/skill/**"
+          - "tools/**"
+          - "nexus_utils/mcp/**"
+          - "api/v2/routers/agent_tools.py"
       - slug: "adding-skills"
         title_zh: "添加技能"
         title_en: "Adding Skills"
-        sources: ["nexus_utils/skill/**", "prompts/template_prompts/**"]
+        sources:
+          - "nexus_utils/skill/**"
+          - "prompts/template_prompts/**"
+          - "prompts/system_agents_prompts/**"
+          - "nexus_utils/prompts_manager.py"
       - slug: "session-storage"
         title_zh: "会话存储"
         title_en: "Session Storage"
-        sources: ["nexus_utils/runtime_workspace/**", "api/v2/routers/sessions.py"]
+        sources:
+          - "nexus_utils/runtime_workspace/**"
+          - "api/v2/routers/sessions.py"
+          - "api/v2/services/agent_runtime_service.py"
+          - "api/v2/database/**"
       - slug: "dynamic-prompt"
         title_zh: "动态 Prompt 构建"
         title_en: "Dynamic Prompt Build"
-        sources: ["nexus_utils/prompts_manager.py", "prompts/dynamic_agents_prompts/**"]
+        sources:
+          - "nexus_utils/prompts_manager.py"
+          - "prompts/dynamic_agents_prompts/**"
+          - "prompts/system_agents_prompts/**"
+          - "nexus_utils/runtime_injection/**"
+          - "nexus_utils/post_generation_processor.py"
 
   reference:
     title_zh: "参考"
@@ -312,48 +363,80 @@ chapters:
       - slug: "cli-commands"
         title_zh: "nexus-cli 命令"
         title_en: "nexus-cli Commands"
-        sources: ["nexus-cli", "nexus_utils/cli/**"]
+        sources:
+          - "nexus-cli"
+          - "nexus_utils/cli/**"
       - slug: "config-options"
         title_zh: "配置项"
         title_en: "Configuration Options"
-        sources: ["config/default_config.yaml", "config/logging_config.yaml"]
+        sources:
+          - "config/default_config.yaml"
+          - "config/logging_config.yaml"
+          - "config/app_manifest.yaml"
+          - "config/data_connector.yaml"
+          - "config/eventschedule_config.yaml"
+          - "config/model_catalog.yaml"
+          - "config/workflows.yaml"
+          - "config/nexus_ai_base_rule.yaml"
+          - "nexus_utils/config_loader.py"
       - slug: "environment-variables"
         title_zh: "环境变量"
         title_en: "Environment Variables"
-        sources: ["nexus_utils/config_loader.py", "nexus-cli"]
+        sources:
+          - "nexus_utils/config_loader.py"
+          - "nexus-cli"
+          - "api/v2/config.py"
       - slug: "api-endpoints"
         title_zh: "API 端点"
         title_en: "API Endpoints"
-        sources: ["api/v2/main.py", "api/v2/routers/**"]
+        sources:
+          - "api/v2/main.py"
+          - "api/v2/routers/**"
+          - "api/v2/models/**"
+          - "api/v2/auth/**"
       - slug: "deploy-params"
         title_zh: "部署参数"
         title_en: "Deployment Parameters"
-        sources: ["infrastructure/**", "nexus-cli"]
+        sources:
+          - "infrastructure/**"
+          - "nexus-cli"
       - slug: "iam-policies"
         title_zh: "IAM 权限"
         title_en: "IAM Policies"
-        sources: ["docs/infrastructure/IAM_POLICIES.md", "infrastructure/**"]
+        sources:
+          - "docs/infrastructure/IAM_POLICIES.md"
+          - "infrastructure/**"
       - slug: "model-catalog"
         title_zh: "模型目录"
         title_en: "Model Catalog"
-        sources: ["config/model_catalog.yaml"]
+        sources:
+          - "config/model_catalog.yaml"
+          - "nexus_utils/agent_factory.py"
       - slug: "glossary"
         title_zh: "术语表"
         title_en: "Glossary"
-        sources: ["CLAUDE.md", "README.md", "nexus_utils/**"]
+        sources:
+          - "CLAUDE.md"
+          - "README.md"
+          - "nexus_utils/**"
+          - "agents/system_agents/**"
       - slug: "faq"
         title_zh: "FAQ 与故障排查"
         title_en: "FAQ & Troubleshooting"
-        sources: ["CLAUDE.md", "README.md"]
+        sources:
+          - "CLAUDE.md"
+          - "README.md"
+          - "CONTRIBUTING.md"
 
 # 运行策略
 run:
   signatures_dir: "signatures"
   runs_dir: "runs"
   pricing:
+    # Both tiers use Opus 4.7 per user decision (quality priority)
     default:
-      input_per_mtok: 3.0
-      output_per_mtok: 15.0
+      input_per_mtok: 15.0
+      output_per_mtok: 75.0
     complex:
       input_per_mtok: 15.0
       output_per_mtok: 75.0
