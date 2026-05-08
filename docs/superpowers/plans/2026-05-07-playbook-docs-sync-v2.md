@@ -460,14 +460,53 @@ git commit -m "feat(lib): add v2 common helpers (paths, run_id, chapter/doc look
 ## Task 4: `signatures.sh` — content-hash skip logic
 
 **Files:**
-- Create: `scripts/lib/signatures.sh`
+- Create: `scripts/lib/_expand_sources.py` — standalone Python helper
+- Create: `scripts/lib/signatures.sh` — shell library
 
 This is a self-contained library script (`source` it). Provides 3 functions:
 - `compute_signature <chapter> <slug>` — prints sha256 of all source files' contents (sorted to be deterministic)
 - `load_signature <chapter> <slug>` — prints stored signature or empty if none
 - `save_signature <chapter> <slug> <sig>` — stores it
 
-- [ ] **Step 1: Write `scripts/lib/signatures.sh`**
+> **Why a separate Python file instead of a heredoc:** when you write `python3 - <<'PYEOF'`, Python reads its script source from the heredoc — which also consumes the function's stdin. The `sys.stdin.read()` inside the script then returns empty, silently breaking glob expansion. V1 already hit this trap (see `match_mappings.py`). Always use a standalone `.py` file when the shell function needs to pipe into Python.
+
+- [ ] **Step 1a: Write `scripts/lib/_expand_sources.py`**
+
+```python
+#!/usr/bin/env python3
+"""
+Read source patterns from stdin (one per line) and print absolute file paths
+matching those globs under the Nexus-AI source root.
+
+Usage:
+    echo "nexus_utils/mcp/**" | python3 _expand_sources.py /path/to/Nexus-AI
+"""
+import sys
+import glob
+import os
+
+
+def main() -> int:
+    if len(sys.argv) != 2:
+        sys.stderr.write("usage: _expand_sources.py <source_root>\n")
+        return 2
+    root = sys.argv[1]
+    patterns = [l.strip() for l in sys.stdin.read().splitlines() if l.strip()]
+    seen = set()
+    for pattern in patterns:
+        abs_pattern = os.path.join(root, pattern)
+        for p in sorted(glob.glob(abs_pattern, recursive=True)):
+            if os.path.isfile(p) and p not in seen:
+                seen.add(p)
+                print(p)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 1b: Write `scripts/lib/signatures.sh`**
 
 ```bash
 #!/usr/bin/env bash
@@ -485,38 +524,22 @@ _sig_path() {
     echo "$SIGNATURES_DIR/${1}__${2}.sha"
 }
 
-# _expand_sources — expand glob/path list (relative to Nexus-AI) to absolute file paths, sorted
+# _expand_sources — read source patterns from stdin, print absolute matching files
 _expand_sources() {
     local src
     src="$(abs_source_repo)"
-    while IFS= read -r pattern; do
-        [ -z "$pattern" ] && continue
-        # Expand: `bash -O globstar -c 'shopt -s nullglob globstar; printf "%s\n" PATTERN'`
-        # We use python for reliability given `**` semantics.
-        python3 - "$src" "$pattern" <<'PYEOF'
-import sys, glob, os
-root, pattern = sys.argv[1], sys.argv[2]
-abs_pattern = os.path.join(root, pattern)
-matches = sorted(p for p in glob.glob(abs_pattern, recursive=True) if os.path.isfile(p))
-for m in matches:
-    print(m)
-PYEOF
-    done
+    python3 "$SCRIPTS_DIR/lib/_expand_sources.py" "$src"
 }
 
 # compute_signature <chapter> <slug>
 compute_signature() {
     local ch="$1" slug="$2"
-    local sources
-    sources="$(doc_sources "$ch" "$slug")"
     local files
-    files="$(echo "$sources" | _expand_sources | sort -u)"
+    files="$(doc_sources "$ch" "$slug" | _expand_sources | sort -u)"
     if [ -z "$files" ]; then
         echo "NO_SOURCES"
         return
     fi
-    # Hash = sha256 over concatenated "path\0size\0content" of every source file, sorted
-    # Use sha256sum directly on file list for simplicity; sort makes it order-stable.
     echo "$files" | xargs -I{} sha256sum {} | sort | sha256sum | awk '{print $1}'
 }
 
@@ -1388,6 +1411,7 @@ git commit -m "feat(lib): add resolve.sh — chapter→doc work plan generator"
 ## Task 16: `full_generate.sh` — --full mode orchestration
 
 **Files:**
+- Create: `scripts/lib/_format_sources.py` — standalone Python helper for context assembly
 - Create: `scripts/lib/full_generate.sh`
 
 Reads `state/work-plan.json` and, for each `to_generate` item:
@@ -1395,7 +1419,60 @@ Reads `state/work-plan.json` and, for each `to_generate` item:
 2. Calls `claude -p` with proper env (OUTPUT_ZH, OUTPUT_EN, PRE_FRONTMATTER, HUMAN_EDIT_BLOCKS_*)
 3. Records into audit + updates signature
 
-- [ ] **Step 1: Write `scripts/lib/full_generate.sh`**
+- [ ] **Step 1a: Write `scripts/lib/_format_sources.py`**
+
+This is a standalone helper (same heredoc-stdin trap avoidance as `_expand_sources.py`). It reads source glob patterns from stdin, expands them against the Nexus-AI root, and writes each matched file as a markdown-formatted chunk.
+
+```python
+#!/usr/bin/env python3
+"""
+Read source glob patterns from stdin, expand against Nexus-AI root, and print
+each matched file formatted as a markdown chunk with file content in a code block.
+
+Usage:
+    echo "nexus_utils/mcp/**" | python3 _format_sources.py /path/to/Nexus-AI
+"""
+import sys
+import os
+import glob
+
+
+MAX_CHARS = 20000  # truncate per-file to keep context bounded
+
+
+def main() -> int:
+    if len(sys.argv) != 2:
+        sys.stderr.write("usage: _format_sources.py <source_root>\n")
+        return 2
+    root = sys.argv[1]
+    patterns = [l.strip() for l in sys.stdin.read().splitlines() if l.strip()]
+    seen = set()
+    for pat in patterns:
+        abs_pat = os.path.join(root, pat)
+        for path in sorted(glob.glob(abs_pat, recursive=True)):
+            if not os.path.isfile(path) or path in seen:
+                continue
+            seen.add(path)
+            rel = os.path.relpath(path, root)
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    text = f.read()
+            except Exception as e:
+                text = f"(could not read: {e})"
+            if len(text) > MAX_CHARS:
+                text = text[:MAX_CHARS] + f"\n\n... (truncated, original {len(text)} chars)"
+            print(f"\n## {rel}\n")
+            print("```")
+            print(text)
+            print("```")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 1b: Write `scripts/lib/full_generate.sh`**
 
 ```bash
 #!/usr/bin/env bash
@@ -1453,39 +1530,16 @@ for idx in $(seq 0 $(($(jq '.items | length' "$PLAN_FILE") - 1))); do
     mkdir -p "$WORK"
 
     # Assemble sources.md — concatenate every matching file
+    # We use a standalone helper because heredoc `python3 - <<EOF` would consume
+    # the stdin we need to pipe patterns into (same trap as _expand_sources.py).
     log "  [$SLUG] preparing context"
     {
         echo "# 源代码内容 — $CHAPTER / $SLUG"
         echo
         echo "commit: \`$COMMIT\`"
         echo
-        # Expand sources via python (mirror signatures.sh logic)
-        python3 - "$SRC" <<'PYEOF'
-import sys, os, glob
-root = sys.argv[1]
-patterns = [l.strip() for l in sys.stdin.read().splitlines() if l.strip()]
-seen = set()
-for pat in patterns:
-    abs_pat = os.path.join(root, pat)
-    for path in sorted(glob.glob(abs_pat, recursive=True)):
-        if not os.path.isfile(path) or path in seen:
-            continue
-        seen.add(path)
-        rel = os.path.relpath(path, root)
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
-        except Exception as e:
-            text = f"(could not read: {e})"
-        # Truncate very large files to keep context bounded
-        if len(text) > 20000:
-            text = text[:20000] + f"\n\n... (truncated, original {len(text)} chars)"
-        print(f"\n## {rel}\n")
-        print("```")
-        print(text)
-        print("```")
-PYEOF
-    } < <(doc_sources "$CHAPTER" "$SLUG") > "$WORK/sources.md"
+        doc_sources "$CHAPTER" "$SLUG" | python3 "$SCRIPTS_DIR/lib/_format_sources.py" "$SRC"
+    } > "$WORK/sources.md"
 
     # Copy existing docs (if present)
     DOC_ZH_PATH="$DOCS_DIR/$CHAPTER/$SLUG.md"
