@@ -1,12 +1,12 @@
 ---
-title: Projects
+title: 项目管理
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/projects.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - api/v2/routers/projects.py
+    - web/src/app/(authed)/projects/**
+  generated_at: 2026-05-08T15:04:20+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-projects -->

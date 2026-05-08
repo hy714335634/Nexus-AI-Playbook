@@ -5,6 +5,20 @@ One line per document: `- [Title](URL) — summary`.
 - [系统设置](/admin/settings) — 设置页面用于管理你的账户信息和应用配置。通过左侧导航栏的 **「系统配置」** 进入。
 - [用户管理](/admin/users) — 用户管理页面用于管理平台的用户账号和权限。通过左侧导航栏的 **「用户管理」** 进入。
 - [常见问题](/faq) — Nexus-AI 是一个 **AI Agent 自动化构建平台**，采用"Agent Build Agent"理念 —— 用 8 个专业 AI Agent 协作来构建你想要的 AI Agent。你只需用自然语言描述需求，平台就能在几分钟内自动完成从需求分析、架构设计、代码开发到部署上线的全流程。
+- [Agent Factory](/features/agent-factory) — Agent Factory 是 Nexus-AI 把「提示词模板 + 模型 + 工具」组装成一个可对话 Agent 的核心装配线。你在平台上点击「创建 Agent」、把 Agent 加入编排，或批量拉起多个 Agent 时，后台都是 Agent Factory 在按模板拉取配置、挑选模型、绑定工具，并在返回给你之前完成一次健康体检。
+- [Bridge 多连接](/features/bridge) — **Nexus Bridge** 是一条把 AI 助手和你自己服务器连起来的安全通道。只要在服务器上粘贴一条 `curl` 指令，Agent 就能在该服务器上执行 Shell 命令、读取状态、提交长任务——同一个会话最多可以**同时接入 5 台服务器**，一条指令还能在所有服务器上**并行执行**。
+- [事件调度](/features/event-scheduler) — 事件调度让你把 Nexus-AI 上任意一个 Agent 变成「定时任务」或「持续运行的自主任务」。你只需要指定「哪个 Agent」「用什么提示词」「什么时候跑」，平台会按计划自动触发 Agent 执行，把结果归档到独立的 S3 工作空间，并由一个轻量分析 Agent 生成简要的中文摘要。适合日报、定时抓取、周期性监控、以及让 Agent 自己规划下一步的长期任务。
+- [功能特性](/features/index) — 本章节按能力域盘点 Nexus-AI 的全部主要特性：Agent 的装配材料（工具、技能、模板、Agent Factory）、运行时隔离（Sandbox）、编排与协作（工作流引擎、多 Agent 图/群）、实时交互（流式中继、事件调度、Bridge 多连接）、以及平台运维侧的可观测、指标计费与日志。
+- [日志](/features/logging) — **日志**是 Nexus-AI 把每一次工作流、Agent 调用、工具执行、HTTP 请求、敏感操作写成文字或结构化记录的子系统。同一套配置同时提供三种形态：
+- [指标与计费](/features/metrics-billing) — **指标与计费**是 Nexus-AI 给**企业管理员**提供的用量统计与成本管控中心。它把平台里所有 LLM 调用、Agent 运行、构建流水线的消耗汇总成按用户 / 项目 / 模型切分的成本明细，让你回答两个问题：
+- [多 Agent 图/群](/features/multi-agent) — 多 Agent 图/群让你用一张网络图看清"谁调用谁、谁在用哪个工具"，同时让多个专家 Agent 像小组一样接力完成同一件事。它由两部分组成：
+- [可观测性](/features/observability) — **可观测性**是 Nexus-AI 把平台里每一次 API 请求、Agent 调用、工具执行、构建流水线、沙箱动作都翻译成**三类信号**——追踪（Traces）、指标（Metrics）、日志（Logs）——并统一送进 AWS CloudWatch 与 X-Ray 的能力。
+- [提示词模板](/features/prompt-templates) — 提示词模板是 Nexus-AI 内置的一组开箱即用的 Agent 配置蓝本。每个模板都是一份完整的 YAML 配置，包含系统提示词、环境参数、模型选择和工具依赖，让你在创建新 Agent 时直接套用，而不必从零编写提示词。
+- [Sandbox 沙箱](/features/sandbox) — Sandbox 是 Nexus-AI 里每一次 Agent 对话真正执行的地方。平台默认把 Agent 放进一台独立的 Firecracker microVM 里跑，和其他用户、其他 Agent、甚至平台自身的后端都彻底隔开；你看到的工作空间文件、模型调用、工具执行全部发生在这台「一人一间」的小机器里。对话结束后 VM 不会立刻销毁，而是回到空闲池等下次复用——这样既安全又不会让你每次发消息都等冷
+- [技能系统](/features/skills-system) — 技能（Skill）是一份打包好的"专项能力"，里面包含一份说明文档（`SKILL.md`）、可选的脚本、参考资料、子代理和评估数据。把技能挂到智能体上，智能体在遇到对应任务时会自动加载对应能力并执行相关脚本。
+- [流式响应中继](/features/stream-relay) — 流式响应中继让 Agent 的回答像打字机一样逐字出现，并把整轮输出缓存在服务端。你可以随时切换标签、刷新浏览器，甚至短暂断网——回到原会话时还能从上次的位置继续看完，不丢任何一条消息或工具调用。
+- [工具与工具集](/features/tools-toolsets) — **工具（Tool）** 是 Agent 的单项能力，对应一个可调用函数，例如读取文件、抓取网页、执行 DCF 计算、查询 AWS 报价。**工具集（Toolset，又称 Skill）** 把一组工具、脚本、参考资料和执行配置打包在一起，按名称整体绑定给 Agent，也可以从 GitHub、URL 或本地目录导入到工作空间。
+- [工作流引擎](/features/workflow-engine) — 工作流引擎是 Nexus-AI 把「一句自然语言需求」拆成若干可追踪阶段并按顺序跑完的调度中枢。当你在平台上发起「构建 Agent」「更新 Agent」「构建工具」「构建 Skill」或用「Magician 智能路由」自动分流时，后台都是工作流引擎按预定义阶段推进：意图识别 → 需求分析 → 设计 → 开发 → 验证 → 部署，并在过程中保存上下文、聚合指标、响应暂停/恢复/停止等控制信号。
 - [AWS 环境准备](/getting-started/aws-setup) — Nexus-AI 运行在 AWS 上，依赖 Bedrock、Aurora、Valkey、DynamoDB、SQS、S3 等服务。在部署之前，你需要准备一个可用的 AWS 账号，并开通必要的服务权限。这一步做对了，后续 `nexus-cli deploy` 或 CloudFormation 一键部署才能顺利跑通。
 - [快速开始](/getting-started/index) — 本章节帮你把 Nexus-AI 从零跑起来：最短 5 分钟就能看到本地控制台和默认 Agent，然后按需把依赖装全、把 AWS 账号准备好、把后续升级和卸载流程理清。
 - [安装 Nexus-AI](/getting-started/installation) — Nexus-AI 在本地或 EC2 主机上以 Python 虚拟环境 + Node.js 前端 + Docker（可选）的形式运行。本篇介绍两种安装路径：**Amazon Linux 2023 一键脚本**（推荐，几分钟内把系统依赖、Python 3.13、uv、代码仓库、前端依赖全部装好）和**跨平台手动安装**（适合 macOS / 其他 Linux 发行版 / 已有 Python 环境的场景
@@ -15,6 +29,13 @@ One line per document: `- [Title](URL) — summary`.
 - [登录系统](/guide/login) — 打开浏览器，访问系统地址即可进入 Nexus-AI 登录页面。
 - [认识工作台](/guide/workspace) — 登录成功后，你将看到 Nexus-AI 的工作台（Dashboard）。这是你使用平台的起点和控制中心，提供全局概览和快捷操作入口。
 - [index.md](/index) — 
+- [AWS Bedrock 模型接入](/integrations/aws-bedrock) — AWS Bedrock 是 Nexus-AI 默认且唯一开箱即用的模型推理入口。平台上所有 Agent 的对话、工具调用、多模态输入，最终都通过 Bedrock 统一访问 Claude、Nova、Llama、Mistral、DeepSeek、Qwen、Gemma、GPT OSS 等模型。不开 Bedrock，平台无法启动；切换到其它提供商（OpenAI、Anthropic 直连、Gemini 等）
+- [数据存储](/integrations/data-stores) — Nexus-AI 的数据层由四个存储系统组成，共同支撑元数据、业务关系数据、缓存与异步任务队列：
+- [集成](/integrations/index) — Nexus-AI 不是一个自给自足的系统，它的绝大多数能力——模型推理、身份认证、数据存储、对外协议——都来自与外部服务的集成。本章节按服务维度把每一项集成独立成页：它是做什么的、为什么必须开启或可选、怎么在配置文件里填参数、怎么验证跑通、出了问题从哪里查。
+- [外部 MCP 服务器](/integrations/mcp-clients) — 除了可以把 Nexus-AI 的 Agent 暴露给 Kiro / Claude Code / Cursor 之外（见 [MCP Server](./mcp-server)），平台也能反过来——让 Agent 调用任何一个 **外部 MCP 服务器**，把外部能力作为工具集接入对话。构建 Agent 时在「工具」面板把某个 MCP 服务器挂进依赖列表，该服务器暴露的所有工具就会自动加载到这个 Ag
+- [Agent as MCP Tool](/integrations/mcp-server) — Nexus-AI 自带一个 **MCP Server**，能把平台上已经构建并处于 `running` 状态的 Agent 反过来暴露给 Claude Code、Kiro、Cursor 等任意 MCP 客户端。外部客户端连上之后，每个 Agent 都会显示为一个独立的 Tool，通过 `query` 参数调用、返回 Agent 的文本响应。换句话说——平台既是 MCP 宿主，也是 MCP 供应方。
+- [集成总览](/integrations/overview) — Nexus-AI 不是一个"自给自足"的系统，它的绝大多数能力——模型推理、认证、存储、观测、IDE 调用、沙箱隔离——都来自与外部服务的集成。本章节按服务维度把每项集成单独展开：它是做什么的、为什么必须开启或可选、怎么在 `config/default_config.yaml` 里配置、怎么验证跑通、出了问题去哪里看。
+- [SSO (SAML 2.0)](/integrations/sso-saml) — Nexus-AI 的默认登录是开发模式的账号密码，只适合单机或演示环境。生产部署建议通过 SAML 2.0 接入企业统一身份源，把用户生命周期、分组、密码策略、MFA 完全交给 IdP（Identity Provider）托管。平台内置的 SP（Service Provider）参考 AWS IAM Identity Center 实现，对其它主流 IdP（Okta、Microsoft Entra
 - [构建原理](/overview/how-it-works) — 了解 Nexus-AI 是如何将你的自然语言需求转化为一个可运行的 AI Agent。
 - [什么是 Nexus-AI](/overview/what-is-nexus) — Nexus-AI 是一个基于 AWS 云端架构的 **AI Agent 自动化构建平台**。它采用独创的 **"Agent Build Agent"** 理念 —— 用 AI Agent 来构建 AI Agent。你只需用自然语言描述业务需求，平台内部的 8 个专业 AI Agent 就会自动协作，为你构建出一个完整的、可对话交互的 AI Agent。
 - [Playbook Docs-Sync — 开发状态跟踪](/superpowers/STATUS) — > 本文件记录 Playbook 自动同步框架（docs-sync）的开发进展。 > 供项目协作者快速了解当前所处阶段与下一步动作。
@@ -27,6 +48,7 @@ One line per document: `- [Title](URL) — summary`.
 - [对话测试](/using/chat) — 对话页面提供独立的对话界面，让你与任意 Agent 进行多轮交互。这是验证 Agent 功能、测试业务场景的主要入口。通过左侧导航栏的 **「会话」** 进入。
 - [创建 Agent](/using/create-agent) — Nexus-AI 提供两种创建模式 —— **快速创建**和**引导创建**，适合不同场景的需求。点击左侧导航栏进入创建页面。
 - [工作台](/using/dashboard) — 工作台是你进入 Nexus-AI 后的首页，它是整个平台的控制中心，提供全局概览、快捷创建入口和状态监控。
+- [使用 Nexus-AI](/using/index) — 本章节带你走完 Nexus-AI 的日常使用流程：从登录后的工作台出发，创建 Agent、观察构建过程、把 Agent 拉出来对话，再到后续的项目管理、Agent 管理、工具库和 MCP 服务器配置。每一页都对应控制台里的一个主功能区，按顺序读完就能掌握整个平台的操作面板。
 - [管理 Agent](/using/manage-agents) — Agent 管理页面是你查看、管理和操作所有已构建 Agent 的中心。通过左侧导航栏的 **「Agents」** 进入。
 - [MCP 服务器](/using/mcp) — MCP 服务器管理页面位于 **「能力工具」** 下的 **「MCP 服务器管理」** 标签页。在这里你可以管理通过 MCP 协议集成的外部工具和服务。
 - [项目管理](/using/projects) — 项目管理页面展示所有构建项目的列表和状态，是你追踪 Agent 构建全生命周期的管理中心。通过左侧导航栏的 **「构建项目」** 进入。

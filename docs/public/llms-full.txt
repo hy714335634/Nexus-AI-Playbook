@@ -592,6 +592,2257 @@ Nexus-AI 的数据存储在 AWS 云服务上：
 | **代码审查** | Agent 代码由 DevManager Agent 自动审查 |
 
 
+========== features/agent-factory.md ==========
+
+---
+title: Agent Factory
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - nexus_utils/agent_factory.py
+    - nexus_utils/safe_agent_factory.py
+  generated_at: 2026-05-08T15:27:05+00:00
+  generated_by: docs-sync v2
+---
+
+# Agent Factory
+
+## 这是什么
+
+Agent Factory 是 Nexus-AI 把「提示词模板 + 模型 + 工具」组装成一个可对话 Agent 的核心装配线。你在平台上点击「创建 Agent」、把 Agent 加入编排，或批量拉起多个 Agent 时，后台都是 Agent Factory 在按模板拉取配置、挑选模型、绑定工具，并在返回给你之前完成一次健康体检。
+
+## 使用场景
+
+| 场景 | Agent Factory 帮你做什么 |
+| --- | --- |
+| 从模板快速新建一个 Agent | 读取模板配置（模型、温度、工具清单、系统提示词），一键产出可运行实例 |
+| 切换 Agent 的底层模型 | 在 Bedrock / OpenAI / Anthropic / Gemini / Mistral / Ollama / LlamaAPI / LiteLLM 之间切换，无需改模板结构 |
+| 跑一组评测或批处理任务 | 用一份配置列表，批量生成多个 Agent，失败的单独标出、不拖累其他 Agent |
+| 共享 Agent 时避免「在别人机器上跑不起来」 | 创建前自动校验依赖，缺工具或配置项会尝试自动补齐 |
+| 关键流程想带一个兜底 Agent | 主 Agent 创建失败时，自动换到你指定的备用 Agent |
+
+## 如何使用
+
+### 方式一：从 UI 创建 Agent
+
+<!-- SCREENSHOT: agent-factory-create-from-ui -->
+
+1. 进入「Agents」页面，点击 `创建 Agent`。
+2. 选择提示词模板（或基于现有模板复制修改）。
+3. 选择模型提供商与具体模型（详见下方「关键参数 / 限制」）。
+4. 勾选要绑定的工具：内置工具、系统工具、模板工具，或你自己上传到工作空间的生成工具。
+5. 提交后 Agent Factory 会：
+   - 校验依赖（模型可用、工具能导入、提示词存在）；
+   - 缺失依赖时尝试自动修复（例如从工件仓库同步缺失的工具脚本）；
+   - 做一次简短的功能自检；
+   - 返回创建结果，成功则显示在你的 Agent 列表里。
+
+### 方式二：带验证地创建单个 Agent
+
+当你通过「高级创建」入口或 API 触发创建时，默认走的就是「带验证」流程：
+
+1. 指定 Agent 名称（或模板相对路径）。
+2. 选择环境：`production` / `development` / `test` 等（决定使用哪组温度、最大 token、流式设置）。
+3. 选择版本号（默认 `latest`）。
+4. 决定是否开启「自动修复依赖」（默认开启）。
+5. 提交。平台会依次完成：依赖校验 → 依赖修复（可选）→ Agent 构建 → 功能自检 → 返回 Agent。
+
+::: tip 自动修复做什么
+只要你给出的模板/工具在平台仓库里「有记录」但「本地还没拉下来」，Agent Factory 会自动从工件存储把缺失的脚本同步到当前环境，无需你手动复制。
+:::
+
+### 方式三：批量创建 Agent
+
+<!-- SCREENSHOT: agent-factory-batch-create -->
+
+1. 准备一份 Agent 配置清单（每一项至少包含 Agent 名称；可选环境、版本、模型、状态等参数）。
+2. 在「批量创建」页面上传或粘贴配置。
+3. 选择「遇到错误时是否继续」：
+   - 继续：跳过失败项，继续处理剩余 Agent；
+   - 中止：第一个失败就停下，方便你排查。
+4. 提交后查看结果面板：总数、成功数、失败数、每个 Agent 的详细状态。
+
+### 方式四：带备用 Agent 创建
+
+关键业务流程可以指定「主 Agent + 备用 Agent」：
+
+1. 在创建表单的「高级」区填入主 Agent 名称。
+2. 在「备用 Agent」字段填入回退目标。
+3. 提交后如主 Agent 构建失败，Agent Factory 会自动尝试备用 Agent，并在返回结果中同时保留主 Agent 的错误信息供排查。
+
+### 方式五：查看 Agent 健康状态
+
+<!-- SCREENSHOT: agent-factory-health-status -->
+
+对任意已创建的 Agent，可在详情页「健康」卡片查看：
+
+- Agent 名称
+- 所用模型 ID、最大 token、温度
+- 绑定的工具数量
+- 系统提示词长度
+- 最近一次功能自检是否通过及其响应长度
+
+## 关键参数 / 限制
+
+| 参数 | 说明 | 默认值 |
+| --- | --- | --- |
+| 模型提供商 | `bedrock`、`ollama`、`openai`、`anthropic`、`litellm`、`llamaapi`、`mistral`、`gemini` | `bedrock` |
+| 环境 (`env`) | 控制温度、最大 token、是否流式等运行时参数 | `production` |
+| 版本 (`version`) | 指定提示词模板版本 | `latest` |
+| 模型 ID (`model_id`) | 在选定提供商内指定具体模型 | `default` |
+| 自动修复依赖 | 允许平台从工件仓库同步缺失的工具脚本 | 开启 |
+| 功能自检 | 创建完成后发送一条测试消息验证可用 | 开启 |
+
+| 限制 | 细节 |
+| --- | --- |
+| Prompt 缓存 | 仅对 Claude 3.5 / 4 / 4.5（Sonnet、Opus、Haiku）和 Amazon Nova（Pro、Lite、Micro）生效；其他模型族不启用 |
+| 缓存计费 | 首次写入按 1.25× 标准价计费，5 分钟内命中按 0.1× 计费（90% 折扣） |
+| 第三方提供商依赖 | 使用 Ollama / OpenAI / Anthropic / LiteLLM / LlamaAPI / Mistral / Gemini 需要在环境中安装对应扩展包，否则创建会报「缺少依赖」 |
+| 工具同步 | 仅当工具路径符合平台约定（如 `generated_tools/<dir>/<script>/<function>`）时，自动同步才会触发 |
+| 凭证刷新 | Bedrock 模型每次创建时会刷新一次凭证，确保在长会话后仍然可用 |
+| 功能自检失败处理 | 自检失败不会阻止 Agent 返回；仅在日志/健康面板中标记为警告 |
+
+## 常见问题
+
+**Q1：我创建 Agent 时报「不支持的模型提供商」，怎么办？**
+A：确认你选择的提供商是下列之一：`bedrock`、`ollama`、`openai`、`anthropic`、`litellm`、`llamaapi`、`mistral`、`gemini`。提供商名称大小写无关，但不能是其他值。
+
+**Q2：我选了 OpenAI 但创建失败，提示缺少依赖？**
+A：非 Bedrock 的提供商需要额外安装扩展，例如 `strands-agents[openai]`。联系你的管理员或在工作空间设置中启用对应扩展即可。
+
+**Q3：为什么我看不到 prompt caching 的折扣？**
+A：只有 Claude 和 Amazon Nova 系列模型启用了缓存。其他模型族（Titan、Llama、Mistral、Cohere、AI21）不会触发缓存逻辑，也因此没有折扣。
+
+**Q4：「自动修复依赖」修了什么？会不会改坏我的配置？**
+A：自动修复只做两件事：① 从工件仓库把模板里登记过、但当前环境缺失的工具脚本拉到本地；② 重新跑一次依赖校验。它不会改你的提示词模板、不会换你选的模型，也不会删除已有配置。如果你仍不放心，可在创建时关闭「自动修复」，改为手动修复后再次创建。
+
+**Q5：批量创建里有一个 Agent 失败，其它 Agent 还能用吗？**
+A：可以。默认模式下，失败的 Agent 仅在结果面板中标记为「失败」，成功的 Agent 正常返回并可立即使用。如果你希望第一次失败就停下排查，改为「遇错中止」模式即可。
+
+
+========== features/bridge.md ==========
+
+---
+title: Bridge 多连接
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - nexus_utils/bridge/**
+  generated_at: 2026-05-08T16:01:28+00:00
+  generated_by: docs-sync v2
+---
+
+# Bridge 多连接
+
+## 这是什么
+
+**Nexus Bridge** 是一条把 AI 助手和你自己服务器连起来的安全通道。只要在服务器上粘贴一条 `curl` 指令，Agent 就能在该服务器上执行 Shell 命令、读取状态、提交长任务——同一个会话最多可以**同时接入 5 台服务器**，一条指令还能在所有服务器上**并行执行**。
+
+Bridge 不在 Nexus 后台保存你服务器的 SSH 密钥，也不需要你开放入站端口：连接由你的服务器**主动发起**，随时 `Ctrl+C` 即可断开。
+
+## 使用场景
+
+| 场景 | 怎么用 |
+| --- | --- |
+| **单机运维** | 让 Agent 帮你看 `df -h`、排查日志、重启服务。 |
+| **多机巡检** | 接入多台服务器，一条 `server="all"` 同时拿到所有机器的状态。 |
+| **长任务托管** | 系统升级、大构建、数据迁移等耗时任务交给 Bridge 的异步任务，Agent 只在完成时回看结果。 |
+| **受控访问** | 给访客/同事开一个只读会话，用命令规则把 `rm`、`reboot` 等危险命令挡在门外。 |
+
+## 如何使用
+
+### 1. 在会话中打开 Bridge 面板
+
+在任意会话右上角点击「Bridge」图标，弹出连接面板。
+
+<!-- SCREENSHOT: bridge-panel-empty -->
+
+### 2. 生成连接指令
+
+面板上可以设置：
+
+- **别名**（可选）：用于在多连接场景下区分服务器，不填则自动取 hostname。
+- **连接模式**：`HTTP`（默认，穿透力强）或 `WebSocket`（延迟更低）。
+- **自动重连**：开启后断线会自动恢复，最长可保留 24 小时。
+
+点击「生成指令」，系统给出一条 `curl` 单行命令，类似：
+
+```bash
+curl -sSL 'https://your-nexus/bridge/script?mode=http' | \
+  NEXUS_TOKEN="..." NEXUS_HOST="your-nexus" NEXUS_PORT="443" \
+  NEXUS_SSL="true" python3 -
+```
+
+<!-- SCREENSHOT: bridge-curl-command -->
+
+### 3. 在目标服务器上粘贴执行
+
+登录到你要接入的服务器，**粘贴并运行**该命令。只要能访问 Nexus 地址、装有 Python 3，就能立刻看到欢迎横幅：
+
+```
+╔════════════════════════════════════════════════╗
+║   B R I D G E  ·  远程桥接已建立               ║
+╚════════════════════════════════════════════════╝
+
+✓ 连接成功  Nexus Bridge 通道已激活
+┌──────────────────────────────┐
+│  主机名称   web-01           │
+│  操作系统   Linux            │
+│  当前用户   ubuntu           │
+└──────────────────────────────┘
+
+⚡ Agent 现在可以通过此通道远程操控本服务器
+```
+
+<!-- SCREENSHOT: bridge-client-banner -->
+
+### 4. 让 Agent 使用这台服务器
+
+连接建立后，面板上会出现一个绿色勾选。接下来直接在聊天里提要求即可：
+
+- 「帮我看一下 web-01 的磁盘占用」
+- 「对所有服务器跑 `uptime` 对比一下」
+- 「升级这台机器的系统包，升完告诉我」
+
+Agent 会自动选择合适的工具：
+
+| 工具 | 适用场景 | 典型动作 |
+| --- | --- | --- |
+| `remote_shell` | 一般命令（< 2 分钟） | 查状态、改配置、快速诊断 |
+| `remote_shell(server="all")` | 多机并行 | 巡检、批量部署 |
+| `remote_task` | 长耗时任务（> 2 分钟） | 升级、构建、迁移 |
+| `remote_task_status` | 查进度/结果 | Agent 自行轮询 |
+
+### 5. 新增更多连接或断开
+
+- **继续添加服务器**：再次点击「新增连接」，重复上述流程。每条连接可单独设别名和命令规则。
+- **断开单台**：在连接列表里点击该服务器右侧的断开按钮。
+- **断开全部**：点击「全部断开」。
+
+<!-- SCREENSHOT: bridge-multi-connection-list -->
+
+### 6.（可选）设置命令规则
+
+如果不希望 Agent 执行某些命令，可以在 Bridge 面板的「命令规则」里选一种模式：
+
+| 模式 | 行为 |
+| --- | --- |
+| `none` | 不限制，所有命令放行 |
+| `readonly` 预设 | 只允许 `ls / cat / ps / docker ps` 等只读命令 |
+| `no_destructive` 预设 | 屏蔽 `rm -rf`、`shutdown`、fork bomb、`dd` 等破坏性命令 |
+| 自定义白名单 | 只允许匹配正则的命令 |
+| 自定义黑名单 | 拒绝匹配正则的命令 |
+
+违规命令会直接被拦截，Agent 会收到 `BLOCKED` 提示并看到被拦截的规则。
+
+## 关键参数 / 限制
+
+| 项 | 默认值 | 说明 |
+| --- | --- | --- |
+| 每个会话最大连接数 | 5 | 超限时生成指令接口返回 `409`。 |
+| 命令执行超时 | 120 秒 | `remote_shell` 的单次命令上限，可在 Agent 调用时调整。 |
+| 连接空闲超时 | 300 秒 | 未收到心跳的连接会被标记为 `connection_lost`。 |
+| 初始连接令牌有效期 | 10 分钟 | 超时后需重新生成 `curl` 指令。 |
+| 重连令牌有效期 | 24 小时 | 仅「自动重连」开启时签发。 |
+| 客户端最大重连尝试 | 10 次 | 超过后客户端脚本退出。 |
+| 标准输出截断 | 末尾 50 KB | 超长日志只保留结尾。 |
+| 标准错误截断 | 末尾 10 KB | 同上。 |
+| 异步任务结果保留 | 1 小时 | 完成 1 小时后会被后台清理。 |
+| 客户端依赖 | 仅 Python 3 标准库 | 无需额外 `pip install`。 |
+| 命令工作目录 | 远端用户 `$HOME` | 所有命令默认在家目录执行。 |
+
+## 常见问题
+
+### Q1: Bridge 会把我服务器的凭据上传到云端吗？
+
+不会。Bridge 连接由你的服务器**主动发起**，Nexus 只保存一个短期令牌用于握手，**不保存** SSH 密钥、root 密码等任何凭据。`curl` 命令里出现的 `NEXUS_TOKEN` 是一次性令牌，用过即失效。
+
+### Q2: 我的服务器在内网 / 无公网 IP，能用吗？
+
+可以。Bridge 只需要服务器能**访问** Nexus 服务的地址（默认 HTTPS 443），**不需要** Nexus 能访问到你的服务器。大多数企业内网都满足这个条件。如果外网完全封锁，请让运维开通对 Nexus 域名的出站白名单即可。
+
+### Q3: 我关掉运行 `curl` 的终端会怎么样？
+
+- **未开启自动重连**：连接立刻断开，之后 Agent 调用 `remote_shell` 会提示「无活跃连接」。
+- **开启自动重连**：客户端会尝试重新建立连接（最多 10 次，每次间隔 5 秒）；24 小时内可用重连令牌恢复。只要**不是**你在 Bridge 面板点「断开」，重连就允许。
+
+### Q4: Agent 能在 Windows 服务器上用吗？
+
+Bridge 客户端基于 Python 3 标准库，理论上可在装有 Python 3 的 Windows / macOS 机器上运行；但远端命令默认以 Bash 的方式 `shell=True` 执行，且工作目录固定为家目录。在 Windows 上建议通过 WSL、Git Bash 或等价的 POSIX 环境运行客户端脚本，并注意命令语法差异。
+
+### Q5: 长耗时任务断线了，结果会丢吗？
+
+不会立即丢。`remote_task` 在远端后台线程执行，Agent 可随时用 `remote_task_status(task_id)` 查进度。任务结果在服务端默认保留 **1 小时**，建议 Agent 完成后尽快取回或让它直接写入服务器上的文件。
+
+### Q6: 能审查 `curl` 拉下来的脚本内容吗？
+
+可以。把 `curl -sSL '...'` 里的 URL 单独打开即可看到完整 Python 源码，脚本**仅使用标准库**、**只跟你配置的 Nexus 地址通信**。如果你的安全策略不允许管道执行，也可以先下载脚本、审计后再手动运行。
+
+
+========== features/event-scheduler.md ==========
+
+---
+title: 事件调度
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - config/eventschedule_config.yaml
+    - nexus_utils/event_scheduler/**
+  generated_at: 2026-05-08T15:54:25+00:00
+  generated_by: docs-sync v2
+---
+
+# 事件调度
+
+## 这是什么
+
+事件调度让你把 Nexus-AI 上任意一个 Agent 变成「定时任务」或「持续运行的自主任务」。你只需要指定「哪个 Agent」「用什么提示词」「什么时候跑」，平台会按计划自动触发 Agent 执行，把结果归档到独立的 S3 工作空间，并由一个轻量分析 Agent 生成简要的中文摘要。适合日报、定时抓取、周期性监控、以及让 Agent 自己规划下一步的长期任务。
+
+## 使用场景
+
+| 场景 | 选哪种任务类型 |
+| --- | --- |
+| 明天早上 8 点给我发一份本周项目总结 | **一次性任务**（one_time）：指定具体时间，执行一次即停 |
+| 每个工作日 09:30 抓取最新行业资讯并整理成摘要 | **周期性任务**（recurring）：用 cron 表达式按固定节奏反复执行 |
+| 让 Agent 自己持续跟进某个目标（如竞品监控、持续研究），不需要我手动安排每一次 | **自主任务**（autonomous）：Agent 自己读取历史记录、规划下次要做什么，目标达成后自动停止 |
+| 给一个多 Agent 协作项目设一个定时入口 | 三种类型均可：调度只负责触发，多 Agent 会共享同一个 S3 工作空间 |
+| 想跑一个"只有有新内容才通知我"的心跳任务 | 周期性 + Agent 回复 `HEARTBEAT_OK`，平台会自动静默空结果 |
+
+## 如何使用
+
+### 步骤 1：准备好一个 Agent
+
+事件调度只负责"何时触发"，真正干活的是你绑定的 Agent。先在平台中创建好目标 Agent，确保它能独立完成你想要定时执行的那件事。
+
+::: tip
+Agent 原有的工具、Skill、多 Agent 协作配置都会被完整保留——事件调度只是在原提示词上叠加一段"任务类型上下文"，不会破坏 Agent 已有的 tools / skills / cowork 设置。
+:::
+
+### 步骤 2：创建事件任务
+
+<!-- SCREENSHOT: event-scheduler-create-job -->
+
+在事件调度页面点击「新建任务」，按类型填写：
+
+**一次性任务**
+
+1. 选择要触发的 Agent。
+2. 填写触发时间（ISO 格式，如 `2026-05-10T09:00:00Z`）。
+3. 写下触发时发送给 Agent 的提示词。
+4. 保存——到点后自动执行一次，执行完自动停用。
+
+**周期性任务**
+
+1. 选择 Agent。
+2. 填写 cron 表达式（5 字段：`分 时 日 月 周`），例如 `0 9 * * 1-5` 表示工作日每天 9:00。
+3. 选择时区（IANA 名称，如 `Asia/Shanghai`；默认 `UTC`）。
+4. 写下每次触发时的提示词（每次执行都用同一段）。
+5. 可选：设置生效时间段（`valid_from` / `valid_until`）、最大执行次数。
+
+**自主任务**
+
+1. 选择 Agent。
+2. 用 cron 表达式指定自主循环的节奏。
+3. 写下初始提示词，描述你希望 Agent 持续推进的目标。
+4. 可选：设定最大执行次数作为"硬上限保护"，防止跑飞。
+5. 保存后，每次执行时 Agent 会先读取历史 `mission_log.md` 理解已做过什么，再规划本次动作；在回复末尾写 `## 任务完成` 则自动停止，写 `## 下一步计划` 则继续。
+
+### 步骤 3：查看执行记录
+
+<!-- SCREENSHOT: event-scheduler-task-history -->
+
+每个任务都有独立的执行记录页，展示每一次执行（Task）的信息：
+
+| 字段 | 含义 |
+| --- | --- |
+| 执行序号 | 同一任务下的第几次执行（从 1 开始） |
+| 状态 | `pending`（等待中）、`running`（进行中）、`completed`（已完成）、`failed`（失败）、`skipped`（已跳过） |
+| 计划时间 | 原本应该执行的时间 |
+| 开始 / 完成时间 | 实际的执行起止时间 |
+| 结果摘要 | 分析 Agent 自动生成的中文摘要（最多 1000 字） |
+| 工作空间 | 本次执行的独立 S3 路径，Agent 生成的文件都在这里 |
+| Agent 完整输出 | 可下载 `agent_response.out` 查看原始内容 |
+
+### 步骤 4：启用、禁用、删除
+
+- **禁用**：任务保留但不再触发，随时可再启用；已经创建但还没跑的执行记录，会在触发时因任务被禁用而跳过。
+- **启用**：重新参与调度。一次性任务执行完后调度器会自动禁用。
+- **删除**：同时级联删除该任务下的所有执行记录。
+- **自主任务的自动停止**：当分析 Agent 判断目标已达成（Agent 回复包含 `## 任务完成` 或语义上表示收尾），调度器会自动把任务置为禁用并附带终止原因。
+
+### 步骤 5（可选）：心跳与空结果静默
+
+周期性 / 自主任务中，Agent 如果发现本次"没有新内容可报告"，可以直接回复 `HEARTBEAT_OK`（或 `NO_ACTION_NEEDED` / `NOTHING_TO_REPORT` / `TASK_SKIPPED`）。平台会识别这些标识并把摘要设为"无需操作"，避免用空报告刷屏。
+
+::: info 自主任务的历史上下文
+自主任务每次执行前，平台会把该任务的所有历史执行索引（编号、状态、时间、简要摘要、S3 输出路径）整理成表格注入到提示词中；Agent 可以按需用 `workspace_read_file` 读取具体某次的完整输出，再决定本次做什么。
+:::
+
+## 关键参数 / 限制
+
+### 任务类型对比
+
+| 能力 | 一次性 | 周期性 | 自主 |
+| --- | --- | --- | --- |
+| 时间表达式 | ISO datetime | cron（5 字段） | cron（5 字段） |
+| 触发次数 | 固定 1 次 | 由 cron + 生效时间范围 + 最大次数共同决定 | 同周期性，且 Agent 可自主终止 |
+| 每次的提示词 | 固定（创建时填写） | 固定（创建时填写） | 首次用初始提示词，后续由分析 Agent 生成 |
+| 是否需要历史上下文 | 否 | 否 | 自动注入历史任务索引 |
+| 结束条件 | 执行完毕自动禁用 | cron 调度、`valid_until` 到期或达到最大次数 | Agent 标记 `## 任务完成` / 达到最大次数 / Agent 无后续计划 |
+
+### 任务字段
+
+| 字段 | 说明 |
+| --- | --- |
+| `job_name` | 任务名称；同一 Agent 下不可重复 |
+| `agent_id` | 关联的 Agent |
+| `schedule_expression` | 一次性=ISO datetime；周期/自主=cron 表达式 |
+| `timezone` | 调度用的时区（IANA），默认 `UTC` |
+| `prompt` | 触发时发送给 Agent 的提示词 |
+| `description` | 任务描述，方便管理 |
+| `max_executions` | 最大执行次数，超出后自动停用 |
+| `valid_from` / `valid_until` | 生效时间窗口（ISO datetime） |
+| `model_override` | 覆盖默认模型（例如用更便宜的模型跑日常任务） |
+| `enabled` | 是否启用 |
+
+### 调度器运行参数（平台默认值）
+
+| 参数 | 默认值 | 说明 |
+| --- | --- | --- |
+| 任务（Job）扫描间隔 | 60 秒 | 每隔多久检查一次所有启用任务并为它们生成下次待执行记录 |
+| 执行（Task）扫描间隔 | 10 秒 | 每隔多久检查一次到期待执行记录并启动 Agent |
+| 最大并发执行数 | 5 | 同时最多几个 Agent 在跑，超出的会推迟到下一轮 |
+| 单次执行超时 | 3600 秒 | Agent 单次运行墙钟上限 |
+| 卡死阈值 | 7200 秒 | 执行中状态超过此时长会被视为异常 |
+| 分析 Agent 模型 | 轻量模型 | 默认用更便宜的模型做结果总结，降低成本 |
+| 空结果标识 | `HEARTBEAT_OK`、`NO_ACTION_NEEDED`、`NOTHING_TO_REPORT`、`TASK_SKIPPED` | Agent 回复这些字样时摘要被自动设为"无需操作" |
+| 结果摘要最大长度 | 1000 字 | 分析 Agent 生成的摘要上限 |
+| Agent 输出单文件上限 | 10 MiB | 超出的输出将被截断 |
+
+### 时区、cron、时间相关
+
+- cron 使用标准 5 字段：`分 时 日 月 周`；例如 `*/15 * * * *` 表示每 15 分钟一次。
+- 时区支持 IANA 名称（如 `Asia/Shanghai`、`America/New_York`），平台内部转为 UTC 执行。
+- 一次性任务不检查 `valid_until`——到点就触发，避免过期跳过。
+- 周期性 / 自主任务在 `valid_until` 之后不再生成新执行，但已经生成的等待中执行仍会按计划跑完。
+
+::: warning
+如果分析 Agent 连续三次 JSON 解析失败，调度器会以"解析失败"的保守结果完成此轮，不会无限重试；自主任务不会因此终止，慢循环会按原节奏创建下一次执行。
+:::
+
+## 常见问题
+
+**Q1：任务已经创建，但迟迟没有执行，怎么回事？**
+
+A：先确认三点：1) 任务状态是「启用」；2) 当前时间在 `valid_from` 和 `valid_until` 之间；3) 没有超过最大执行次数。周期性 / 自主任务的 cron 表达式错误会在创建时被拦截；如果以上都没问题，调度器平均需要 10 秒（执行扫描间隔）才会到点触发。
+
+**Q2：一次性任务的执行时间过了才创建，会跑吗？**
+
+A：不会。调度器在扫描时发现该任务的 `schedule_expression` 已是过去时间，就不再创建新执行。已经被创建但还没跑的等待中执行，则不受影响。
+
+**Q3：周期性任务上一轮还没跑完，下一轮到时间了会怎样？**
+
+A：不会重叠。只有当前轮次进入 `completed` / `failed` / `skipped` 之后，慢循环才会创建下一个待执行记录。此外，每次执行从 `pending` 切到 `running` 都走原子更新（乐观锁），即使多实例部署也不会把同一次执行跑两遍。
+
+**Q4：自主任务会一直跑下去吗？怎么让它停？**
+
+A：三种方式都可以让它停下：1) 在 Agent 的提示词里让它在目标达成时回复 `## 任务完成`；2) 创建任务时设置「最大执行次数」作为硬上限；3) 手动禁用该任务。分析 Agent 还会做一次双重校验——如果 Agent 既没写 `## 下一步计划` 也没写 `## 任务完成`，且不是心跳回复，就会自动判定为终止。
+
+**Q5：Agent 每次的输出会保留多久？能看历史吗？**
+
+A：每次执行都有独立的 S3 工作空间（路径形如 `s3://<bucket>/<event_job_id>/<task_id>/`），`agent_response.out` 是 Agent 的完整原始输出，工作空间里的其他文件也会保留；任务级别的 `mission_log.md` 会追加每次的摘要索引。这些文件在任务被删除时会与执行记录一并级联删除。
+
+**Q6：可以给调度任务指定一个更便宜的模型吗？**
+
+A：可以。在任务的 `model_override` 字段里填入模型 ID，就会在执行时覆盖 Agent 的默认模型；结果分析用的分析 Agent 平台默认就跑在轻量模型上。
+
+
+========== features/index.md ==========
+
+---
+title: 功能特性
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - (chapter index — aggregated)
+  generated_at: 2026-05-08T16:22:31+00:00
+  generated_by: docs-sync v2
+---
+
+# 功能特性
+
+本章节按能力域盘点 Nexus-AI 的全部主要特性：Agent 的装配材料（工具、技能、模板、Agent Factory）、运行时隔离（Sandbox）、编排与协作（工作流引擎、多 Agent 图/群）、实时交互（流式中继、事件调度、Bridge 多连接）、以及平台运维侧的可观测、指标计费与日志。
+
+如果你想了解某一项功能"是什么、什么时候用、怎么在控制台里使到它"，直接跳到对应页面即可；想系统掌握平台能力地图，按下表顺序读完即可。
+
+## 本章节文档
+
+| 文档 | 简介 |
+|------|------|
+| [工具与工具集](./tools-toolsets) | 给 Agent 挂能力的两种粒度：单个工具函数，或一整包工具、脚本、资料组成的工具集（Skill）。 |
+| [技能系统](./skills-system) | 把专项能力打包成可分发、可复用、可版本化的 Skill，多个 Agent 与项目之间共享。 |
+| [Agent Factory](./agent-factory) | 把"提示词模板 + 模型 + 工具"组装成可对话 Agent 的核心装配线与健康体检机制。 |
+| [提示词模板](./prompt-templates) | 开箱即用的 YAML Agent 蓝本，覆盖常见场景，避免从零写提示词。 |
+| [Sandbox 沙箱](./sandbox) | 每轮对话跑在一台独立 Firecracker microVM 里，兼顾隔离安全与复用速度。 |
+| [工作流引擎](./workflow-engine) | 把一句需求拆成意图识别→分析→设计→开发→验证→部署的多阶段流水线。 |
+| [多 Agent 图/群](./multi-agent) | 用网络图看清谁调用谁，用预编排的 Swarm 让多个专家 Agent 分工接力。 |
+| [流式响应中继](./stream-relay) | 回答逐字流出且服务端缓存整轮输出，换标签、刷新、短暂断网都能接着看。 |
+| [事件调度](./event-scheduler) | 把任一 Agent 变成定时任务或持续自主任务，自动触发并归档结果。 |
+| [Bridge 多连接](./bridge) | 一条 `curl` 把 Agent 接到你自己的服务器，最多同接 5 台并并行执行命令。 |
+| [可观测性](./observability) | 请求量、延迟、Token、构建成功率、沙箱池状态自动汇总到 CloudWatch 与 X-Ray。 |
+| [指标与计费](./metrics-billing) | 面向管理员的用量与成本中心：按用户/项目/模型切分支出，为用户设上限。 |
+| [日志](./logging) | 本地彩色日志 + 结构化日志双层体系，按 `user_id`、`trace_id` 秒级定位任意请求。 |
+
+
+========== features/logging.md ==========
+
+---
+title: 日志
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - config/logging_config.yaml
+    - nexus_utils/observability/**
+  generated_at: 2026-05-08T16:17:05+00:00
+  generated_by: docs-sync v2
+---
+
+# 日志
+
+## 这是什么
+
+**日志**是 Nexus-AI 把每一次工作流、Agent 调用、工具执行、HTTP 请求、敏感操作写成文字或结构化记录的子系统。同一套配置同时提供三种形态：
+
+- **本地彩色文本日志** — 开发机终端一眼能读，工作流 / Agent / 工具按颜色和分隔线分层显示。
+- **结构化 JSON 日志** — 生产环境单行 JSON，自动带 `trace_id` / `user_id` / `project_id` / `agent_id`，CloudWatch Logs Insights 可按字段过滤。
+- **审计与安全日志** — 敏感操作（登录、RBAC 拒绝、配额变更、Agent 删除等）写进独立日志组，保留更久；即使主日志管道挂掉也会通过 boto3 直连落盘。
+
+你**不需要改业务代码**，只需要调几个参数，并在需要的地方调一个函数，就能用上这三种形态。
+
+::: info 日志 vs 可观测性
+这一页讲「日志怎么产生、长什么样」。关于 CloudWatch 仪表板、X-Ray 追踪、指标维度白名单等更宏观的话题，见 [可观测性](./observability)。
+:::
+
+## 使用场景
+
+| 场景                                                         | 你会用到什么                                                         |
+| ------------------------------------------------------------ | -------------------------------------------------------------------- |
+| 本地跑工作流，想看清楚每个 Agent、每次工具调用在做什么       | `enhanced_logging.enable_colors: true`（默认），终端直接读           |
+| 线上排查某次请求，只有一个 `trace_id`                        | Logs Insights 按 `trace_id` 过滤 JSON 日志                           |
+| 合规审计：上月谁改过配额、删过 Agent                         | 查 `/<slug>/audit` 日志组                                            |
+| 安全复盘：SSO 登录失败、暴力破解                             | 查 `/<slug>/security` 日志组                                         |
+| 在定时任务或 Worker 里打带 `user_id` 的日志                  | 用 `context_scope(user_id=...)` 包一层                               |
+
+## 如何使用
+
+### 1. 本地调试：彩色工作流日志
+
+`observability.enabled: false`（开发环境默认）时，日志走**本地文本格式**：每条记录带时间戳、Agent 名、工具名、分层分隔线。
+
+编辑 `config/logging_config.yaml`：
+
+```yaml
+enhanced_logging:
+  enable_colors: true                 # 终端彩色输出
+  log_to_file: true                   # 同时写文件
+  log_file: "logs/enhanced_workflow.log"
+  log_level: "DEBUG"                  # DEBUG / INFO / WARNING / ERROR / CRITICAL
+  show_timestamp: true
+  show_agent_name: true
+  show_tool_details: true             # 展开工具入参 / 结果
+  truncate_length:
+    input: 300                        # 每条入参最多保留字符数
+    output: 300
+    tool_result: 200
+
+strands_hooks:
+  enable_enhanced_logging: true       # 挂 Strands 钩子，自动记录调用
+  log_all_agent_calls: true
+  log_all_tool_calls: true
+  log_arguments: true
+  log_results: true
+  sensitive_fields:                   # 命中这些字段时自动掩码
+    - "password"
+    - "token"
+    - "key"
+    - "secret"
+```
+
+<!-- SCREENSHOT: terminal-enhanced-logs -->
+
+::: tip 什么时候关彩色
+CI / Docker 的日志采集管道常把 ANSI 转义字符留成乱码。这种场景把 `enable_colors` 置为 `false`，或者干脆打开下一节的 JSON 模式。
+:::
+
+### 2. 生产环境：结构化 JSON 日志
+
+在 `config/default_config.yaml` 把总开关打开：
+
+```yaml
+observability:
+  enabled: true
+```
+
+Nexus-AI 会**自动**把根 logger 切到 JSON 模式——每条日志变成单行 JSON，字段名稳定。业务代码里照常 `logger.info(...)` 就行：
+
+```python
+import logging
+logger = logging.getLogger(__name__)
+
+# 普通日志
+logger.info("project created")
+
+# 带额外字段
+logger.info("build finished", extra={
+    "project_id": pid,
+    "template_id": tpl,
+    "duration_ms": 1832,
+})
+```
+
+输出类似：
+
+```json
+{
+  "timestamp": "2026-05-08T16:17:05.421Z",
+  "level": "INFO",
+  "service": "nexus-ai-api",
+  "logger": "api.v2.builds",
+  "message": "build finished",
+  "trace_id": "1-6842abc3-...",
+  "span_id": "5f2d...",
+  "user_id": "u_abc",
+  "project_id": "p_123",
+  "agent_id": "a_456",
+  "template_id": "tpl_web",
+  "duration_ms": 1832
+}
+```
+
+以下字段由 Nexus-AI **自动注入**，你不用手动传：
+
+| 字段                                                        | 来源                                           |
+| ----------------------------------------------------------- | ---------------------------------------------- |
+| `timestamp` / `level` / `service` / `logger` / `message`    | 标准字段                                       |
+| `trace_id` / `span_id`                                      | OpenTelemetry 当前活动 span                    |
+| `user_id` / `project_id` / `agent_id` / `session_id`        | 上下文（FastAPI 中间件 / Agent hook 注入）     |
+| `model_id` / `workflow_type` / `stage_name`                 | 同上                                           |
+| `error.type` / `error.message` / `error.traceback`          | `logger.exception(...)` 或未捕获异常           |
+
+### 3. 给异步任务 / 脚本手动绑定上下文
+
+**没过 HTTP 入口**的路径（脚本、Worker handler、定时任务）不会自动带 `user_id` / `project_id`。用 `context_scope` 包一层：
+
+```python
+from nexus_utils.observability.context import context_scope
+
+with context_scope(user_id=uid, project_id=pid, agent_id=aid):
+    logger.info("task started")          # 自动带上三个字段
+    run_task()                           # 块内打的日志也都会带上
+```
+
+::: warning session_id 不进指标
+`session_id` 基数太大（每次对话一个），只会写进日志与 trace span，**不会**出现在 CloudWatch 指标维度上。按会话筛日志请在 Logs Insights 里过滤 `session_id` 字段。
+:::
+
+### 4. 审计与安全事件
+
+敏感操作写进**独立日志组**，保留 90 天、与应用日志隔离。即使 OTLP 管道整条挂掉，这条路径也会通过 boto3 直连 CloudWatch 落盘。业务代码这样调：
+
+```python
+from nexus_utils.observability.logging import audit_log, security_log
+
+# 审计：谁在什么时候对哪个资源做了什么（合规追踪）
+audit_log(
+    logger,
+    action="admin.quota.update",
+    resource_type="user",
+    resource_id=target_uid,
+    old_value=500,
+    new_value=1000,
+)
+
+# 安全：认证失败 / 权限拒绝 / 异常 IP
+security_log(
+    logger,
+    event="sso.login.failed",
+    reason="invalid_signature",
+    ip_address=req.client.host,
+)
+```
+
+写入时 `user_id` / `project_id` / `agent_id` / `session_id` 会从当前上下文自动补全。
+
+<!-- SCREENSHOT: logs-insights-audit -->
+
+在 CloudWatch Logs Insights 里查：
+
+```text
+SOURCE '/nexus-ai/audit'
+| fields @timestamp, user_id, action, resource_type, resource_id, ip_address
+| filter action like /quota/
+| sort @timestamp desc
+| limit 100
+```
+
+### 5. 敏感字段过滤
+
+`strands_hooks.sensitive_fields` 列出的键名（默认 `password` / `token` / `key` / `secret`）会在打印工具入参与结果时被**自动掩码**，不会进任何日志载体。需要扩展就追加：
+
+```yaml
+strands_hooks:
+  sensitive_fields:
+    - "password"
+    - "token"
+    - "key"
+    - "secret"
+    - "authorization"
+    - "cookie"
+```
+
+工具输入 / 输出的原文默认只记**摘要**（`size` + `sha256[:16]`），不落原文——这一层在 `observability.capture` 里配，详见 [可观测性](./observability)。
+
+## 关键参数 / 限制
+
+### 开关决定日志形态
+
+| `observability.enabled` | 日志形态                  | 去向                                    |
+| ----------------------- | ------------------------- | --------------------------------------- |
+| `false`（默认）         | 彩色文本，单行可读         | stdout + `logs/enhanced_workflow.log`   |
+| `true`                  | 单行 JSON，字段稳定        | stdout + OTLP → ADOT → CloudWatch Logs  |
+
+无论哪种形态，`user_id` / `project_id` / `agent_id` 都会通过 `NexusContextFilter` / `NexusJsonFormatter` 自动注入到每条日志上。
+
+### 日志级别
+
+运行时通过环境变量覆盖 `log_level`：
+
+```bash
+NEXUS_LOG_LEVEL=DEBUG python -m api.v2.main
+```
+
+可选值：`DEBUG` / `INFO`（默认）/ `WARNING` / `ERROR` / `CRITICAL`。
+
+### 截断长度
+
+`enhanced_logging.truncate_length` 控制本地彩色模式下单条内容最长输出多少字符——超过即截断：
+
+| 键            | 默认 | 含义                 |
+| ------------- | ---- | -------------------- |
+| `input`       | 300  | 工具 / Agent 入参    |
+| `output`      | 300  | Agent 回复           |
+| `tool_result` | 200  | 工具返回值           |
+
+JSON 模式下字段值不强制截断，但**异常 traceback** 硬上限 4096 字符。
+
+### 日志组保留策略
+
+`observability.enabled=true` 之后，`nexus-cli init --observability-only` 会按以下策略创建：
+
+| 日志组                          | 保留   | 写入者                                        |
+| ------------------------------- | ------ | --------------------------------------------- |
+| `/<slug>/application/api`       | 30 天  | `service_name=nexus-ai-api` 的所有日志        |
+| `/<slug>/application/worker`    | 30 天  | Worker                                        |
+| `/<slug>/application/bridge`    | 30 天  | Bridge                                        |
+| `/<slug>/agent`                 | 30 天  | 沙箱 / 本地 Agent                             |
+| `/<slug>/build`                 | 30 天  | 构建流水线                                    |
+| `/<slug>/access`                | 90 天  | API 访问日志（合规）                          |
+| `/<slug>/audit`                 | 90 天  | `audit_log()` 写入，合规必备                  |
+| `/<slug>/security`              | 90 天  | `security_log()` 写入，合规必备               |
+| `/<slug>/debug`                 | 3 天   | 临时调试                                      |
+
+日志组按进程启动时传给 `configure_logging()` 的 `service_name` 路由，不同进程必须传不同值（`nexus-ai-api` / `nexus-ai-worker` / `nexus-ai-bridge` / `nexus-ai-agent-vm`），否则在 CloudWatch 里会混在一起。
+
+### JSON 字段命名保留
+
+通过 `extra={...}` 传入的字段名如果命中 Python `logging` 的**保留属性**（`args` / `asctime` / `filename` / `funcName` / `levelname` / `message` / `name` / `pathname` / `process` / `thread` 等），会被 formatter 忽略。建议自定义字段统一加业务前缀，例如 `nexus_*` 或 `biz_*`。
+
+## 常见问题
+
+**Q1：本地启动时打印 `Logging configured: service=..., env=..., json=..., otlp=...`，这行是什么？**
+
+A：Nexus-AI 在 `configure_logging()` 结束时会主动打一行「当前日志配置摘要」：是 JSON 还是文本？是否挂了 OTLP 导出？服务名是什么？只有一行，排查问题时很有用，不用去掉。
+
+**Q2：切到 JSON 模式后，本地终端刷屏完全没法读怎么办？**
+
+A：两条路。① 本地 `observability.enabled` 保持 `false`，部署时设环境变量 `NEXUS_ENVIRONMENT=production` 并把 YAML 改成 `true`。② 坚持用 JSON，本地用 `jq` 过滤：
+
+```bash
+python -m api.v2.main 2>&1 | jq -r '"\(.timestamp) [\(.level)] \(.service): \(.message)"'
+```
+
+**Q3：日志里看不到 `user_id` / `project_id`？**
+
+A：只有经过 FastAPI 入口的请求（URL 含 `/projects/...` / `/agents/...`）才会**自动**注入。脚本、Worker、定时任务要自己用 `context_scope(user_id=..., project_id=...)` 包一下。
+
+**Q4：敏感字段被掩码了，但 hash 还是有顾虑？**
+
+A：`sensitive_fields` 命中的参数会被**整个替换成 `***`**，不做 hash。真正走 hash 的是工具 input/output 摘要（`capture.tool_input=hash_only`），那是 `sha256[:16]`，不可反推原文。如果连 hash 都不想出现，把 `capture.tool_input` 和 `capture.tool_output` 改成 `none`。
+
+**Q5：审计日志失败会拖垮业务吗？**
+
+A：不会。`audit_log()` / `security_log()` 内部的 CloudWatch 写入被 `try / except` 完整包住，**任何异常都只降级到本地 stdlib logger，不会外抛**。业务请求不会因为审计日志写失败而 5xx。
+
+**Q6：本地跑测试时 `observability.enabled=false`，日志会丢字段吗？**
+
+A：`trace_id` / `span_id` 需要 OTEL 插桩才存在，文本模式下不会出现；但 `user_id` / `agent_id` 仍然通过 `NexusContextFilter` 注入到文本行前缀。需要断言结构化字段的测试，临时开总开关，或在用例里显式调 `configure_logging(service_name, force_json=True)`。
+
+
+========== features/metrics-billing.md ==========
+
+---
+title: 指标与计费
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - api/v2/routers/admin_billing.py
+    - nexus_utils/observability/**
+  generated_at: 2026-05-08T16:10:40+00:00
+  generated_by: docs-sync v2
+---
+
+# 指标与计费
+
+## 这是什么
+
+**指标与计费**是 Nexus-AI 给**企业管理员**提供的用量统计与成本管控中心。它把平台里所有 LLM 调用、Agent 运行、构建流水线的消耗汇总成按用户 / 项目 / 模型切分的成本明细，让你回答两个问题：
+
+1. 这个月谁用得最多、花在哪个模型上？
+2. 如何给某个用户设上限，不让他把预算烧穿？
+
+后台同时把这些数据以**标准业务指标**写入 CloudWatch，形成 8 个开箱即用的仪表板（Ops / API / Agent / Build / GenAI Cost / Sub-Agent Topology / Sandbox / Security），运维同事可以直接打开看。
+
+## 使用场景
+
+| 场景                  | 你会用到的入口                                    |
+| --------------------- | ------------------------------------------------- |
+| 月度成本复盘          | 管理后台 → `/admin/billing` → 总览                |
+| 抓出「高消耗用户」    | 管理后台 → `/admin/billing` → 「Top 用户」        |
+| 某个业务组的成本拆分  | 管理后台 → `/admin/billing` → 「Top 项目」        |
+| 单个用户近 6 个月趋势 | 管理后台 → 用户详情页 → 用量                      |
+| 给用户/租户设 Token 预算 | 管理后台 → 用户详情 → 配额                     |
+| 监控线上健康度 / 延迟 | CloudWatch → Dashboard → `<Prefix>-OpsOverview` 等 |
+| 审计谁改过配额        | CloudWatch Logs → `/nexus-ai/audit` 日志组        |
+
+## 如何使用
+
+### 1. 打开管理员计费总览
+
+以 `admin` 角色登录，访问「管理」→「计费」。
+
+<!-- SCREENSHOT: admin-billing-overview -->
+
+页面展示的内容：
+
+- **本月总成本** — 所有用户合计的 USD 金额
+- **按模型分布** — 各 Bedrock 模型的调用量 / Token / 成本
+- **Top 10 用户** — 成本排行榜
+- **Top 10 项目** — 项目视角的成本排行
+
+默认展示当月；想看历史某个月，在页面顶部切换 `YYYY-MM` 即可。
+
+### 2. 定位高消耗用户，查看详情
+
+在总览的「Top 用户」表格里点任意一行，进入**该用户近 N 个月趋势**：
+
+<!-- SCREENSHOT: admin-billing-user-usage -->
+
+- 近 6 个月月度曲线（默认 6 个月，可调到最多 24 个月）
+- 本月按模型分布
+- 当前配额和使用进度
+
+### 3. 设置用户 Token 配额
+
+在用户详情页点「编辑配额」：
+
+<!-- SCREENSHOT: admin-billing-set-quota -->
+
+| 字段                    | 说明                                                                    |
+| ----------------------- | ----------------------------------------------------------------------- |
+| `monthly_token_budget`  | 该用户**每自然月**的 Token 上限                                         |
+| `alert_threshold_pct`   | 达到多少百分比时触发告警（默认 80%）                                    |
+| `disable_on_exceed`     | 超额后是否**直接拒绝请求**（默认 `false`，只告警不拦截）                |
+| `tenant_id`             | 可选，绑定到某个租户（留空=平台全局配额）                               |
+| `notes`                 | 可选备注，会写入审计日志                                                |
+
+点「保存」后，Nexus-AI 会：
+
+1. 把新配额写入数据库，下一次请求立即生效
+2. 写一条 `admin.quota.update` 审计事件到 `/nexus-ai/audit` 日志组
+3. 当月用量超过 `alert_threshold_pct` 时触发告警
+
+::: tip 小步走
+第一次给团队设预算，建议先用 `disable_on_exceed=false` 观察一个月，再决定是否开启硬拦截。
+:::
+
+### 4. 打开 CloudWatch 仪表板
+
+平台初始化时会在 CloudWatch 里自动创建 8 个仪表板。到 AWS Console → CloudWatch → Dashboards 里找以你的 `prefix` 开头的：
+
+<!-- SCREENSHOT: cloudwatch-dashboards-list -->
+
+| Dashboard 名                  | 观察谁用                                                    |
+| ----------------------------- | ----------------------------------------------------------- |
+| `<Prefix>-OpsOverview`        | SRE：API 错误、SQS 积压、Bedrock 限流                       |
+| `<Prefix>-APIPerformance`     | API 工程师：请求量、延迟 P50/P90/P99、状态码分布、慢请求    |
+| `<Prefix>-AgentRuntime`       | AI 工程师：Agent 调用、Token、工具耗时、错误类型            |
+| `<Prefix>-BuildPipeline`      | 构建负责人：构建成功率、Stage 耗时、Fork 事件               |
+| `<Prefix>-GenAICost`          | 管理员：各模型 Token 量、缓存命中率、Bedrock 延迟           |
+| `<Prefix>-SubAgentTopology`   | AI 工程师：子 Agent 调用链、失败根因                        |
+| `<Prefix>-SandboxRuntime`     | 平台工程：沙箱池空闲 / 忙碌、冷启动耗时、回收事件           |
+| `<Prefix>-SecurityAudit`      | 安全：认证失败、RBAC 拒绝、敏感操作审计                     |
+
+### 5. 用 Logs Insights 做即席查询
+
+每个仪表板底部都有一个 Logs Insights 小部件（慢请求、错误 Top-N、审计事件等），点标题上的「在 Logs Insights 中打开」可以改查询条件，按 `user_id` / `project_id` / `trace_id` 切片。
+
+<!-- SCREENSHOT: logs-insights-slow-requests -->
+
+常用字段（日志默认为 JSON）：
+
+- `user_id` / `project_id` / `agent_id` / `session_id` — 业务维度
+- `trace_id` / `span_id` — 关联到 X-Ray trace
+- `model_id` / `tokens_in` / `tokens_out` — LLM 调用详情
+- `duration_ms` / `http.status_code` / `http.route` — API 请求
+
+## 关键参数 / 限制
+
+### 计费口径
+
+| Token 类型        | 对 Bedrock 计费系数 | 说明                                                   |
+| ----------------- | ------------------- | ------------------------------------------------------ |
+| `input`           | 1.0x                | 正常输入（不含缓存）                                   |
+| `output`          | 1.0x                | 模型输出                                               |
+| `cache_read`      | **0.1x**            | 命中 prompt cache，便宜 10 倍                          |
+| `cache_write`     | **1.25x**           | 写入 prompt cache，比正常输入贵 25%                    |
+
+总成本公式：`tokens_in × 1.0 + cache_read × 0.1 + cache_write × 1.25 + tokens_out × output_unit_price`，按每个 `model_id` 单价分别乘算。
+
+### 可切分的业务维度
+
+| 维度            | 用途                                                        |
+| --------------- | ----------------------------------------------------------- |
+| `user_id`       | 单个用户成本、Top-N 排行                                    |
+| `project_id`    | 业务组 / 项目成本                                           |
+| `tenant_id`     | 租户维度（多租户部署）                                      |
+| `agent_id`      | 该 Agent 的调用量与 Token                                   |
+| `model_id`      | 模型级成本拆分                                              |
+| `workflow_type` | agent_build / tool_build / skill_build / magician           |
+| `runtime_type`  | local / agentcore / sandbox                                 |
+| `stage_name`    | 构建流水线阶段                                              |
+| `tool_name`     | 单个工具耗时 / 成功率                                       |
+
+::: warning session_id 不进入指标
+`session_id` 基数太大（每次对话一个），只写入 Trace span，**不会**出现在 CloudWatch 指标维度中，避免成本暴涨。如果需要按会话查，请用 Logs Insights。
+:::
+
+### 查询时间窗口
+
+| 管控点                                         | 限制                             |
+| ---------------------------------------------- | -------------------------------- |
+| `/admin/billing/overview` 月份参数             | `YYYY-MM` 或 `YYYY-MM-DD`        |
+| `/admin/billing/users/top` 返回数量            | `limit` ≤ **200**                |
+| `/admin/billing/projects/top` 返回数量         | `limit` ≤ **200**                |
+| 单用户趋势 `months` 参数                       | ≤ **24** 个月                    |
+| CloudWatch Dashboard body                      | ≤ **400 KB** JSON（平台自动校验）|
+
+### 日志保留周期
+
+| 日志组                          | 保留天数 | 用途                   |
+| ------------------------------- | -------- | ---------------------- |
+| `/<slug>/application/*`         | 30 天    | 各服务应用日志         |
+| `/<slug>/agent`                 | 30 天    | Agent 执行详情         |
+| `/<slug>/build`                 | 30 天    | 构建流水线             |
+| `/<slug>/access`                | **90 天**| API 访问日志（合规）   |
+| `/<slug>/audit`                 | **90 天**| 敏感操作审计（合规）   |
+| `/<slug>/security`              | **90 天**| 认证 / RBAC 拒绝       |
+| `/<slug>/metrics`               | 7 天     | EMF 指标落盘           |
+| `/<slug>/debug`                 | 3 天     | 临时调试               |
+
+### 权限
+
+- `/admin/billing/*` 的全部接口只允许 `role=admin` 访问，其它角色返回 **403**。
+- 修改配额时会以当前管理员的 `user_id` 写入审计日志，不会匿名。
+
+## 常见问题
+
+**Q1：为什么管理后台的 cost 和 CloudWatch `GenAICost` 仪表板对不上？**
+
+A：前端总览里的金额来自数据库里按月滚动聚合的账单表，数值稳定、每月结算一次；CloudWatch 仪表板看的是**原始 Token 量**，分钟级刷新。两者趋势一致，但不是逐美分对齐。需要精确金额就以 `/admin/billing/overview` 为准。
+
+**Q2：我关掉 `observability` 开关后，计费还准吗？**
+
+A：准。管理后台的用量/账单走的是业务数据库，不依赖 OTEL。`observability.enabled=false` 只是不往 CloudWatch 发指标和 trace，前端计费页和配额拦截仍然正常工作。
+
+**Q3：`disable_on_exceed=true` 后，用户超额会看到什么？**
+
+A：API 会返回配额超限错误，Chat / 构建任务无法启动，直到下个自然月自动重置或管理员调高预算。建议配合「超额前 80% 告警」，给用户留缓冲。
+
+**Q4：缓存命中率一直很低怎么办？**
+
+A：进 `<Prefix>-GenAICost` 看 `Cache Hit %` 小部件。长期低于 20%，通常是提示词前缀变化过大，导致每次都 cache miss。优先固定系统提示和工具清单顺序；如果仍无改善，可参考 [Bedrock Prompt Caching 文档](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html)调整缓存锚点。
+
+**Q5：审计日志里最少能查到什么？**
+
+A：`/nexus-ai/audit` 日志组里每条 `admin.quota.update` 事件至少包含：`timestamp` / `action` / `admin_user`（操作者）/ `target_user`（被改的用户）/ `token_budget` / `threshold` / `disable_on_exceed`。日志保留 **90 天**，满足大部分合规审计要求。
+
+
+========== features/multi-agent.md ==========
+
+---
+title: 多 Agent 图/群
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - agents/system_agents/**
+    - nexus_utils/agent_graph/**
+  generated_at: 2026-05-08T15:45:01+00:00
+  generated_by: docs-sync v2
+---
+
+# 多 Agent 图/群
+
+## 这是什么
+
+多 Agent 图/群让你用一张网络图看清"谁调用谁、谁在用哪个工具"，同时让多个专家 Agent 像小组一样接力完成同一件事。它由两部分组成：
+
+- **Agent 图**：把平台里所有 Agent、它们的版本、所依赖的工具、以及 Agent 之间的调用关系（Agent-as-Tool）绘制成一张可交互网络图。
+- **Agent 群（Swarm）**：一组预先编排好的专家 Agent，按任务分工顺序协作并统一交付结果。Nexus-AI 内置了 Agent 构建、Agent 更新、工具构建、通用助手、Magician 智能路由、多模态分析、组织构建、指令构建等多条开箱即用的 Agent 群。
+
+## 使用场景
+
+| 场景 | 用哪个能力 |
+|------|-----------|
+| 想看自己工作空间里有哪些 Agent，它们共用了哪些工具 | 打开 Agent 图，按分类/标签/工具类型筛选 |
+| 删除一个工具前想确认「还有谁在用它」 | 在 Agent 图中点击工具节点，右侧弹出"被哪些 Agent 使用" |
+| 一句话描述需求，让一组专家 Agent 协作完成 | 从 Magician 入口提问，自动路由到对应 Agent 群 |
+| 用自然语言一次性搭起公司/部门组织树 | 组织构建 Agent 群（Org Builder） |
+| 把一份 SOP 文档直接转成可执行的 Agent 指令 | 指令构建 Agent 群（Directive Builder） |
+| 让一个"主 Agent"把若干"子 Agent"当工具调用 | Agent-as-Tool 组合 |
+
+## 如何使用
+
+### 1. 打开 Agent 图
+
+进入「Agent 图」页面（或在 Agent 列表右上角点击 `以图查看`），平台会把所有已登记的 Agent、版本节点、工具节点以及它们之间的关系加载为一张力导向网络图。
+
+<!-- SCREENSHOT: agent-graph-overview -->
+
+你可以看到四类节点和五类边：
+
+| 节点类型 | 颜色 | 含义 |
+|---------|------|------|
+| Agent | 紫色 | 一个 Agent 的主节点 |
+| Agent 版本 | 浅紫色 | 同一 Agent 的不同版本 |
+| 工具 | 按工具类型区分（蓝/绿/黄/紫/粉） | 单个工具 |
+| 工具组 | 青色 | 工具所属的组（如 `strands_tools`、`mcp`） |
+
+| 边类型 | 颜色 | 含义 |
+|-------|------|------|
+| 使用工具 | 灰色 | Agent 版本 → 工具 |
+| 有版本 | 浅紫色 | Agent → Agent 版本 |
+| 调用 Agent | 橙色 | Agent A 把 Agent B 当作工具调用（Agent-as-Tool） |
+| 属于组 | 青色 | 工具 → 工具组 |
+| Agent 被封装为工具 | 红色 | Agent 对外以工具形式暴露 |
+
+### 2. 筛选和搜索
+
+顶部工具条可按以下维度过滤：
+
+- **分类**（category）：Agent 的业务分类
+- **标签**（tags）：Agent 版本携带的标签
+- **工具类型**：`strands_tools` / `generated_tools` / `system_tools` / `template_tools` / `mcp`
+
+<!-- SCREENSHOT: agent-graph-filters -->
+
+### 3. 查看节点详情
+
+点击任意节点，右侧面板显示：
+
+- **Agent 节点**：描述、分类、所含版本数量、工具数量、相关边（谁调用它、它调用谁）
+- **版本节点**：版本号、状态、作者、创建日期、标签、支持的模型、工具依赖
+- **工具节点**：工具路径、工具类型、被哪些 Agent 使用
+
+### 4. 让多个 Agent 协同完成任务（Agent 群）
+
+Nexus-AI 把常见的复杂任务封装成 Agent 群，你只需要从对应入口提一句需求，群内的专家 Agent 会顺序接力完成：
+
+| Agent 群 | 专家角色（按顺序） | 典型触发入口 |
+|---------|----------------|-------------|
+| 构建 Agent | 意图识别 → orchestrator → requirements_analyzer → system_architect → agent_designer → tool_developer → prompt_engineer → agent_code_developer → agent_developer_manager → agent_deployer | 「创建 Agent」页面 |
+| 更新 Agent | update_orchestrator → requirements_update → tool_update → prompt_update → code_update | Agent 详情页「更新」 |
+| 构建工具 | orchestrator → requirements_analyzer → tool_designer → tool_developer → tool_validator → tool_documenter | 「创建工具」页面 |
+| 通用助手 | 单 Agent 全能对话（知识问答、计算、搜索、文件、AWS 云服务） | 主聊天入口 |
+| Magician 智能路由 | 根据你的输入选择合适的模板或临时组装 Agent 群 | 主聊天入口，不指定 Agent |
+| 多模态分析 | 处理图片、文档、文本等混合输入 | 上传文件后的分析入口 |
+| 组织构建 | 从自然语言描述批量创建组织与部门节点 | 「组织管理 → 一键生成」 |
+| 指令构建 | 从 Markdown / SOP 文档提取目标、约束与步骤，生成 Agent 指令 | 「指令库 → 从文档导入」 |
+
+<!-- SCREENSHOT: multi-agent-swarm-build -->
+
+::: tip 什么是 Agent-as-Tool
+一个 Agent 可以把另一个 Agent 当作工具来调用——这是"群"的最小单元。你在 Agent 图里看到的**橙色连线**就是这种调用关系。Magician 和多条构建/更新工作流内部都使用这种组合。
+:::
+
+### 5. 从自然语言建立组织树
+
+<!-- SCREENSHOT: org-builder -->
+
+1. 在「组织管理」中选择「从描述生成」。
+2. 粘贴一段自然语言描述，例如：
+
+   ```
+   某科技公司
+     研发中心
+       前端组
+       后端组
+     市场部
+   ```
+
+3. 点击「预览」：Agent 群解析层级并返回一棵候选组织树（仅预览，不落库）。
+4. 确认无误后点击「创建」，批量落库并自动维护父子关系。
+
+### 6. 从文档一键生成 Agent 指令
+
+<!-- SCREENSHOT: directive-builder -->
+
+1. 进入「指令库」，选择「从文档导入」。
+2. 粘贴一份 Markdown 或纯文本 SOP。
+3. 提交后 Agent 会判断该走 `guided`（软性建议）还是 `strict`（强约束步骤）模式，自动抽取目标、约束、步骤、检查点、质量标准。
+4. 如果描述中提到某个部门名，系统会自动把新指令挂到该部门下；否则会让你手动选择父节点。
+
+### 7. 从断点恢复一条 Agent 群工作流
+
+构建/更新工作流在中途失败时，可以在项目详情页选择「从某阶段恢复」。平台会跳过已完成阶段，只从指定阶段开始继续执行；阶段状态由 Stage Tracker 持久化，关闭浏览器也不会丢。
+
+## 关键参数 / 限制
+
+| 项目 | 取值 / 说明 |
+|------|------------|
+| Agent 图节点类型 | `agent`、`agent_version`、`tool`、`tool_group` |
+| Agent 图边类型 | `uses_tool`、`has_version`、`calls_agent`、`belongs_to`、`agent_as_tool` |
+| 工具类型颜色 | `strands_tools`（蓝）、`generated_tools`（绿）、`system_tools`（黄）、`template_tools`（紫）、`mcp`（粉） |
+| 图数据来源 | 读取 `prompts/generated_agents_prompts/` 下每个 Agent 的 YAML 元数据；没有 YAML 的 Agent 不会出现在图里 |
+| Agent-as-Tool 识别规则 | 工具路径包含 `agent_tool` 或 `agent_as_tool` 关键字时，被识别为 Agent 间调用，不会再创建独立工具节点 |
+| 构建 Agent 群阶段数 | 9（意图识别 + 8 个接力阶段，顺序执行，不可跳步） |
+| 更新 Agent 群阶段数 | 5（顺序执行） |
+| 工具构建群阶段数 | 6（顺序执行） |
+| 断点恢复 | 构建工作流支持从任意指定阶段恢复；更新与工具构建流需按顺序重新执行 |
+| Session 管理 | 每次启动生成 `session_id`，群内 Agent 共享同一 session；可手动指定以恢复旧会话 |
+| 项目名称约束 | 启动时若指定了项目名称，后续 Agent 必须沿用，不会自行改名 |
+| 组织构建输入上限 | 单次描述最多约 8 000 字符 |
+| 指令构建输入上限 | 单份文档最多约 10 000 字符 |
+
+::: warning 关于"跳过阶段"
+构建、更新、工具构建三条工作流都是严格顺序执行的流水线，不能并行也不能跳过中间阶段。如果某阶段失败，修复后只能选择**从该阶段重跑**或**从后一阶段继续**（前提是前面的产出仍然有效）。
+:::
+
+## 常见问题
+
+**Q：Agent 图里看不到我新建的 Agent？**
+A：Agent 在「部署」阶段完成后才会写入提示词目录，图数据读取的是这些 YAML。构建工作流没跑到部署阶段时，图上暂时不会出现；部署完成后刷新页面即可。
+
+**Q：同一个 Agent 的多个版本，图上怎么区分？**
+A：主节点（紫色）下挂多个版本节点（浅紫色），两者通过"有版本"边连接。你可以只勾选某个版本，仅展示它绑定的工具与调用关系。
+
+**Q：Agent 群里某个专家 Agent 失败了，前面的产出会白费吗？**
+A：不会。所有已完成阶段的产物都保存在项目上下文中。你可以从失败的阶段重跑，前置阶段不会重复执行。
+
+**Q：Magician 是怎么决定调哪几个 Agent 的？**
+A：Magician 先读取模板库和已生成 Agent 列表，再根据你输入的语义匹配最合适的单个 Agent 或临时组装一个 Agent 群。你也可以直接指定模板路径跳过路由。
+
+**Q：Agent 群之间会不会相互污染上下文？**
+A：不会。每次启动会生成独立的 `session_id`，群内 Agent 共享同一 session，群与群之间不共享。断点恢复时沿用同一个 `session_id`。
+
+**Q：我想让某个 Agent 调用另一个 Agent，该怎么做？**
+A：在调用方 Agent 的工具依赖里引用目标 Agent（使用 Agent-as-Tool 形式），Agent 图会立刻在二者之间画出一条橙色"calls"边，方便你核对。
+
+
+========== features/observability.md ==========
+
+---
+title: 可观测性
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - nexus_utils/observability/**
+  generated_at: 2026-05-08T16:04:56+00:00
+  generated_by: docs-sync v2
+---
+
+# 可观测性
+
+## 这是什么
+
+**可观测性**是 Nexus-AI 把平台里每一次 API 请求、Agent 调用、工具执行、构建流水线、沙箱动作都翻译成**三类信号**——追踪（Traces）、指标（Metrics）、日志（Logs）——并统一送进 AWS CloudWatch 与 X-Ray 的能力。
+
+一个开关打开后，你会立刻得到：
+
+- **8 个开箱即用的 CloudWatch 仪表板**，覆盖 SRE、API、Agent、构建、成本、子 Agent 拓扑、沙箱、安全 8 个视角。
+- **自动打通的 X-Ray 分布式追踪**，一次用户请求的全链路（API → Worker → Agent → Bedrock → 子 Agent → 工具）在一张火焰图里可视化。
+- **结构化 JSON 日志**，带上 `user_id` / `project_id` / `agent_id` / `trace_id`，Logs Insights 可直接过滤。
+- **独立保留的审计与安全日志组**（90 天），符合常见合规要求。
+
+## 使用场景
+
+| 场景                                         | 你会打开的工具                                                       |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| 线上 API 500 多，想知道是谁 / 哪个接口先挂   | CloudWatch → `<Prefix>-OpsOverview` 仪表板                           |
+| 某个用户反馈「Agent 特别慢」                 | CloudWatch → `<Prefix>-AgentRuntime` + X-Ray Service Map             |
+| 排查「构建卡在某个 Stage」                   | `<Prefix>-BuildPipeline` → 底部 Logs Insights 面板                   |
+| 合规审计：上个月谁改过配额 / 删过 Agent      | CloudWatch Logs → `/<slug>/audit` 日志组                             |
+| 安全事件复盘：爆破登录 / RBAC 拒绝           | CloudWatch Logs → `/<slug>/security` 日志组                          |
+| 本地开发想看彩色文本日志而非 JSON            | `observability.enabled: false`                                       |
+
+## 如何使用
+
+### 1. 开启或关闭可观测性
+
+可观测性由一个顶层开关统一控制，默认**关闭**以避免开发机产生 CloudWatch 账单。
+
+编辑 `config/default_config.yaml`：
+
+```yaml
+observability:
+  enabled: true          # 打开总开关
+  prefix: NexusAI        # 所有 CloudWatch 资源名称的前缀
+```
+
+详细配置写在 `config/logging_config.yaml`：
+
+```yaml
+observability:
+  environment: production    # development / staging / production
+  otlp_endpoint: http://localhost:4318
+  traces:
+    enabled: true
+    sample_rate: 0.1         # production 默认 10%，dev 默认 100%
+    propagator: composite    # W3C + X-Ray + Baggage
+  metrics:
+    enabled: true
+    export_interval_ms: 60000
+  capture:
+    tool_input: hash_only      # hash_only | redacted_preview | none
+    tool_output: hash_only
+    system_prompt: false
+```
+
+保存后，用 CLI 一键生成 / 刷新 Collector 配置与 CloudWatch 资源：
+
+```bash
+nexus-cli init --observability-only
+```
+
+这条命令会：
+
+1. 用 `prefix` 推导出 **12 个日志组**与 **8 个仪表板**的名字。
+2. 渲染 OTEL Collector 配置模板（替换区域、命名空间、日志组名）。
+3. 在 AWS 上创建缺失的日志组（并按合规等级设置保留期）与仪表板。
+
+::: tip 开关关闭会怎样
+`enabled: false` 时，Nexus-AI **完全不加载 OTEL SDK**，零依赖、零额外内存开销，本地日志切回彩色文本格式。计费 / 配额仍照常工作——它们走业务数据库，不依赖这套管道。
+:::
+
+### 2. 打开 CloudWatch 仪表板
+
+登录 AWS Console → CloudWatch → Dashboards，按前缀过滤。
+
+<!-- SCREENSHOT: cloudwatch-dashboards-list -->
+
+| Dashboard                     | 读者     | 核心内容                                                                |
+| ----------------------------- | -------- | ----------------------------------------------------------------------- |
+| `<Prefix>-OpsOverview`        | SRE      | API 量 / 错误 / SQS 积压 / Bedrock 限流 / 近 1h 错误 Top-N              |
+| `<Prefix>-APIPerformance`     | API 工程 | 请求量、P50/P90/P99、状态码堆叠、>5s 慢请求列表                         |
+| `<Prefix>-AgentRuntime`       | AI 工程  | Agent 调用、Token（input/output/cache_read/cache_write）、工具耗时      |
+| `<Prefix>-BuildPipeline`      | 构建     | 构建成功率、Stage 耗时、Fork 事件、失败明细                             |
+| `<Prefix>-GenAICost`          | 管理员   | 各模型 Token、Bedrock 延迟、限流次数                                    |
+| `<Prefix>-SubAgentTopology`   | AI 工程  | 子 Agent 调用链、失败根因                                               |
+| `<Prefix>-SandboxRuntime`     | 平台     | 池中 idle/busy/total、provision 冷启动 P50/P90/P99                      |
+| `<Prefix>-SecurityAudit`      | 安全     | 登录失败、RBAC 拒绝、敏感操作审计                                       |
+
+每个仪表板顶行是 3–5 个单值 KPI，中间是时序图，底部是 Logs Insights 小部件——点标题「在 Logs Insights 中打开」即可改查询条件。
+
+### 3. 用 X-Ray 追踪一次请求
+
+每个 API 响应头里带有 `traceparent`（W3C）与 `X-Amzn-Trace-Id`（X-Ray）。拿到 trace ID 后：
+
+<!-- SCREENSHOT: xray-trace-map -->
+
+1. 打开 AWS Console → X-Ray → **Traces** → 粘贴 trace ID。
+2. **Service Map** 显示各服务（`nexus-ai-api` / `nexus-ai-worker` / `nexus-ai-bridge` / `nexus-ai-agent-vm`）之间的调用边，红色边代表错误。
+3. **Timeline** 展开后，能看到每个 span：
+   - HTTP 路由、状态码、延迟
+   - Bedrock `invoke` / `converse` / `converse_stream` 调用（含 `model_id`、token 数）
+   - 每次工具调用（`gen_ai.tool.call`，含工具名与输入哈希）
+   - 子 Agent 调用链（`invoke_sub_agent`）
+   - DynamoDB / SQS / S3 调用（由 botocore 自动插桩）
+
+::: tip 采样策略
+线上默认只采样 10%，但**任何 5xx、`error.type` 非空、或未捕获异常**的 trace 都会被强制完整采样，定位线上故障不怕丢样本。
+:::
+
+### 4. 用 Logs Insights 做结构化查询
+
+所有服务日志是标准 JSON，CloudWatch Logs Insights 可以用字段名过滤：
+
+```text
+fields @timestamp, level, service, user_id, agent_id, model_id, duration_ms, message
+| filter level = "ERROR"
+| filter ispresent(tokens_in)
+| sort @timestamp desc
+| limit 50
+```
+
+常用字段速查：
+
+| 字段                                            | 含义                                 |
+| ----------------------------------------------- | ------------------------------------ |
+| `timestamp` / `level` / `service` / `logger`    | 时间、日志级别、服务、Python logger  |
+| `message`                                       | 原始日志文本                         |
+| `trace_id` / `span_id`                          | 与 X-Ray 串联                        |
+| `user_id` / `project_id` / `agent_id` / `session_id` | 业务维度（自动从上下文注入）    |
+| `model_id` / `tokens_in` / `tokens_out`         | LLM 调用详情                         |
+| `http.method` / `http.route` / `http.status_code` / `duration_ms` | API 请求        |
+| `error.type` / `error.message` / `error.traceback` | 异常详情                          |
+
+### 5. 审计与安全事件查询
+
+敏感操作（账号登录、RBAC 拒绝、配额变更、Agent 删除等）会额外进两个独立日志组，保留 90 天。
+
+<!-- SCREENSHOT: logs-insights-audit -->
+
+```text
+SOURCE '/nexus-ai/audit'
+| fields @timestamp, user_id, action, resource_type, resource_id, ip_address
+| filter action like /quota/
+| sort @timestamp desc
+| limit 100
+```
+
+一条典型审计事件字段：`timestamp` / `category=audit` / `action`（如 `admin.quota.update`）/ `user_id` / `resource_type` / `resource_id` / `ip_address` + 业务自定义字段。
+
+### 6. 让自己的代码打出带业务维度的日志
+
+业务代码里写日志时，`trace_id` / `user_id` / `agent_id` 会**自动**填上（由 FastAPI 中间件与 Agent hook 注入）。只需像平常一样：
+
+```python
+logger.info("project created", extra={"project_id": pid, "template_id": tpl})
+```
+
+如果是一段独立异步任务，想手动绑定上下文：
+
+```python
+from nexus_utils.observability.context import context_scope
+
+with context_scope(user_id=uid, project_id=pid, agent_id=aid):
+    # 块内所有 log / metric 都会带上这些字段
+    do_work()
+```
+
+## 关键参数 / 限制
+
+### Service 命名
+
+不同进程必须传不同的 `service_name`，X-Ray Service Map 才能正确区分：
+
+| `service_name`          | 对应进程                     | 自动写入的日志组路径                 |
+| ----------------------- | ---------------------------- | ------------------------------------ |
+| `nexus-ai-api`          | API 服务                     | `/<slug>/application/api`            |
+| `nexus-ai-worker`       | Worker 服务                  | `/<slug>/application/worker`         |
+| `nexus-ai-bridge`       | Bridge 服务                  | `/<slug>/application/bridge`         |
+| `nexus-ai-agent-vm`     | 沙箱 VM 内的 agent           | `/<slug>/agent`                      |
+| `nexus-ai`              | 其他本地 Agent 进程（默认）  | `/<slug>/application`                |
+
+### 日志组保留策略
+
+| 日志组                        | 保留天数 | 定位                         |
+| ----------------------------- | -------- | ---------------------------- |
+| `/<slug>/application/*`       | 30 天    | API / Worker / Gateway 等    |
+| `/<slug>/agent`               | 30 天    | Agent 执行明细               |
+| `/<slug>/build`               | 30 天    | 构建流水线                   |
+| `/<slug>/access`              | **90 天**| API 访问日志（合规）         |
+| `/<slug>/audit`               | **90 天**| 敏感操作审计（合规）         |
+| `/<slug>/security`            | **90 天**| 登录失败 / RBAC 拒绝（合规） |
+| `/<slug>/metrics`             | 7 天     | EMF 指标                     |
+| `/<slug>/debug`               | 3 天     | 临时调试                     |
+
+### 业务维度白名单
+
+指标维度直接决定 CloudWatch 成本，Nexus-AI 收紧成一份白名单：
+
+| 维度                                           | 说明                         |
+| ---------------------------------------------- | ---------------------------- |
+| `user_id` / `project_id` / `tenant_id`         | 身份与归属                   |
+| `agent_id` / `model_id` / `runtime_type`       | Agent 标识、模型、运行形态   |
+| `workflow_type` / `stage_name` / `tool_name`   | 构建与工具维度               |
+| `deployment_id`                                | 多部署 / 灰度                |
+
+::: warning session_id 不进指标
+`session_id` 基数太大（每次对话一个），只写进 trace span，**不会**作为 CloudWatch 指标维度。按会话查请用 Logs Insights 过滤 `session_id` 字段。
+:::
+
+### Trace 采样
+
+| 配置                              | 行为                                                  |
+| --------------------------------- | ----------------------------------------------------- |
+| `traces.sample_rate >= 1.0`       | 全采样（dev 默认）                                    |
+| `traces.sample_rate < 1.0`        | 按比例 + 父级继承 + 「错误强制采样」                  |
+| 上游请求头已决定采样              | 子 span 跟随父级决策，不会出现链路断裂                |
+| span 启动时属性含 `error.type` / `http.status_code >= 500` / `exception.type` | 无视采样率强制完整保留 |
+
+### 隐私控制
+
+工具输入 / 输出默认只记摘要，不落原文：
+
+| `capture.tool_input` / `tool_output` | 记录内容                                    |
+| ------------------------------------ | ------------------------------------------- |
+| `hash_only`（默认）                  | `size` + `sha256[:16]`                      |
+| `redacted_preview`                   | 上者 + 前 80 字符（先经 PII 脱敏）          |
+| `none`                               | 完全不记录                                  |
+
+`capture.system_prompt: false` 时，系统提示词也不会进 span。
+
+### Collector 端（进阶）
+
+Collector 配置模板位于 `config/otel-collector-config.tpl.yaml`，渲染后的最终配置在同目录下 `otel-collector-config.yaml`——文件顶部有 `AUTO-GENERATED` 注释，**不要直接改**，改模板后重跑 `nexus-cli init --observability-only`。
+
+## 常见问题
+
+**Q1：`observability.enabled=false` 之后，业务还跑得动吗？**
+
+A：能。开关关闭时完全不加载 OTEL 依赖，日志切回彩色文本格式。业务数据库里的用量、配额拦截、审计记录仍然正常工作——那条路径用 boto3 直连 CloudWatch Logs，不走 OTLP 管道。
+
+**Q2：我在仪表板上看不到任何数据，先查什么？**
+
+A：按这个顺序：
+1. 确认进程启动日志里有 `Observability 已初始化: service=..., endpoint=...`；没有的话要么开关没开，要么 OTLP endpoint 不通。
+2. 确认 ADOT Collector 正在运行，且指向的 OTLP HTTP 端口（默认 `4318`）能被业务进程访问。
+3. 指标至少需要**一个导出周期**（默认 60s）才会出现在 CloudWatch。
+4. 仪表板名字是 `<Prefix>-OpsOverview`；如果把 `prefix` 改成非默认值，去 CloudWatch Dashboards 按前缀搜。
+
+**Q3：Trace 断了一截（中间几层看不到），怎么回事？**
+
+A：几乎都是**传播器不一致**造成的——上游发的是 W3C `traceparent`，下游只配了 `xray` 传播器时会丢掉上下文。保持默认 `propagator: composite` 通常就能自动双向兼容。
+
+**Q4：日志里看不到 `user_id` / `project_id`？**
+
+A：默认只有经过 FastAPI 入口的请求会自动填这两个字段（由 URL 中 `/projects/...` / `/agents/...` 片段解析）。独立脚本、定时任务、Worker handler 里要打带维度的日志，需要自己包一层 `context_scope(user_id=..., project_id=...)`。
+
+**Q5：为什么 Counter 指标在 CloudWatch 上老是 0？**
+
+A：这是 DELTA vs CUMULATIVE 时间性问题，Nexus-AI 已经在 MeterProvider 里为 Counter / Histogram 显式指定 DELTA，所以自己部署的 Collector 必须使用 `awsemfexporter` 期望的格式。如果你自行替换了 Collector 或重写了配置，请保留 `preferred_temporality` 为 DELTA。
+
+**Q6：审计日志和应用日志为什么要分开？**
+
+A：合规。应用日志 30 天就滚动删除，审计 / 安全日志保留 90 天、写入时走独立的 boto3 路径，即使 OTLP 管道整条挂掉也会落盘，满足大多数 SOC2 / ISO27001 审计要求。
+
+
+========== features/prompt-templates.md ==========
+
+---
+title: 提示词模板
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - nexus_utils/prompts_manager.py
+    - prompts/template_prompts/**
+  generated_at: 2026-05-08T15:31:56+00:00
+  generated_by: docs-sync v2
+---
+
+# 提示词模板
+
+## 这是什么
+
+提示词模板是 Nexus-AI 内置的一组开箱即用的 Agent 配置蓝本。每个模板都是一份完整的 YAML 配置，包含系统提示词、环境参数、模型选择和工具依赖，让你在创建新 Agent 时直接套用，而不必从零编写提示词。
+
+## 使用场景
+
+| 场景 | 适合的模板 | 说明 |
+| --- | --- | --- |
+| 调通一个与外部 API 对话的 Agent（发起 HTTP 请求、处理鉴权、同步数据） | `api_integration` | 预置 HTTP 客户端、鉴权管理、数据同步等工具 |
+| 让 Agent 产出文章、报告、营销文案或创意内容 | `content_generator` | 提高了温度参数以保证创意表达 |
+| 读取 CSV/JSON/Excel 数据，输出统计与洞察 | `data_analyzer` | 内置文件读写与数据转换工具 |
+| 对某个主题进行多源信息收集、深度分析并输出研究报告 | `deep_researcher` | 强制使用真实网络检索，输出带来源链接的 Markdown |
+| 处理 PDF、DOCX、Markdown 等文档并提取关键信息 | `document_processor` | 覆盖文档解析、文本分析、格式转换 |
+| 把一句话需求转成结构化的 JSON 需求文档 | `requirements_analyzer` | 严格输出 JSON，字段与验收标准已定义 |
+| 想要一份覆盖所有可配置参数的参考样板 | `default` | 作为编写自定义模板的起点 |
+
+## 如何使用
+
+### 1. 在创建 Agent 时选择模板
+
+进入「创建 Agent」页面，在「模板」环节选择一个预置模板；系统会把模板中的系统提示词、环境参数、工具依赖等字段自动填入表单。
+
+<!-- SCREENSHOT: create-agent-choose-template -->
+
+### 2. 查看模板内容
+
+点击模板名称可以展开查看：
+
+- **基本信息**：名称、描述、分类。
+- **环境配置**：`development` / `production` / `testing` 三套环境下的 `max_tokens`、`temperature`、`streaming`。
+- **系统提示词**：Agent 的行为指令。
+- **工具依赖**：Agent 可以调用的工具列表。
+- **支持的模型**：可用的底层模型 ID 列表（第一项为默认）。
+
+<!-- SCREENSHOT: template-detail-view -->
+
+### 3. 基于模板调整
+
+模板只是起点，你可以在创建表单中直接修改任意字段：
+
+1. 改写系统提示词，让 Agent 贴合你的业务语境。
+2. 在工具列表里增删条目，例如加入 MCP 服务器或你自己生成的工具。
+3. 调整温度、最大 token、是否流式输出。
+4. 切换支持的模型，例如把默认模型从 Sonnet 换成 Haiku 以节约成本。
+
+### 4. 发布并试跑
+
+保存后点击「创建」生成新的 Agent，再进入聊天界面用典型问题跑一遍，确认提示词改写后的效果符合预期。
+
+<!-- SCREENSHOT: chat-with-template-agent -->
+
+## 模板一览
+
+| 模板 | 分类 | 默认温度 | 典型用途 |
+| --- | --- | --- | --- |
+| `api_integration` | api_integration | 0.3 | REST API 调用、鉴权管理、跨系统数据同步 |
+| `content_generator` | content_generation | 0.7 | 文章、报告、营销文案、创意写作 |
+| `data_analyzer` | data_analysis | 0.3 | 多格式数据读取、清洗、统计与可视化 |
+| `deep_researcher` | research_analysis | 0.3 | 多源信息收集与 Markdown 研究报告 |
+| `document_processor` | document_processing | 0.3 | 文档解析、内容提取、格式转换 |
+| `requirements_analyzer` | analysis | 0.3 | 自然语言需求 → 结构化 JSON 需求文档 |
+| `default` | assistant | 0.3 | 全参考样板（所有可配置字段的示例） |
+
+## 关键参数 / 限制
+
+| 字段 | 含义 | 说明 |
+| --- | --- | --- |
+| `environments.*.max_tokens` | 单次响应的最大 token 数 | 生产环境通常设为 60000；测试与开发环境会更小以节省成本 |
+| `environments.*.temperature` | 采样温度（0–1） | 确定性任务（分析/集成）建议 0.3，创意任务建议 0.7 |
+| `environments.*.streaming` | 是否流式输出 | 所有模板默认为 `true` |
+| `versions[].status` | 版本状态 | `stable` / `beta` / `deprecated`；加载时默认使用 `latest` |
+| `metadata.supported_models` | 支持的模型列表 | 第一项为默认模型；可在创建时切换 |
+| `metadata.tools_dependencies` | 工具依赖 | 按路径引用 Strands 内置工具、系统工具、模板工具、生成工具或已有 Agent |
+| `metadata.mcp_dependencies` | MCP 依赖（可选） | 引用已配置的 MCP 服务器名称 |
+| `metadata.model_provider` | 模型提供商（可选） | 默认为 `bedrock`，支持 `ollama`、`openai`、`anthropic` 等 |
+
+::: tip
+当未显式指定 `version` 时，系统会优先取名为 `latest` 的版本；若不存在则按语义化版本号挑选最高的一个。
+:::
+
+::: warning
+`default` 模板是用于展示所有可配置参数的样板，并不适合直接拿去创建生产 Agent。请用它作为参考，选择业务对应的专业模板。
+:::
+
+## 常见问题
+
+**Q：模板和我自己生成的 Agent 有什么区别？**
+A：模板是 Nexus-AI 预置、随产品一起发布的蓝本，放在 `template_prompts` 目录；你创建的 Agent 会被保存成独立的配置（`generated_agents_prompts`），不会污染模板本身。
+
+**Q：选了模板后改了系统提示词，原模板会被覆盖吗？**
+A：不会。模板永远是只读蓝本，你的修改只影响新建出来的 Agent。
+
+**Q：我能在一个 Agent 里混用多个模板的能力吗？**
+A：一次只能以一个模板为起点，但你可以在创建表单中把其它模板的工具依赖、系统提示词片段复制过来，组合成你自己的版本。
+
+**Q：不同环境（development / production / testing）的参数是怎么选用的？**
+A：创建 Agent 时由平台根据部署环境自动选择；生产环境会使用 `production` 参数块，测试环境使用 `testing`，以此类推。
+
+**Q：模板里的 `supported_models` 能随便改吗？**
+A：可以调整顺序或增删，但请确保至少保留一个你账户和区域可访问的模型，否则 Agent 无法启动。
+
+
+========== features/sandbox.md ==========
+
+---
+title: Sandbox 沙箱
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - nexus_utils/sandbox/**
+  generated_at: 2026-05-08T15:35:52+00:00
+  generated_by: docs-sync v2
+---
+
+# Sandbox 沙箱
+
+## 这是什么
+
+Sandbox 是 Nexus-AI 里每一次 Agent 对话真正执行的地方。平台默认把 Agent 放进一台独立的 Firecracker microVM 里跑，和其他用户、其他 Agent、甚至平台自身的后端都彻底隔开；你看到的工作空间文件、模型调用、工具执行全部发生在这台「一人一间」的小机器里。对话结束后 VM 不会立刻销毁，而是回到空闲池等下次复用——这样既安全又不会让你每次发消息都等冷启动。
+
+## 使用场景
+
+| 场景 | Sandbox 帮你做什么 |
+| --- | --- |
+| 运行会读文件、写文件或执行代码的 Agent | 把执行过程关进 microVM，工作空间和凭证都不会泄漏到其他用户 |
+| 同一个会话连续对话 | 下一条消息优先命中上一次的 VM，工作空间已挂载，无需重新准备 |
+| 开了一个绑定了多个生成工具的 Agent | 第一次运行时自动为该 Agent 装依赖，第二次开始秒启 |
+| 管理员需要切换隔离级别 | 可从「本地直跑（无隔离）」切到「Firecracker 沙箱」，并决定是否允许用户覆盖 |
+| 运维想控制成本 | 节点空闲一段时间会自动缩容；流量来了又会自动拉起新节点 |
+
+## 如何使用
+
+### 场景一：作为普通用户发起对话
+
+<!-- SCREENSHOT: sandbox-chat-running -->
+
+你什么都不用改。一条消息从聊天窗口发出后，平台会：
+
+1. 按当前运行时策略选择执行位置（默认是 Firecracker 沙箱）。
+2. 从空闲池挑一台可复用的 VM，或在有空闲资源的节点上拉起一台新 VM。
+3. 把工作空间（共享数据卷里属于你的目录）挂进 VM，VM 里启动 Agent。
+4. Agent 的输出通过流式通道回传到前端，你会先看到「Preparing sandbox environment…」提示，然后开始出字。
+5. 对话结束后 VM 回到空闲池，下次你或同一会话继续对话时优先复用它。
+
+::: tip 为什么第一条消息稍慢
+如果没有可复用的 VM，平台需要冷启动一台新 VM；如果连节点都没有空余，会再启动一台 EC2 节点，这一步通常需要 1–5 分钟。后续对话都会复用已有 VM，秒级返回。
+:::
+
+### 场景二：管理员切换运行时模式
+
+<!-- SCREENSHOT: sandbox-runtime-policy -->
+
+在「系统设置 → 沙箱运行时」中可以选择：
+
+1. **默认运行时**（`default_runtime`）
+   - `local` — 后端服务节点直接执行，无隔离，适合开发/调试。
+   - `ec2` — Firecracker microVM 隔离执行（生产推荐，默认值）。
+   - `agentcore` — AWS Bedrock AgentCore 托管执行（暂未开放）。
+2. **允许的运行时集合**（`allowed_runtimes`）：勾选平台允许使用的模式。
+3. **是否允许用户覆盖**（`allow_user_override`）：关闭则所有 Agent 一律走默认运行时；开启则前端可按 Agent 切换。
+4. 保存后，新发起的对话会按新策略调度；已经在跑的对话不受影响。
+
+::: warning 切换到 `local` 的影响
+`local` 模式跳过所有 microVM 隔离，Agent 直接在后端服务节点上执行。仅用于开发/测试环境；生产环境请保持 `ec2`。切换为 `local` 后，平台会缩短空闲节点等待时间并在巡检中释放现有 EC2 节点，避免留下无用资源。
+:::
+
+### 场景三：管理员查看沙箱集群状态
+
+<!-- SCREENSHOT: sandbox-cluster-status -->
+
+平台自带一个 Sandbox 控制器（独立后台服务），它每隔 30 秒巡检一次，并对外提供 HTTP 接口：
+
+1. `GET /health` — 控制器本身是否存活。
+2. `GET /status` — 最近一次巡检结果：在线节点数、运行中 VM 数、空闲节点数、本轮是否发生了扩缩容。
+3. `POST /scale_down` — 手动触发缩容，可传 `min_nodes`（保留节点下限）和 `dry_run`（只列出候选，不真缩）。
+
+你也可以通过命令行启动控制器：
+
+```bash
+nexus-cli service start --sandbox-controller
+```
+
+### 场景四：节点自动扩缩容
+
+巡检会自动处理以下情况，一般你不需要手动干预：
+
+1. **节点心跳超时** → 标记为 offline，释放其上的幽灵 VM 记录。
+2. **所有节点都满载** → 自动启动新 EC2 节点，直到达到 `max_size`。
+3. **节点持续空闲超过阈值** → 依次停止节点上的沙箱服务、卸载共享存储、终止 EC2 实例、清理登记表（保留至少 `min_nodes` 个节点）。
+4. **运行时切到 `local`** → 允许把所有 EC2 节点释放干净（`min_nodes` 临时降为 0）。
+
+### 场景五：定制 VM 规格与节点池
+
+<!-- SCREENSHOT: sandbox-pool-config -->
+
+在「沙箱节点池」配置页可以调整：
+
+1. **节点实例类型**（例如 `c8i.xlarge`、`m8i.2xlarge`、`r8i.4xlarge` 等）。
+2. **每台 VM 的 vCPU / 内存**（默认 1 vCPU、768 MiB）。
+3. **节点池下限 / 上限 / 期望值**（`min_size` / `max_size` / `desired_size`）。
+4. **每节点最大 VM 数**（填 `auto` 由平台按实例规格自动计算）。
+5. **预热策略**：是否为「精选 Agent」预热、保留多少台空闲 VM 等待请求。
+
+## 关键参数 / 限制
+
+| 参数 | 说明 | 默认值 |
+| --- | --- | --- |
+| 默认运行时 | 新对话的默认执行位置 | `ec2` |
+| 允许的运行时 | 允许平台选择的运行时集合 | `local`, `ec2` |
+| 允许用户覆盖运行时 | 用户/Agent 是否可以指定非默认运行时 | 关闭 |
+| 单次调用超时 | 一次 Agent 执行的最长时长 | 600 秒 |
+| 每 VM vCPU | 分给每台 microVM 的 vCPU 数 | 1 |
+| 每 VM 内存 | 分给每台 microVM 的内存 | 768 MiB |
+| 每 VM vCPU 配额 | 容量计算时的 vCPU 占用（支持小数做超分） | 0.5 |
+| VM 启动超时 | VM 起不来多久算失败 | 30 秒 |
+| VM 空闲回收 | 空闲 VM 多久未使用会被销毁 | 300 秒 |
+| 节点空闲缩容阈值 | 节点持续空闲多久后触发缩容 | 10 分钟 |
+| 节点池最小节点数 | 即使空闲也保留的节点数 | 1 |
+| 最大并发 VM 数 | 整个平台同时运行的 microVM 上限 | 50 |
+| 心跳超时 | 节点多久不心跳就标记为 offline | 90 秒 |
+| 巡检间隔 | 控制器两次巡检之间的间隔 | 30 秒 |
+
+| 限制 | 细节 |
+| --- | --- |
+| 必须支持嵌套虚拟化 | 节点 EC2 实例必须是支持 KVM 的第 8 代 Intel 实例（`c8i`、`m8i`、`r8i`，不含 `d` 后缀变体）或任意 `.metal` 实例 |
+| 不支持的实例 | 6/7 系列普通实例、带 NVMe 的 `c8id`/`m8id`/`r8id`、ARM/AMD 实例均无法承载 Firecracker |
+| 网络 | 每节点一个 Linux bridge，默认网段 `172.16.0.0/24`；VM 通过 NAT 出公网；反向代理端口范围 `18001–18100` |
+| 共享存储 | 每个节点必须挂载两套共享文件系统：只读代码卷（平台代码）+ 可读写数据卷（工作空间、Agent 虚拟环境、事件） |
+| 工作空间同步 | Agent 执行完成后，工作空间会增量同步到 S3 会话存储桶；没配置 S3 桶则仅保留在共享数据卷 |
+| 模板挂载 | 单次会话最多挂 30 个模板资源包；按 `mount_name` 隔离，多会话并发安全 |
+| 凭证 | VM 内没有 IMDS，AWS 临时凭证由主节点凭证代理下发，过期前约 30 分钟自动刷新 |
+| 依赖安装 | 首次为某个 Agent 起 VM 时，会根据其绑定工具的 `requirements.txt` 懒加载依赖；失败不会中断对话，只会标记后续跳过 |
+| agentcore 模式 | 目前仅为占位，实际不可用；请保持默认或选择 `ec2` |
+| 冷启动时长 | 有空闲节点时约数秒；需要新拉节点时通常 1–5 分钟，具体取决于 EC2 启动速度 |
+
+## 常见问题
+
+**Q1：我关掉浏览器再回来，同一个会话还能接着跑吗？**
+A：可以。Sandbox 会记住上次服务该会话的 VM，下次发消息时优先调度到那台（称为 Session 亲和），工作空间已挂载、上下文已在，几乎没有准备开销。如果那台 VM 已经被回收，平台会重新挑一台，依然能继续会话。
+
+**Q2：为什么我发第一条消息时出现「Sandbox unavailable」？**
+A：一般是所有节点都已满载，且正在启动新节点的过程中。稍等一会再发送即可；如果持续报错，请让管理员检查节点池 `max_size` 是不是设得太低、或 EC2 实例类型不支持嵌套虚拟化（见上方限制）。
+
+**Q3：Agent 执行超过 600 秒会发生什么？**
+A：超时后平台会返回 `Execution timed out after 600s` 错误、结束这次调用，并把占用的 VM 标记为失败（下次巡检时会被销毁重建）。长任务可以拆成多轮对话，或由管理员在沙箱设置里调大 `invocation_timeout`。
+
+**Q4：我删了一个 Agent，它之前占用的依赖还会留在 VM 里吗？**
+A：不会长期留着。每个 Agent 都有独立的虚拟环境目录，保存在共享数据卷上，由 Agent ID 作 key；Agent 被删除时其虚拟环境目录会被一起清理，其他 Agent 的 VM 不受影响。
+
+**Q5：我是管理员，想强制立刻回收所有空闲节点，能做到吗？**
+A：可以调用控制器的 `POST /scale_down` 接口，并把 `min_nodes` 显式设为 0；或者先在沙箱策略里把默认运行时切到 `local`，下一轮巡检就会把所有 EC2 节点释放掉。想先看看会影响哪些节点，可以加 `dry_run: true` 预览候选列表。
+
+
+========== features/skills-system.md ==========
+
+---
+title: 技能系统
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - nexus_utils/skill/**
+  generated_at: 2026-05-08T15:23:44+00:00
+  generated_by: docs-sync v2
+---
+
+# 技能系统
+
+## 这是什么
+
+技能（Skill）是一份打包好的"专项能力"，里面包含一份说明文档（`SKILL.md`）、可选的脚本、参考资料、子代理和评估数据。把技能挂到智能体上，智能体在遇到对应任务时会自动加载对应能力并执行相关脚本。
+
+技能系统帮你：把团队沉淀的标准流程、最佳实践、自动化脚本打包成可分发、可复用、可版本化的能力包，在不同智能体、不同项目之间共享。
+
+## 使用场景
+
+| 场景 | 说明 |
+|------|------|
+| 给智能体扩展专业能力 | 给一个通用对话智能体挂上"PPT 生成""Excel 处理""代码审查"等技能，让它在需要时自动调用 |
+| 复用社区已有成果 | 从 GitHub 批量引入公开仓库里的技能包（如 Anthropic 官方 skills） |
+| 跨项目共享工作流 | 把一组常用自动化脚本打包成技能，供多个智能体、多个项目复用 |
+| 沉淀团队 SOP | 把团队内部的标准操作流程（SOP）做成技能，新成员的智能体装上即可使用 |
+
+## 如何使用
+
+### 1. 浏览技能库
+
+打开「技能库」页面，可以看到所有技能的卡片列表。顶部支持按**分类**、**标签**、**技能类型**（系统 / 平台生成 / 社区 / 私有）筛选，以及关键词搜索（匹配名称、描述、标签）。
+
+<!-- SCREENSHOT: skills-library -->
+
+每张卡片显示技能名称、一句话摘要、脚本/子代理徽章、收藏数、使用次数。
+
+### 2. 查看技能详情
+
+点击任意技能卡片进入详情页，可以看到：
+
+- 完整的 `SKILL.md` 内容（使用说明、调用示例）
+- 文件清单（按类型分组：说明文档、脚本、参考资料、子代理、资源、评估、配置）
+- 版本号、来源（GitHub 仓库 / URL / 本地 / 平台生成）
+- 可执行脚本列表
+
+<!-- SCREENSHOT: skill-detail -->
+
+### 3. 导入技能
+
+点击「导入技能」按钮，支持四种来源：
+
+| 来源 | 输入 | 适用场景 |
+|------|------|---------|
+| `GitHub 仓库` | 仓库 URL + 可选路径 | 社区公开仓库；或从单仓多技能的目录中挑选 |
+| `URL` | 直接指向 `SKILL.md` 的链接 | 只需要一份说明文档的简单技能 |
+| `Claude Code 本地目录` | 本地路径 | 把本机已有的 Claude Code 技能批量扫描入库 |
+| `本地目录` | 任意包含 `SKILL.md` 的目录 | 从工作目录把写好的技能导入平台 |
+
+导入时平台会：
+
+1. 获取文件并解析 `SKILL.md` 的 frontmatter（name、description、tools、version）
+2. 递归收集所有标准子目录：`scripts/`、`references/`、`assets/`、`agents/`、`eval-viewer/`、`evals/`、`config/`
+3. 写入本地 + 上传 S3 + 登记元数据
+4. 自动按来源创建或匹配一个**技能分组**（例如 `owner/repo`）
+
+<!-- SCREENSHOT: skill-import -->
+
+### 4. 批量导入 GitHub 仓库
+
+当一个 GitHub 仓库里有多个技能（例如 `skills/` 下有几十个子目录）时：
+
+1. 选择「GitHub 批量导入」，填写仓库 URL 和基础路径（如 `skills`）
+2. 平台扫描后返回预览列表：每个技能的名称、文件数、总大小、本地是否已存在
+3. 勾选想要导入的技能，点击「确认导入」
+4. 平台按顺序抓取并入库，本地已存在的会更新
+
+<!-- SCREENSHOT: skill-batch-scan -->
+
+### 5. 创建或修改技能
+
+点击「新建技能」：
+
+1. 填写技能名称、一句话描述、分类、标签
+2. 撰写 `SKILL.md` 正文（支持 frontmatter 声明可用工具）
+3. 可选：上传脚本、参考资料、子代理等文件
+4. 设置为公开或私有
+5. 保存后即在技能库中可见
+
+编辑已有技能时，更新内容会同步刷新本地、S3 与元数据，并自动更新 `l1_summary`、`updated_at` 等字段。
+
+### 6. 把技能挂到智能体
+
+在智能体的配置页选择「添加技能」，勾选需要的技能即可。智能体会按"渐进式加载"使用它们：
+
+- **对话开始** — 只加载每个技能的摘要（轻量）
+- **命中触发条件** — 展开完整 `SKILL.md` 与 `references/` 参考资料
+- **需要执行操作** — 调用 `scripts/` 里的脚本
+
+### 7. 执行技能脚本
+
+技能中 `scripts/` 目录下的脚本可以由智能体或平台直接执行。支持的运行时：
+
+| 扩展名 | 运行时 |
+|--------|--------|
+| `.py` | python |
+| `.sh` | bash |
+| `.js` | node |
+| `.ts` | ts-node |
+
+执行时平台会自动注入环境变量 `SKILL_ID`、`SKILL_NAME`、`SKILL_DIR`，默认超时 **120 秒**，结果包含标准输出、标准错误、返回码、耗时。
+
+## 关键参数 / 限制
+
+| 项目 | 取值 / 说明 |
+|------|------------|
+| 技能类型 | `system`（系统内置）/ `generated`（平台生成）/ `community`（社区导入）/ `private`（私有） |
+| 必须文件 | `SKILL.md`（根目录） |
+| 标准子目录 | `scripts/`、`references/`、`assets/`、`agents/`、`eval-viewer/`、`evals/`、`config/` |
+| 脚本运行时 | python、bash、node、ts-node；混用时标记为 `mixed` |
+| 脚本默认超时 | 120 秒 |
+| 脚本输出截断 | stdout 最后 5000 字符、stderr 最后 2000 字符 |
+| 来源类型 | GitHub、URL、Claude Code、手动、平台生成 |
+| 摘要字段 | L1 摘要自动截取 description 前 200 字符 |
+| 批量扫描 | 仅支持 GitHub URL |
+| 分组 | 按来源自动分组（例如一个 GitHub 仓库对应一个分组），也可建立"组合"虚拟分组 |
+| 存储层 | 本地目录 + S3（按 `skill_type/skill_id/` 分层） + 元数据库 |
+
+## 常见问题
+
+**Q: 技能和子代理有什么区别？**
+技能是"能力包"，静态存储，被智能体或主代理按需加载；子代理是运行时的独立角色，由主代理调度来完成一个子任务。一个技能内部可以包含 `agents/` 目录，这些子代理就是该技能附带的专用角色。
+
+**Q: 导入相同名字的技能会冲突吗？**
+不会覆盖。平台按"技能名 + 来源"判断是否是同一个技能：同一个 GitHub 仓库下的同名技能会视为更新，内容哈希（`import_hash`）变化才会重新写入；不同来源的同名技能会分别保留。
+
+**Q: 导入后在本地哪里？**
+技能按类型分目录存放：`system_skills/`、`generated_skills/`、`community_skills/`、`private_skills/`，每个技能一个子目录，里面就是原始的 `SKILL.md` 和各类文件。S3 侧还会保留一份备份，本地丢失时会自动同步回来。
+
+**Q: 技能的版本怎么管理？**
+在 `SKILL.md` 的 frontmatter 里声明 `version`（例如 `1.0.0`）。重新导入或更新时，平台会把版本号写入元数据；如果来源有新版本，导入时会覆盖旧版。
+
+**Q: 执行脚本安全吗？**
+脚本在独立子进程中运行，有超时保护（默认 120 秒），标准输出和标准错误都会被截取长度。建议：不要在技能里放会访问生产数据的脚本；通过环境变量传入上下文而不是硬编码。
+
+
+========== features/stream-relay.md ==========
+
+---
+title: 流式响应中继
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - api/v2/routers/sessions.py
+    - nexus_utils/runtime_workspace/**
+  generated_at: 2026-05-08T15:51:37+00:00
+  generated_by: docs-sync v2
+---
+
+# 流式响应中继
+
+## 这是什么
+
+流式响应中继让 Agent 的回答像打字机一样逐字出现，并把整轮输出缓存在服务端。你可以随时切换标签、刷新浏览器，甚至短暂断网——回到原会话时还能从上次的位置继续看完，不丢任何一条消息或工具调用。
+
+## 使用场景
+
+| 场景 | 你做了什么 | 中继帮你做了什么 |
+| --- | --- | --- |
+| 长任务跑到一半切走 | Agent 正在执行多步骤任务，你切到别的会话或别的标签 | 回到原会话后，输出从断点继续呈现，直到任务结束 |
+| 浏览器意外断开 | 网络闪断、电脑休眠、页面崩溃 | 重连后自动续传，无需重新发问,、无需重复执行任务 |
+| 多端同时查看 | 同一会话在手机和电脑上都打开 | 两端各自独立订阅同一份流，内容保持一致 |
+| 回看刚刚的输出 | 想再确认一下刚看到的那条回答 | 短时间内重新进入会话，历史事件会一次性回放到最新位置 |
+| 工具执行较慢 | Agent 在调用一个耗时的工具 | 连接不会被代理或浏览器超时切断 |
+
+## 如何使用
+
+流式响应中继是**默认行为**，无需手动开启。下面描述你作为用户能感知到的动作。
+
+1. **发起一次对话**
+   在聊天界面输入问题并发送。Agent 开始逐字输出回答，工具调用（例如文件读写、网页搜索）以卡片形式实时出现在流中。
+   <!-- SCREENSHOT: stream-relay-typing -->
+
+2. **切换标签或离开页面**
+   随时点击侧边栏切到别的会话。原会话的任务在后台继续执行，输出仍在累积。
+
+3. **回到原会话**
+   点击侧边栏回到那个会话。你会看到：
+   - 先是错过的内容**一次性渲染**到屏幕上（历史追赶阶段）
+   - 随后界面自然过渡到**实时流式**模式，继续接收新事件
+   <!-- SCREENSHOT: stream-relay-catchup -->
+
+4. **（可选）查看会话运行状态**
+   想知道某个会话是否还在跑，顶部状态指示会显示以下三种之一：`进行中` / `已完成` / `出错`。
+
+5. **任务结束**
+   Agent 输出完毕后，最终消息被写入消息历史，工具卡片折叠为摘要。之后再进入这个会话时，直接从消息历史加载——不再走流式中继。
+
+::: tip
+短时间断开（数十秒以内）重连几乎无感；断开过久则原始流可能已过期，此时界面会提示"请从消息历史加载"——打开会话后依然能看到已经保存的完整对话。
+:::
+
+## 关键参数 / 限制
+
+| 项 | 说明 |
+| --- | --- |
+| 自动重连 | 切标签、刷新、短时间断网都会自动续传，无需手动操作 |
+| 保留时长 | 单次任务的流式事件在服务端保留有限时间；任务结束并超过保留窗口后，需从消息历史加载 |
+| 多端订阅 | 同一会话可在多个浏览器标签或设备上同时订阅，内容一致，不会重复执行任务或重复计费 |
+| 工具调用摘要 | 为避免传输过大，流中的工具输入会截断到 100 字符、工具结果截断到 2000 字符；完整内容可在工作空间文件面板中查看 |
+| 空闲心跳 | 连接空闲时服务端每 15 秒发送一次心跳，防止中间代理断开连接 |
+| 追赶完成信号 | 返回原会话时，系统会在"历史回放结束、即将转入实时"那一刻发出一次信号，前端据此切换渲染模式 |
+| 结束条件 | 任务发出 `完成` 信号并清空缓冲后，流不再可用；Agent 侧出错时同样不可用 |
+| 权限 | 流式相关功能需要你具备与该 Agent 对话的权限 |
+
+## 常见问题
+
+**Q：我切走再回来，为什么有时候历史内容是一次性蹦出来的，有时候是逐字的？**
+A：如果离开时任务已完成，回来只看到已写入历史的整段消息；如果任务还在跑，回来时会先一次性补齐你错过的部分，再进入实时打字模式。
+
+**Q：断网很久之后再回到页面，内容丢了怎么办？**
+A：流式缓存是临时的。只要任务正常完成，完整消息会写入消息历史，从侧边栏重新进入会话即可看到全部内容，不会丢失。
+
+**Q：我同时在手机和电脑上打开同一个会话，会冲突吗？**
+A：不会。两端各自订阅同一份服务端流，内容完全一致，不会互相干扰，也不会让 Agent 重复执行任务。
+
+**Q：页面顶部出现"已过期或不存在"的提示，意味着什么？**
+A：说明流式缓存已超过保留窗口。历史消息不会丢，直接从消息列表加载即可；只是不再能看到"逐字出现"的过程。
+
+**Q：为什么流中看到的工具调用输出被截断了？**
+A：为了流畅体验，流式事件里只传工具调用的摘要。要看完整内容，去会话的工作空间文件面板中找对应文件预览或下载。
+
+
+========== features/tools-toolsets.md ==========
+
+---
+title: 工具与工具集
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - agents/template_agents/**
+    - nexus_utils/skill/**
+  generated_at: 2026-05-08T15:18:54+00:00
+  generated_by: docs-sync v2
+---
+
+# 工具与工具集
+
+## 这是什么
+
+**工具（Tool）** 是 Agent 的单项能力，对应一个可调用函数，例如读取文件、抓取网页、执行 DCF 计算、查询 AWS 报价。**工具集（Toolset，又称 Skill）** 把一组工具、脚本、参考资料和执行配置打包在一起，按名称整体绑定给 Agent，也可以从 GitHub、URL 或本地目录导入到工作空间。
+
+平台提供系统内置、模板自带、社区导入三类工具与工具集，创建 Agent 时按需勾选即可，无需自己造轮子。
+
+## 使用场景
+
+| 场景 | 用工具（单个） | 用工具集（Skill） |
+|------|--------------|------------------|
+| 给 Agent 加一项轻量能力 | 勾选 `strands_tools/file_read`、`strands_tools/http_request` 等单项工具 | — |
+| 构建一个领域型 Agent（如 HTML→PPTX 转换） | — | 整包引用 `html2pptx` 工具集，一次拿到解析、样式映射、布局、图像、缓存等 40+ 工具 |
+| 复用社区或 Anthropic/Claude Code 生态成果 | — | 从 GitHub 仓库批量导入，或迁移本地 Claude Code 的 Skill |
+| 把自研脚本打包给 Agent 用 | — | 按标准目录组织后上传成一个 Skill |
+| 给 Agent 加定时任务、时间函数 | 勾选 `strands_tools/current_time`、`strands_tools/calculator` | — |
+
+<!-- SCREENSHOT: tools-toolsets-overview -->
+
+## 如何使用
+
+### 1. 浏览工具与工具集
+
+左侧导航进入 **「工具」** 或 **「工具集（Skills）」** 页：
+
+1. 顶部标签切换 `system`（系统内置）/ `generated`（平台构建产出）/ `community`（导入）/ `private`（私有）。
+2. 搜索框按名称、描述、标签过滤；分类下拉按业务域筛选。
+3. 点击任意卡片查看详情：文件清单（prompt / scripts / references / agents / assets / evals / config）、内含工具、来源、版本、使用次数。
+
+<!-- SCREENSHOT: toolset-list -->
+
+### 2. 识别工具命名
+
+工具路径前缀能看出它的来源：
+
+| 前缀 | 含义 |
+|------|------|
+| `strands_tools/xxx` | 平台内置通用工具（文件、时间、计算器、HTTP、RSS……） |
+| `template_tools/<domain>/<module>/<fn>` | 模板自带的领域工具，如 `template_tools/data/visualization/chart_generator` |
+| `generated_tools/<agent_key>/<module>/<fn>` | 某生成型 Agent 专用工具，如 `generated_tools/html2pptx/pptx_generator/add_slide` |
+
+### 3. 在 Agent 中绑定工具
+
+创建或编辑 Agent 时，在 **「工具依赖」** 面板逐项勾选需要的工具或整包工具集：
+
+```yaml
+tools_dependencies:
+  - "strands_tools/file_read"
+  - "strands_tools/current_time"
+  - "template_tools/common/text_processor/text_analyzer"
+  - "generated_tools/html2pptx/html_parser/parse_html"
+```
+
+::: tip
+模板 Agent（如「深度研究专家」「API 集成专家」「HTML2PPTX 转换专家」）已预绑定一整套推荐工具组合，直接从模板创建即可。
+:::
+
+### 4. 导入外部工具集
+
+在工具集页面点 **「导入」**，选择来源：
+
+| 来源 | 需要的信息 | 行为 |
+|------|-----------|------|
+| GitHub（单个） | 仓库 URL + 仓库内路径 | 读取该路径下的 `SKILL.md` 与标准子目录 |
+| GitHub（批量） | 仓库 URL + 基础路径 | 扫描基础路径下每一个含 `SKILL.md` 的子目录，先预览再选择性导入 |
+| URL 直链 | 指向 `SKILL.md` 的 URL | 仅导入 `SKILL.md`，不含脚本或引用 |
+| Claude Code | 本地扫描路径列表 | 扫描路径下所有含 `SKILL.md` 的子目录 |
+| 本地目录 | 本机路径 | 递归收集标准结构下的文件 |
+
+<!-- SCREENSHOT: toolset-import -->
+
+导入成功后，平台会：
+
+1. 解析 `SKILL.md` 的 YAML frontmatter（`name` / `description` / `tools` / `version`）。
+2. 收集标准子目录：`scripts/`、`references/`、`assets/`、`agents/`、`eval-viewer/`、`evals/`、`config/`。
+3. 写入本地工作目录 + 上传到对象存储 + 登记元数据（三层同步）。
+4. 按来源自动创建或复用「分组」，同一 GitHub 仓库下的多个 Skill 归到同一分组。
+
+### 5. 运行工具集里的脚本
+
+含 `scripts/` 目录的工具集可以在 Agent 运行时执行脚本。平台按扩展名确定运行时：
+
+| 扩展名 | 运行时 |
+|--------|--------|
+| `.py` | `python` |
+| `.sh` | `bash` |
+| `.js` | `node` |
+| `.ts` | `npx ts-node` |
+
+在工具集详情页的 **「脚本」** 标签：
+
+1. 选择一个脚本，查看识别出的运行时。
+2. 填入命令行参数，点 **「执行」**。
+3. 查看 stdout / stderr、返回码、耗时。
+
+脚本在工具集本地目录内执行，平台自动注入三个环境变量：`SKILL_DIR`、`SKILL_NAME`、`SKILL_ID`，默认超时 120 秒。
+
+<!-- SCREENSHOT: skill-script-run -->
+
+### 6. 更新与删除
+
+- **再次导入**（相同来源）：平台识别为已存在，覆盖文件、刷新文件清单与内容哈希、更新摘要，分组归属保持不变。
+- **编辑后上传**：本地与对象存储同步覆盖。
+- **删除**：一次性清理本地目录、对象存储前缀、元数据记录，不可撤销。
+
+## 关键参数 / 限制
+
+| 项目 | 值 / 说明 |
+|------|----------|
+| 工具集类型 | `system`（官方内置）/ `generated`（平台构建产出）/ `community`（导入）/ `private`（私有） |
+| 来源类型 | `claude-code` / `github` / `url` / `manual` / `platform` |
+| 支持的标准子目录 | `scripts/`、`references/`、`assets/`、`agents/`、`eval-viewer/`、`evals/`、`config/` |
+| 必需文件 | `SKILL.md`（缺失则导入失败） |
+| 脚本运行时 | Python、Bash、Node.js、TypeScript（按扩展名识别） |
+| 脚本默认超时 | 120 秒，调用时可覆盖 |
+| 输出截断 | 命令模式下 stdout 保留末 5000 字符、stderr 保留末 2000 字符 |
+| L1 摘要长度 | ≤ 200 字符，列表页只返回 L1 字段，详情页再加载完整 prompt |
+| 批量导入来源 | 仅支持 GitHub |
+| URL 导入范围 | 仅抓取 `SKILL.md`，不含脚本或引用 |
+
+## 常见问题
+
+**Q：「工具」和「工具集（Skill）」到底什么区别？**
+A：工具是最小颗粒的一个可调用函数（如 `file_read`）。工具集是带 `SKILL.md` 的目录，里面可同时包含多个工具、脚本、参考资料和示例 Agent。给 Agent 加零散能力用工具；装一整套领域能力用工具集。
+
+**Q：导入 GitHub 仓库时提示 "No SKILL.md found" 怎么办？**
+A：检查你给的「仓库内路径」是否直接指向包含 `SKILL.md` 的那一层目录。批量模式下平台只把「基础路径」下**直接含 `SKILL.md`** 的子目录识别为 Skill。
+
+**Q：脚本在哪里运行？会影响我本地电脑吗？**
+A：不会。脚本运行在平台为该 Skill 分配的工作目录里，通过子进程隔离执行，并有超时保护。你本地机器不受影响。
+
+**Q：为什么列表页看不到完整系统提示词，进详情页才出现？**
+A：列表走 L1 摘要（名称、描述、标签、工具清单等轻量字段），详情页按需加载 L2 的完整 prompt，以加快列表加载速度、降低数据库读取成本。
+
+**Q：同一个 Skill 重复导入会怎样？**
+A：平台按名称与来源定位已有记录并执行更新，覆盖文件、刷新 `file_manifest` 与内容哈希，而不是创建重复项。
+
+**Q：怎么自己做一个工具集上传？**
+A：按 Anthropic Agent Skills 规范组织目录：顶层放 `SKILL.md`（带 YAML frontmatter），其余文件放到上表列出的标准子目录。然后从 **「本地目录」** 导入，或推到 GitHub 仓库再通过 GitHub 来源导入。
+
+
+========== features/workflow-engine.md ==========
+
+---
+title: 工作流引擎
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - config/workflows.yaml
+    - nexus_utils/workflow/**
+  generated_at: 2026-05-08T15:40:11+00:00
+  generated_by: docs-sync v2
+---
+
+# 工作流引擎
+
+## 这是什么
+
+工作流引擎是 Nexus-AI 把「一句自然语言需求」拆成若干可追踪阶段并按顺序跑完的调度中枢。当你在平台上发起「构建 Agent」「更新 Agent」「构建工具」「构建 Skill」或用「Magician 智能路由」自动分流时，后台都是工作流引擎按预定义阶段推进：意图识别 → 需求分析 → 设计 → 开发 → 验证 → 部署，并在过程中保存上下文、聚合指标、响应暂停/恢复/停止等控制信号。
+
+## 使用场景
+
+| 场景 | 工作流引擎帮你做什么 |
+| --- | --- |
+| 首次描述一个 Agent 需求 | 走 `Agent 构建工作流`：意图识别、需求分析、架构设计、Agent 设计、工具开发、提示词开发、代码开发、部署共 8 个阶段 |
+| 想改已有 Agent 的能力或提示词 | 走 `Agent 更新工作流`：更新编排、需求更新、工具更新、提示词更新、部署共 5 个阶段，可选择跳过其中的工具/提示词阶段 |
+| 想单独构建一个工具函数 | 走 `工具构建工作流`：意图识别 → 设计 → 开发 → 验证 → 部署，5 个阶段 |
+| 想构建一个 Claude 风格 Skill | 走 `Skill 构建工作流`：意图识别 → 设计 → 开发 → 验证 → 部署，5 个阶段 |
+| 不确定需求对应哪种工作流 | 走 `Magician 智能路由`：自动识别意图并分发到合适的工作流 |
+| 长任务跑一半想中断或回看 | 支持暂停、恢复、停止；每一步的输出、token 消耗、执行耗时都会被完整保存，可从任意已完成阶段继续 |
+| 多 Agent 项目并行构建 | 架构设计阶段会按 Agent 数量自动 fork，开发阶段并行推进，部署前汇聚（join） |
+
+## 如何使用
+
+### 方式一：一次性跑完整个工作流
+
+<!-- SCREENSHOT: workflow-engine-run-full -->
+
+1. 在「新建项目」页面选择目标工作流（Agent 构建 / 工具构建 / Skill 构建 / Agent 更新 / Magician）。
+2. 用自然语言写下你的需求，描述越具体，意图识别阶段越准。
+3. 提交后工作流引擎会按配置的阶段顺序依次推进，直到最后一个阶段完成。
+4. 在项目详情页可以实时看到：
+   - 当前阶段与已完成阶段列表；
+   - 每个阶段的输入/输出 token、执行耗时、工具调用次数；
+   - 聚合后的总 token 消耗、总耗时、总工具调用次数。
+
+### 方式二：从某个阶段开始执行
+
+当某个阶段的结果你想重新生成（比如提示词改了、工具需求变了），可以从该阶段重新跑：
+
+1. 进入项目详情页。
+2. 点击某个已完成阶段右侧的 `从此处重跑`。
+3. 平台会校验其前置阶段是否都已完成；若缺失前置，会提示你先补齐（或从更早的阶段重跑）。
+4. 确认后，工作流引擎会从该阶段开始，一路执行到结束。
+
+::: tip 前置校验是硬性约束
+每个阶段在工作流配置里都有 `prerequisites`。例如 `代码开发` 依赖 `提示词开发`，没有提示词就不能开工。如果你试图跳过前置，平台会直接拒绝并告诉你缺了哪些阶段。
+:::
+
+### 方式三：暂停、恢复、停止
+
+<!-- SCREENSHOT: workflow-engine-pause-resume -->
+
+在长任务（尤其是工具/提示词/代码开发阶段，可能跑几分钟甚至几十分钟）中：
+
+1. 点击项目页顶部的 `暂停`。当前阶段完成后工作流会停在那里，不再触发下一阶段。
+2. 点击 `恢复`，工作流从下一个待执行阶段继续。
+3. 点击 `停止`，工作流会在当前 LLM 调用结束后整单停下，状态标记为 `stopped`，不会再自动推进。
+4. 任何时候都可以在项目页查看当前控制状态：`running` / `paused` / `stopped` / `cancelled`。
+
+### 方式四：多 Agent 项目的 fork / join
+
+当你的需求需要多个协作 Agent（例如主 Agent + 若干子 Agent），`Agent 构建工作流` 会自动按以下规则并行：
+
+1. `系统架构设计` 完成后，平台读取架构里的 Agent 清单。
+2. 对每个 Agent 并行执行 `Agent 设计 → 工具开发 → 提示词开发 → 代码开发` 四个 agent-scope 阶段。
+3. 所有 Agent 的代码开发都完成后，自动汇聚（join）进入 `Agent 部署` 阶段，统一部署。
+4. 项目页的进度视图会按 Agent 分组显示每个 Agent 当前走到了哪一步、总进度百分比。
+
+### 方式五：Magician 智能路由
+
+如果你描述的是一个混合需求（"给我做个能查天气再根据天气推荐穿搭的 Agent"之类），可以把它交给 Magician：
+
+1. 在「新建项目」选择 `Magician 智能路由`。
+2. 输入完整需求。
+3. Magician 会识别你的意图——新建 Agent、更新 Agent，还是只做工具？然后自动跳转到对应的工作流继续跑后续阶段。
+
+## 关键参数 / 限制
+
+### 工作流与阶段
+
+| 工作流 | 阶段数 | 阶段顺序 |
+| --- | --- | --- |
+| Agent 构建工作流 V2 | 8 | 意图识别 → 需求深度分析 → 系统架构设计 → Agent 设计 → 工具开发 → 提示词开发 → 代码开发 → Agent 部署 |
+| Agent 更新工作流 V2 | 5 | 更新编排 → 需求更新分析 → 工具更新 → 提示词更新 → 更新部署 |
+| 工具构建工作流 V2 | 5 | 意图识别 → 工具设计 → 工具开发 → 工具验证 → 工具部署 |
+| Skill 构建工作流 | 5 | 意图识别 → Skill 设计 → Skill 开发 → Skill 验证 → Skill 部署 |
+| Magician 智能路由 | 1 | 智能编排（自动路由到其它工作流） |
+
+### 阶段属性
+
+| 属性 | 含义 |
+| --- | --- |
+| `scope` | `project`（项目级，全局一次）或 `agent`（Agent 级，每个 Agent 执行一次） |
+| `prerequisites` | 必须先完成的前置阶段列表；未完成时当前阶段无法启动 |
+| `supports_iteration` | 阶段是否支持多轮迭代（工具/提示词/代码开发默认为 true） |
+| `optional` | 阶段是否可跳过（`Agent 更新工作流` 中的工具更新、提示词更新为可选） |
+| `fork_on_complete` | 完成后按 Agent 数量 fork 出并行分支（`系统架构设计` 为 true） |
+| `join_after_complete` / `join_before_start` | 是否在此处汇聚所有 Agent 分支（`代码开发` 完成后汇聚，`Agent 部署` 开始前汇聚） |
+| `rule_keys` | 注入到阶段上下文的规则键，如 `directory_rules`、`generation_rules`、`cache_rules`、`external_resources`、`custom_rules` |
+
+### 默认运行时配额
+
+| 配额 | 默认值 | 说明 |
+| --- | --- | --- |
+| 单阶段失败最大重试次数 | 3 | 达到上限后整单标记为 `failed` |
+| 重试间隔 | 5 秒 | 两次重试之间的等待时间 |
+| 单阶段超时 | 3600 秒（1 小时） | 超时即判定为失败 |
+| 总工作流超时 | 21600 秒（6 小时） | 整个工作流的墙钟上限 |
+| 检查点保存间隔 | 60 秒 | 执行过程中多久落一次状态 |
+| 上下文最大 token | 100000 | 注入给 Agent 的上下文上限 |
+| 摘要触发阈值 | 5000 token | 单个已完成阶段输出超过此值会自动摘要 |
+| 阶段输出最大内联大小 | 400 KB | 超过后内容改为引用外部对象存储 |
+
+### 工作流与控制状态
+
+| 状态类型 | 可能值 | 含义 |
+| --- | --- | --- |
+| 阶段/项目状态 | `pending` / `running` / `completed` / `failed` / `paused` | 对应阶段生命周期 |
+| 控制状态 | `running` / `paused` / `stopped` / `cancelled` | 对应用户的暂停、停止、取消操作 |
+
+## 常见问题
+
+**Q1：我从某个阶段重跑，前置阶段需要重新跑吗？**
+A：不需要。只要前置阶段在历史里是 `completed` 状态，引擎就认为可用，直接从你指定的阶段开始。但如果前置其实从未完成，或你改了更早阶段的输出，必须先把前置跑完，引擎会拒绝跳步执行。
+
+**Q2：暂停和停止有什么区别？**
+A：暂停是「做完手头这个阶段就停」，恢复后从下一个待执行阶段继续，常用于想中途查看结果。停止是「做完当前这次 LLM 调用就收尾」，整单状态变成 `stopped`，不会自动恢复；如果想继续，需要手动从某阶段重跑。
+
+**Q3：`Agent 更新工作流` 能只改提示词、不改工具吗？**
+A：可以。更新编排阶段会分析你的需求，自动决定哪些阶段可以跳过（`skip_stages`）。工具更新、提示词更新在配置里标记为 `optional: true`，只有需要时才会执行，被跳过的阶段不会消耗额度。
+
+**Q4：多 Agent 项目里有一个 Agent 构建失败，其它会怎样？**
+A：每个 Agent 分支互相独立，一个 Agent 在工具/提示词/代码开发阶段失败，只会把它自己的阶段标记为 `failed`，不影响其它 Agent 继续推进。但 `Agent 部署` 阶段是 join 汇聚点，只有所有 Agent 的代码开发都成功才会触发统一部署；否则部署会等到你把失败的 Agent 修好再重跑。
+
+**Q5：阶段输出的执行指标去哪看？**
+A：每个阶段完成后都会记录 `input_tokens` / `output_tokens` / `execution_time_seconds` / `tool_calls_count` / `model_id`；项目页的概览卡片会把它们聚合为总 token、总成本、总耗时、总工具调用次数。
+
+
 ========== getting-started/aws-setup.md ==========
 
 ---
@@ -2097,6 +4348,1237 @@ features:
 </style>
 
 
+========== integrations/aws-bedrock.md ==========
+
+---
+title: AWS Bedrock 模型接入
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - config/model_catalog.yaml
+    - nexus_utils/agent_factory.py
+  generated_at: 2026-05-08T22:29:34+00:00
+  generated_by: docs-sync v2
+---
+
+# AWS Bedrock 模型接入
+
+## 概述
+
+AWS Bedrock 是 Nexus-AI 默认且唯一开箱即用的模型推理入口。平台上所有 Agent 的对话、工具调用、多模态输入，最终都通过 Bedrock 统一访问 Claude、Nova、Llama、Mistral、DeepSeek、Qwen、Gemma、GPT OSS 等模型。不开 Bedrock，平台无法启动；切换到其它提供商（OpenAI、Anthropic 直连、Gemini 等）属于可选扩展。
+
+模型清单维护在 `config/model_catalog.yaml`，前端「模型选择」下拉菜单从这份目录加载；运行时参数（区域、重试、超时、Prompt Caching）落在 `config/default_config.yaml` 的 `aws` 与 `bedrock` 两个小节。本页讲的就是这两份文件怎么填，以及接入出问题后从哪一步开始查。
+
+## 启用前提
+
+开始前请确认：
+
+- 一个可用的 AWS 账号，默认区域为 **`us-west-2`（俄勒冈）**，Claude 4.5/4.6 与 Nova 2 在该区域支持最完整。
+- 已在 `AWS Console → Bedrock → Model access` 申请并获批你要用的模型（至少覆盖 `bedrock.model_id` / `bedrock.small_model_id` / `bedrock.large_model_id` 这三个默认模型键）。
+- 运行 Nexus-AI 服务的身份（EC2 Instance Profile 或本地 AWS CLI 凭证）具备以下 Bedrock 权限：
+  - `bedrock:InvokeModel`
+  - `bedrock:InvokeModelWithResponseStream`
+  - `bedrock:ListFoundationModels`
+- 本地或容器内可直达 `https://bedrock-runtime.<region>.amazonaws.com`（企业网络下需放行出站 HTTPS）。
+
+::: tip 凭证如何刷新
+主机部署（EC2）走 IAM Instance Profile，凭证由 AWS 自动轮换；Sandbox VM 内通过环境变量定期刷新。两种模式下都无需手动配置长期 Access Key。
+:::
+
+## 配置步骤
+
+### 1. 申请模型访问
+
+进入 `AWS Console → Bedrock → Model access → Manage model access`，至少勾选你将使用的模型。默认部署会调用下表中三款 Claude，强烈建议一并申请：
+
+| 用途 | 模型 ID |
+|------|---------|
+| 默认模型 | `us.anthropic.claude-sonnet-4-5-20250929-v1:0` |
+| 轻量模型 | `us.anthropic.claude-haiku-4-5-20251001-v1:0` |
+| 专业模型 | `us.anthropic.claude-opus-4-5-20251101-v1:0` |
+
+<!-- SCREENSHOT: bedrock-model-access -->
+
+### 2. 填写 `aws` 小节
+
+打开 `config/default_config.yaml`，在 `aws` 小节写入区域：
+
+```yaml
+aws:
+  aws_region_name: us-west-2        # 其它 AWS 资源使用的区域
+  bedrock_region_name: us-west-2    # Bedrock 专用区域，可与上方不同
+  aws_profile_name: ""              # 留空表示使用默认凭证链
+```
+
+::: info 为什么分两个 region
+Bedrock 的可用区域独立于其它 AWS 服务。例如你的 DDB/Aurora 在 `ap-northeast-1`，但 Bedrock 仍可配置为 `us-west-2` 直接跨区调用。
+:::
+
+### 3. 填写 `bedrock` 小节
+
+在同一份配置文件中新增或修改 `bedrock` 小节：
+
+```yaml
+bedrock:
+  # 各 Agent 会引用的默认模型键（可以自由增减键名，只要 agent 配置里引用一致即可）
+  model_id: us.anthropic.claude-sonnet-4-5-20250929-v1:0
+  small_model_id: us.anthropic.claude-haiku-4-5-20251001-v1:0
+  large_model_id: us.anthropic.claude-opus-4-5-20251101-v1:0
+
+  # boto3 连接层配置
+  connect_config:
+    connect_timeout: 10    # 秒，建立 TCP 连接的超时
+    read_timeout: 300      # 秒，等待模型响应的超时
+    retries:
+      max_attempts: 5      # 最大重试次数（含首次）
+      mode: adaptive       # legacy / standard / adaptive
+
+  # Prompt Caching（可选）
+  prompt_caching:
+    enabled: true
+    cache_system_prompt: true
+    cache_tools: true
+```
+
+::: warning `read_timeout` 的经验值
+流式输出和长推理任务建议至少 `300` 秒。设置过短会在 Opus 深度推理、长文档总结等场景触发 `Read timeout` 异常。
+:::
+
+### 4. 选择模型 ID（可选）
+
+平台自带的模型清单位于 `config/model_catalog.yaml`，前端「模型选择」下拉菜单从中加载。按提供商分组的主要模型：
+
+| 提供商 | 代表模型 | 支持视觉 | 档位 |
+|--------|---------|---------|------|
+| Anthropic | Claude Opus 4.6 / 4.5、Sonnet 4.6 / 4.5、Haiku 4.5 | ✔ | pro / standard / lite |
+| Amazon | Nova Pro、Nova 2 Lite、Nova Lite、Nova Micro | ✔（Micro 除外）| standard / lite |
+| Meta | Llama 4 Maverick 17B、Llama 3.3 70B、Llama 3.1 405B/70B/8B | 仅 Llama 4 系列 | pro / standard / lite |
+| Mistral | Mistral Large 3、Pixtral Large、Devstral 2、Ministral 3 | 部分 | pro / standard / lite |
+| DeepSeek | DeepSeek V3.2、V3 | — | standard |
+| Qwen | Qwen3 235B、Qwen3 VL 235B、Qwen3 Coder 480B/30B | Qwen3 VL | pro / standard / lite |
+| Google | Gemma 3 27B / 12B / 4B | ✔ | standard / lite |
+| NVIDIA | Nemotron Super 120B、Nemotron Nano 30B/12B | 仅 Nano 12B | pro / standard / lite |
+| OpenAI | GPT OSS 120B / 20B | — | pro / standard |
+| Moonshot | Kimi K2 Thinking、Kimi K2.5 | 仅 K2.5 | pro / standard |
+| MiniMax | MiniMax M2.5 / M2.1 | — | standard |
+| Writer | Palmyra X5 / X4 | — | standard |
+| Z.AI | GLM 5、GLM 4.7、GLM 4.7 Flash | — | standard / lite |
+
+带 `global.` 前缀的 ID 为全球跨区推理端点（Global Inference），不带前缀或带 `us.` 前缀的为单区/美国跨区端点。若某个全球模型在你当前区域不可用，优先尝试对应的 `us.*` 版本。
+
+::: tip 自定义模型目录
+如果你的账号已申请了 `config/model_catalog.yaml` 里没有列出的模型，直接编辑该文件即可。前端下拉菜单有「刷新」按钮，改完无需重启服务。
+:::
+
+### 5. Prompt Caching（可选但建议）
+
+Bedrock 的 Prompt Caching 能把系统提示词与工具定义缓存 5 分钟，显著降低成本：
+
+| 行为 | 费率 |
+|------|------|
+| 首次写入缓存 | 1.25× 标准价 |
+| 5 分钟内命中缓存 | 0.1× 标准价（90% 折扣） |
+
+当前支持 Prompt Caching 的模型族：
+
+- Anthropic Claude 3.5 / 4 / 4.5（Sonnet / Opus / Haiku）
+- Amazon Nova（Pro / Lite / Micro）
+
+其它模型族（Titan / Llama / Mistral / Cohere / AI21）即使把 `prompt_caching.enabled` 设为 `true`，平台也会自动跳过缓存参数，不会报错。
+
+### 6. 重启服务
+
+改完配置后让运行时生效：
+
+```bash
+./nexus-cli service restart
+```
+
+## 验证
+
+从浅到深三步确认接入跑通。
+
+### 步骤 1：CLI 级验证
+
+确认当前身份能列出 Bedrock 模型：
+
+```bash
+aws bedrock list-foundation-models --region us-west-2 | head -40
+```
+
+能看到成百上千个模型条目就说明 IAM 权限与区域均正常。若报 `AccessDenied`，回到「启用前提」检查 IAM。
+
+### 步骤 2：服务级验证
+
+```bash
+./nexus-cli service status
+```
+
+API / Worker / Web 三项都应显示 `running`。如果 API 起不来，先查本地日志：
+
+```bash
+./nexus-cli service logs --api -f
+```
+
+重点搜索 `bedrock`、`boto`、`Could not connect` 等关键字。
+
+### 步骤 3：端到端 Agent 验证
+
+运行一个内置 Agent 完整走一遍推理链路：
+
+```bash
+source .venv/bin/activate
+python agents/system_agents/magician.py -i "Hello"
+```
+
+能返回中文/英文回复即代表 Bedrock + Agent Factory + 工具加载全部正常。
+
+<!-- SCREENSHOT: bedrock-agent-response -->
+
+## 故障排查
+
+| 现象 | 可能原因 | 建议操作 |
+|------|---------|---------|
+| 启动日志报 `AccessDeniedException` | IAM 身份缺少 `bedrock:InvokeModel` 等权限 | 对照「启用前提」补齐 Instance Profile 权限 |
+| `Could not connect to the endpoint URL "https://bedrock-runtime.xxx.amazonaws.com"` | `aws.bedrock_region_name` 填错，或该区域未开通 Bedrock | 改回 `us-west-2`，或在目标区域申请模型访问 |
+| `ValidationException: The provided model identifier is invalid` | 模型 ID 拼写错误；或该模型未在当前区域开放 | 在 AWS Console 的 Bedrock → Model catalog 搜索正确 ID，确认区域支持 |
+| `ThrottlingException: Too many requests` | 命中 Bedrock 账号级 QPS / TPM 限额 | 申请配额提升；或把 `bedrock.connect_config.retries.mode` 改为 `adaptive` 让 SDK 自动退避 |
+| 长推理场景报 `Read timeout on endpoint URL` | `read_timeout` 过低 | 把 `bedrock.connect_config.read_timeout` 调高到 300 秒以上 |
+| 切到 Haiku 4.5 后报 `ModelStreamErrorException` | 该模型不支持流式工具调用 | 无需改配置，平台会自动降级为非流式调用；或在 Agent 配置里显式关闭流式 |
+| Prompt Caching 没有任何命中 | 选用的模型族不在 Claude / Nova 名单中 | 换成 Claude 或 Nova；其它模型族即使配置 `enabled: true` 也不会触发缓存 |
+| 明明申请了模型，却提示 `access to the model isn't authorized` | Bedrock Model access 的申请没走完/被驳回 | 回到 `Bedrock → Model access` 确认状态为 `Access granted` |
+| 跨区调用报 `inference profile not found` | 你引用了 `global.*` 前缀的 ID，但账号未开通全球跨区推理 | 切回 `us.*` 前缀的同名模型 ID |
+| Sandbox VM 内调用 Bedrock 报凭证过期 | VM 凭证轮换失败 | 查看 VM 内的凭证刷新日志，必要时重启 Sandbox 节点 |
+
+::: info 从哪里开始查
+排查顺序永远是：AWS CLI 能不能通 → Nexus-AI 服务进程能不能起 → Agent 能不能返回。在前两步没通之前，不要怀疑 Agent 或工具配置。
+:::
+
+
+========== integrations/data-stores.md ==========
+
+---
+title: 数据存储
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - api/v2/database/**
+    - config/default_config.yaml
+  generated_at: 2026-05-08T22:40:56+00:00
+  generated_by: docs-sync v2
+---
+
+# 数据存储
+
+## 概述
+
+Nexus-AI 的数据层由四个存储系统组成，共同支撑元数据、业务关系数据、缓存与异步任务队列：
+
+| 存储 | 用途 |
+| --- | --- |
+| **Aurora PostgreSQL Serverless v2** | 项目 / Agent / Session / Message 等关系数据，支持 JOIN、聚合与复杂查询 |
+| **DynamoDB** | 键值查询、事件调度、审计、Tools / Keys 等高频写入表 |
+| **ElastiCache Valkey Serverless** | 缓存层（Cache-Aside）、分布式锁、Redis Streams、Pub/Sub |
+| **SQS** | 构建任务、部署任务、通知任务的异步消息队列 |
+
+Aurora 与 DynamoDB 为必需项；Valkey 缺省时缓存与流事件功能自动降级为直查数据库；SQS 用于构建/部署两条长任务流水线。
+
+## 启用前提
+
+- 已完成 Nexus-AI 控制台部署，并具备对目标 AWS 账户的管理员权限。
+- 目标 AWS 区域（默认 `us-west-2`）启用了 Aurora PostgreSQL、DynamoDB、ElastiCache、SQS 服务。
+- 控制台服务器可出站访问 Aurora 与 Valkey 的端点（VPC 内或通过 Endpoint / 公网 + TLS）。
+- 准备好以下凭证或策略（二选一）：
+  - EC2 IAM Role（推荐生产环境）——角色需具备 DynamoDB、SQS 操作权限。
+  - `aws_access_key_id` / `aws_secret_access_key` 静态密钥对（仅限测试）。
+- Aurora 数据库实例已创建，已导入 15 张迁移表的结构（`projects`、`stages`、`agents`、`sessions`、`messages`、`attachments`、`skills`、`skill_groups`、`users`、`favorites`、`groups` 等）。
+
+::: warning
+Aurora 凭证应存放在密钥管理服务中，再通过环境变量 `NEXUS_AURORA_PASSWORD`、`NEXUS_AURORA_HOST` 注入，避免写入明文配置文件。
+:::
+
+## 配置步骤
+
+### 第 1 步：配置 AWS 区域与凭证
+
+编辑 `config/default_config.yaml` 的 `aws` 段，指定部署区域与访问方式：
+
+```yaml
+aws:
+  aws_region_name: us-west-2        # 控制所有 AWS 客户端（DynamoDB/SQS/S3/...）
+  bedrock_region_name: us-west-2
+  aws_profile_name: ''              # EC2 IAM Role 环境保持为空
+  aws_access_key_id: ''             # 测试环境可填入
+  aws_secret_access_key: ''
+  endpoint_url: ''                  # 非标准端点（如 LocalStack）时填入
+  verify: true
+```
+
+::: tip
+`aws_region_name` 的优先级高于 `AWS_REGION` 环境变量；当控制台运行在 EC2 IAM Role 上且 `~/.aws/config` 不存在 `default` profile 时，务必保持 `aws_profile_name` 为空。
+:::
+
+### 第 2 步：配置 Aurora PostgreSQL
+
+编辑 `config/default_config.yaml` 的 `aurora` 段：
+
+```yaml
+aurora:
+  host: 'my-nexus-demo-db.cluster-xxxxxxxx.us-west-2.rds.amazonaws.com'
+  port: 5432
+  database: nexus
+  username: nexus_admin
+  password: ''                      # 留空则读取环境变量 NEXUS_AURORA_PASSWORD
+  min_connections: 2
+  max_connections: 20
+  ssl: true
+```
+
+启动前导出环境变量（推荐方式）：
+
+```bash
+export NEXUS_AURORA_HOST="my-nexus-demo-db.cluster-xxxxxxxx.us-west-2.rds.amazonaws.com"
+export NEXUS_AURORA_PASSWORD="<your-db-password>"
+```
+
+::: info
+当 `NEXUS_AURORA_HOST` 未设置且 `host` 字段为空时，控制台保留 DynamoDB 实现，不会启用 Aurora 代理层。
+:::
+
+### 第 3 步：配置 DynamoDB 表前缀
+
+编辑 `dynamodb` 段，调整表前缀与表名映射：
+
+```yaml
+dynamodb:
+  table_prefix: nexus_
+  tables:
+    tasks: tasks
+    tools: tools
+    clarifications: clarifications
+    dynamic_configs: dynamic_configs
+    event_jobs: event_jobs
+    event_tasks: event_tasks
+    remote_connections: remote_connections
+    connectors: connectors
+    keys: keys
+    key_usage_logs: key_usage_logs
+    directives: directives
+    mcp_servers: mcp_servers
+    system_configs: system_configs
+    backup_shares: backup_shares
+    file_shares: file_shares
+    bridge_command_rules: bridge_command_rules
+    sandbox_instances: sandbox_instances
+    sandbox_logs: sandbox_logs
+    sandbox_nodes: sandbox_nodes
+    session_template_bindings: session_template_bindings
+```
+
+最终表名为 `<table_prefix><table_name>`，例如 `nexus_tasks`。若相同账户部署多套环境，建议使用不同前缀（如 `nexus_prod_`、`nexus_dev_`）隔离。
+
+### 第 4 步：配置 SQS 队列
+
+编辑 `sqs` 段：
+
+```yaml
+sqs:
+  queue_prefix: nexus-
+  queues:
+    build: build-queue              # 最终队列名：nexus-build-queue
+    deploy: deploy-queue
+    notification: notification-queue
+  dlq:
+    build: build-dlq
+    deploy: deploy-dlq
+  build_visibility_timeout: 3600    # 单次构建任务最长可见性 1 小时
+  deploy_visibility_timeout: 600
+  visibility_timeout: 3600
+  message_retention_days: 14
+  max_retry_count: 3
+```
+
+| 字段 | 说明 |
+| --- | --- |
+| `queue_prefix` | 所有队列名的前缀 |
+| `build_visibility_timeout` | 构建任务可见性超时（秒），超时未确认将重新投递 |
+| `max_retry_count` | 投递 DLQ 前的最大重试次数 |
+| `message_retention_days` | 消息保留天数（1–14） |
+
+::: warning
+`build_visibility_timeout` 必须大于 Worker 处理单个构建任务的最长时间，否则会出现重复执行。
+:::
+
+### 第 5 步：配置 Valkey 缓存（可选）
+
+编辑 `valkey` 段：
+
+```yaml
+valkey:
+  endpoint: 'nexus-cache.serverless.use1.cache.amazonaws.com'
+  port: 6379
+  ssl: true
+  decode_responses: true
+  max_connections: 50
+```
+
+或通过环境变量覆盖：
+
+```bash
+export NEXUS_VALKEY_ENDPOINT="nexus-cache.serverless.use1.cache.amazonaws.com"
+```
+
+当 `endpoint` 与 `NEXUS_VALKEY_ENDPOINT` 均为空时，缓存层自动禁用，所有读请求直接命中 Aurora/DynamoDB。
+
+### 第 6 步：重启服务
+
+```bash
+systemctl restart nexus-ai-api
+systemctl restart nexus-ai-worker
+```
+
+## 验证
+
+### 1. 控制台健康检查
+
+登录 Nexus-AI 控制台，进入 **系统 → 健康检查**，确认以下四项状态为 `healthy`：
+
+<!-- SCREENSHOT: data-stores-health-check -->
+
+- Aurora PostgreSQL
+- DynamoDB
+- Valkey 缓存（或显示为"未配置"）
+- SQS
+
+### 2. Aurora 连接验证
+
+控制台启动日志中应出现：
+
+```text
+Aurora 连接池已初始化 (host=my-nexus-demo-db.cluster-xxxx.us-west-2.rds.amazonaws.com)
+Aurora 代理已启用: 12 张迁移表的方法已委托到 PostgresClient
+```
+
+若只看到 `Aurora host 未配置，保留 DynamoDB 实现`，说明 host 未正确注入，请检查环境变量与 YAML 配置的覆盖顺序。
+
+### 3. DynamoDB 连接验证
+
+```bash
+aws dynamodb list-tables --region us-west-2 | grep nexus_
+```
+
+应列出以 `nexus_` 开头的所有表（如 `nexus_tasks`、`nexus_tools`、`nexus_keys`）。
+
+### 4. SQS 队列验证
+
+```bash
+aws sqs list-queues --region us-west-2 --queue-name-prefix nexus-
+```
+
+应看到 `nexus-build-queue`、`nexus-deploy-queue`、`nexus-build-dlq` 等队列 URL。
+
+### 5. Valkey 连接验证
+
+控制台启动日志中应出现：
+
+```text
+Valkey 缓存已连接 (endpoint=nexus-cache.serverless.use1.cache.amazonaws.com)
+```
+
+或新建一个项目后，在 **系统 → 缓存监控** 面板中看到 `project:dashboard:<id>` 等 key 被写入。
+
+### 6. 端到端验证
+
+1. 在控制台创建一个测试 Agent，提交一条构建任务。
+2. 任务应被写入 `nexus-build-queue`，控制台日志打印 `Sent message to nexus-build-queue: <message-id>`。
+3. Worker 消费后，Aurora `agents` 表新增一行记录（可通过 **Agent 列表** 页查看）。
+4. 控制台 Dashboard 数据刷新时命中 Valkey（响应时间 < 50 ms）。
+
+## 故障排查
+
+| 问题 | 可能原因 | 解决方法 |
+| --- | --- | --- |
+| 启动日志 `Aurora host 未配置` | `aurora.host` 为空且未设置 `NEXUS_AURORA_HOST` | 设置环境变量或填写 YAML `host` 字段 |
+| `ProfileNotFound: default` | EC2 IAM Role 环境下配置了 `aws_profile_name: default` | 将 `aws_profile_name` 置为空字符串 |
+| Aurora 连接拒绝 / 超时 | 安全组未放行 5432 端口、或子网不互通 | 检查 RDS 安全组、VPC 路由；若跨 VPC 部署，启用 PrivateLink |
+| DynamoDB 写入返回 `ProvisionedThroughputExceededException` | 表配置为 Provisioned 且容量不足 | 切换为按需容量，或上调 RCU/WCU；客户端已带自动退避重试 |
+| `Queue <name> does not exist` | 队列未创建或 `queue_prefix` 不一致 | 通过部署脚本重新建队列，确保 `queue_prefix + name` 与实际一致 |
+| SQS 消息被重复消费 | `build_visibility_timeout` 短于 Worker 处理耗时 | 上调 `build_visibility_timeout`，或在 Worker 内定期 `change_message_visibility` 续租 |
+| Valkey 启动日志 `缓存层禁用` | `endpoint` 为空或网络不通 | 填入 endpoint；检查 ElastiCache 安全组、TLS 设置 |
+| Valkey 连接偶发 `Timeout` | 流事件长轮询默认 socket_timeout 5s | 控制台已内置独立的 stream_client（60s 超时），升级到最新版本即可 |
+| 列表接口缓存未失效 | 写操作未触发 `invalidate_*` | 检查写路径是否调用了对应缓存失效方法；必要时通过 **缓存监控** 面板手动清除 |
+| 跨环境数据污染 | 多套环境共用表前缀或队列前缀 | 为不同环境设置不同的 `dynamodb.table_prefix` 与 `sqs.queue_prefix` |
+
+::: tip
+所有客户端均为线程安全单例，支持多进程部署。修改配置后必须重启 API 服务与 Worker，连接池才会使用新配置。
+:::
+
+
+========== integrations/index.md ==========
+
+---
+title: 集成
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - (chapter index — aggregated)
+  generated_at: 2026-05-08T22:43:13+00:00
+  generated_by: docs-sync v2
+---
+
+# 集成
+
+Nexus-AI 不是一个自给自足的系统，它的绝大多数能力——模型推理、身份认证、数据存储、对外协议——都来自与外部服务的集成。本章节按服务维度把每一项集成独立成页：它是做什么的、为什么必须开启或可选、怎么在配置文件里填参数、怎么验证跑通、出了问题从哪里查。
+
+如果你是刚上手的部署者，建议从 [集成总览](./overview) 读起，按"必须 → 推荐 → 可选"的顺序逐一打通；如果你已经有一套跑起来的环境，只想补一项能力（例如接入 SSO、把 Agent 暴露给 IDE），直接跳到对应页面即可。
+
+## 本章节文档
+
+| 文档 | 简介 |
+|------|------|
+| [集成总览](./overview) | 把所有集成按"必须 / 推荐 / 可选"三档分类，给出一张统一的决策表。 |
+| [AWS Bedrock 模型接入](./aws-bedrock) | 平台默认且唯一开箱即用的模型推理入口，覆盖 Claude、Nova、Llama、Mistral、DeepSeek、Qwen 等全系列。 |
+| [外部 MCP 服务器](./mcp-clients) | 让平台 Agent 调用外部 MCP 服务器的工具，支持 stdio / SSE / Streamable HTTP 三种传输。 |
+| [Agent as MCP Tool](./mcp-server) | 反向把平台上运行中的 Agent 暴露成 MCP 工具，Claude Code、Kiro、Cursor 等客户端可直接调用。 |
+| [SSO (SAML 2.0)](./sso-saml) | 通过 SAML 2.0 对接企业 IdP，用 SSO 替换默认账号密码登录，按 RBAC 角色分权。 |
+| [数据存储](./data-stores) | 平台数据层四件套：Aurora PostgreSQL、DynamoDB、ElastiCache Valkey、SQS，各自承担关系、键值、缓存、队列。 |
+
+
+========== integrations/mcp-clients.md ==========
+
+---
+title: 外部 MCP 服务器
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - config/mcp/**
+    - nexus_utils/mcp/mcp_client/**
+  generated_at: 2026-05-08T22:32:37+00:00
+  generated_by: docs-sync v2
+---
+
+# 外部 MCP 服务器
+
+## 概述
+
+除了可以把 Nexus-AI 的 Agent 暴露给 Kiro / Claude Code / Cursor 之外（见 [MCP Server](./mcp-server)），平台也能反过来——让 Agent 调用任何一个 **外部 MCP 服务器**，把外部能力作为工具集接入对话。构建 Agent 时在「工具」面板把某个 MCP 服务器挂进依赖列表，该服务器暴露的所有工具就会自动加载到这个 Agent 的运行时中。
+
+Nexus-AI 同时支持 **三种 MCP 传输**（stdio / SSE / Streamable HTTP），并提供两种配置入口：
+- **配置文件**：`config/mcp/*.json`，适合运维在部署时写死系统级 MCP；
+- **平台控制台 / REST API**：`/mcp/servers` 一套 CRUD 接口，前端「工具」页面把它封装成表单，适合运行时动态增减。
+
+两种入口在首次启动时会自动合并到 DynamoDB，Agent 构建时始终读取 DynamoDB 中的最新版本。
+
+## 启用前提
+
+开始前请确认：
+
+- 平台已按「集成总览」完成基础部署，`./nexus-cli service status` 三项都为 `running`。
+- 运行 Nexus-AI 的宿主机或沙箱节点具备启动目标 MCP 服务器的能力：
+  - **stdio 传输**：主机上可执行 `uvx`、`npx`、`python` 等命令（多数 AWS Labs / 社区 MCP 均以 `uvx` 形式发布）。
+  - **SSE / HTTP 传输**：从服务进程出站可直达 MCP 服务器的 URL（企业网络需放行该域名）。
+- 如果要挂接的 MCP 需要凭证（如 AWS、GitHub Token），已准备好对应的环境变量或 HTTP Header。
+
+::: tip stdio vs HTTP，怎么选
+本地或同机运行的工具（文件系统、代码执行、AWS CLI 包装）优先用 **stdio**；多用户共享的长驻服务、第三方 SaaS 优先用 **HTTP**；SSE 主要面向兼容老客户端，新部署推荐直接用 Streamable HTTP。
+:::
+
+## 配置步骤
+
+### 方式 A：写入配置文件（系统级）
+
+配置文件目录为 `config/mcp/`。以下几份都会在启动时被自动加载：
+
+| 文件名 | 用途 |
+|--------|------|
+| `system_mcp_server.json` | 平台预置的系统级 MCP（如 AWS Labs 官方工具），建议只在此处维护由运维负责的条目 |
+| `public_mcp_server.json` | 对所有用户开放的第三方 MCP，可按需编辑 |
+| `*.json`（其它任意 JSON 文件） | 运维可按业务拆分为独立文件，每个文件同样会被合并加载 |
+
+所有文件共用同一份 Kiro / Cursor 兼容的 JSON 结构：
+
+```json
+{
+  "mcpServers": {
+    "awslabs.core-mcp-server": {
+      "transport": "stdio",
+      "disabled": false,
+      "command": "uvx",
+      "args": ["awslabs.core-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      }
+    },
+    "openskill": {
+      "transport": "http",
+      "disabled": false,
+      "url": "https://mcp.openmcpskills.click/mcp?api_key=sk-mcp-..."
+    }
+  }
+}
+```
+
+三种传输的字段要求不同，填错会在启动阶段报 `Invalid configuration`：
+
+| 传输类型 | 必填字段 | 可选字段 |
+|---------|---------|---------|
+| `stdio` | `command` | `args`、`env` |
+| `sse`   | `url`     | `headers` |
+| `http`  | `url`     | `headers` |
+
+所有传输类型共享的可选字段：
+
+| 字段 | 说明 |
+|------|------|
+| `disabled` | `true` 时该服务器不会注册进 Agent，等同于临时关闭 |
+| `autoApprove` | 工具名列表，列表中的工具在调用时跳过用户确认 |
+| `description` | 展示在平台前端的说明文字 |
+
+改完文件后重启服务：
+
+```bash
+./nexus-cli service restart
+```
+
+### 方式 B：平台前端 / REST API（运行时增减）
+
+登录控制台 →「工具」→「MCP 服务器」→「新建」，可以三种方式快速添加：
+
+1. **粘贴 JSON**：与配置文件完全一致的片段，可一次导入多个。
+2. **命令行**：`npx -y @modelcontextprotocol/server-filesystem /tmp`、`uvx awslabs.aws-pricing-mcp-server@latest` 等，系统会自动拆分成 `command` / `args`，并以包名为默认名称。
+3. **URL**：`https://...`、`sse://...`，含 `/sse` 路径时自动识别为 SSE，否则走 Streamable HTTP。
+
+<!-- SCREENSHOT: mcp-client-add-server -->
+
+对应的 REST 接口（前端表单就是封装这些）：
+
+| 方法 | 路径 | 作用 |
+|------|------|------|
+| `GET` | `/mcp/servers` | 列表；支持 `scope` / `user_id` 过滤 |
+| `GET` | `/mcp/servers/{id_or_name}` | 详情 |
+| `POST` | `/mcp/servers` | 手动创建一台 |
+| `POST` | `/mcp/servers/import` | 一次导入多台（JSON / 命令 / URL 自动识别） |
+| `PUT` | `/mcp/servers/{id_or_name}` | 更新字段 |
+| `DELETE` | `/mcp/servers/{id_or_name}` | 删除 |
+| `POST` | `/mcp/servers/{id_or_name}/enable` | 启用 |
+| `POST` | `/mcp/servers/{id_or_name}/disable` | 禁用 |
+| `POST` | `/mcp/servers/sync` | 把 `config/mcp/*.json` 同步进 DynamoDB（仅新增，不覆盖） |
+
+示例：通过命令行添加一台 AWS Pricing MCP：
+
+```bash
+curl -X POST https://<nexus-host>/api/v2/mcp/servers/import \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "config_data": "uvx awslabs.aws-pricing-mcp-server@latest",
+    "format": "auto",
+    "scope": "shared"
+  }'
+```
+
+### 作用域：shared vs private
+
+创建时的 `scope` 决定哪些用户能在构建 Agent 时看到这台服务器：
+
+| 取值 | 说明 |
+|------|------|
+| `shared` | 所有用户可见；适合运维统一维护的系统 MCP |
+| `private` | 仅创建者可见；适合每人自带的凭证类 MCP（个人 GitHub Token、私有 API Key 等） |
+
+配置文件里加载进来的服务器默认全部为 `shared`。
+
+### 自动批准列表
+
+`autoApprove` 列出的工具名在调用时不会弹出确认框。建议只对已知安全、无副作用的只读工具使用；涉及写入、外发请求、花费金额的工具应保持手动确认。
+
+```json
+"autoApprove": ["search_docs", "list_resources"]
+```
+
+## 验证
+
+MCP 服务器挂进来不代表一定能用。下面三步按顺序确认。
+
+### 步骤 1：测试连接
+
+在前端列表页点「测试连接」，或调用接口：
+
+```bash
+curl -X POST https://<nexus-host>/api/v2/mcp/servers/<name-or-id>/test
+```
+
+成功响应示例：
+
+```json
+{
+  "success": true,
+  "data": {
+    "success": true,
+    "server_name": "awslabs.core-mcp-server",
+    "tool_count": 8,
+    "tools": [
+      { "name": "prompt_understanding", "description": "...", "input_schema": {...} }
+    ]
+  }
+}
+```
+
+`tool_count > 0` 即代表进程成功拉起、握手完成、工具清单已拉回。默认 30 秒握手超时，stdio 首次安装包可能较慢（`uvx` 会拉取依赖），超时可重试一次。
+
+### 步骤 2：列出工具
+
+可以单独拉取工具清单，用于前端挑选 `autoApprove` 列表：
+
+```bash
+curl https://<nexus-host>/api/v2/mcp/servers/<name-or-id>/tools
+```
+
+### 步骤 3：在 Agent 里用起来
+
+1. 进入 Agent 编辑页 →「工具」→「MCP 依赖」，勾选刚添加的服务器。
+2. 保存并构建 Agent。
+3. 在「对话」里发一句能触发该工具的 prompt（例如对 `aws-pricing` 问「t3.medium 一小时多少钱」）。
+
+看到工具实际被调用、返回正确结果，才算端到端打通。
+
+<!-- SCREENSHOT: mcp-client-agent-invocation -->
+
+## 故障排查
+
+| 现象 | 可能原因 | 建议操作 |
+|------|---------|---------|
+| 启动日志报 `Failed to import MCP client library` | 运行环境缺少 `mcp` Python 包 | 进入 `.venv` 重新 `pip install -r requirements.txt` |
+| 「测试连接」提示 `Connection timeout after 30 seconds` | stdio 服务器首次下载依赖慢；或 HTTP URL 不可达 | 主机先手动跑一次 `uvx <package>` 预热；或用 `curl` 先确认 URL 连通 |
+| `Invalid configuration for server 'X'` | stdio 缺 `command`，或 SSE/HTTP 缺 `url` | 按本页「传输字段表」补齐必填字段 |
+| 前端看不到刚加的 MCP | 建时选了 `private`，当前用户不是创建者；或没刷新页面 | 改成 `scope=shared` 或切换到创建者账号 |
+| Agent 运行时找不到某个已存在的 MCP | 该服务器 `disabled=true`；或名称拼错 | 在列表页启用，或对比 Agent 的 `mcp_dependencies` 配置 |
+| 工具调用突然全部需要二次确认 | `autoApprove` 字段被清空或写错工具名 | 核对工具名与「列表工具」接口返回的 `name` 一致 |
+| 修改了 `config/mcp/*.json`，但前端仍显示旧配置 | 配置文件加载策略是「仅新增、不覆盖」，修改不会自动同步到 DDB | 删除 DDB 中同名条目，或在前端手动编辑；或调用 `POST /mcp/servers/sync`（同样仅新增） |
+| HTTP MCP 报 `401 / 403` | `url` 中的 API Key 过期，或 `headers` 没带鉴权 | 刷新 API Key；或在「更新」时补 `headers` 字段 |
+| 长时间推理的 MCP 工具被截断 | 默认 stdio 握手超时 120 秒、连接测试超时 30 秒 | 挂载到 Agent 后超时由 Agent 控制，实际运行不受这两个值影响；如握手就卡住请先在本机排查 |
+| 跑 `sync` 接口后本地改动没生效 | `sync` 只会新增 DDB 中不存在的条目，已有条目不会被覆盖 | 先在前端删除冲突条目，再执行 `sync`；或直接用 `PUT /mcp/servers/{id}` |
+
+::: info 排查顺序
+永远是：**在宿主机上手动能跑通 → `POST /test` 能返回 `tool_count > 0` → Agent 里能调用**。前两步没通之前不要怀疑 Agent 配置。
+:::
+
+
+========== integrations/mcp-server.md ==========
+
+---
+title: Agent as MCP Tool
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - nexus_utils/mcp/mcp_server/**
+  generated_at: 2026-05-08T22:35:45+00:00
+  generated_by: docs-sync v2
+---
+
+# Agent as MCP Tool
+
+## 概述
+
+Nexus-AI 自带一个 **MCP Server**，能把平台上已经构建并处于 `running` 状态的 Agent 反过来暴露给 Claude Code、Kiro、Cursor 等任意 MCP 客户端。外部客户端连上之后，每个 Agent 都会显示为一个独立的 Tool，通过 `query` 参数调用、返回 Agent 的文本响应。换句话说——平台既是 MCP 宿主，也是 MCP 供应方。
+
+MCP Server 不经过 REST API 层，直接调用内部 Agent 工厂执行推理，因此不额外占用一份 HTTP 配额。通信基于 **Streamable HTTP**，默认端口 `9000`，路径 `/mcp`，统一用 **Bearer Token** 做认证。Token 首次启动时会自动生成并打印在控制台，也可以通过环境变量 `NEXUS_MCP_TOKEN` 固定下来。
+
+::: tip 和外部 MCP 服务器的区别
+本页讲的是「让 Nexus-AI 的 Agent 作为 MCP 工具给外部客户端用」；相反方向——「让平台 Agent 调用其他 MCP 服务器」见 [外部 MCP 服务器](./mcp-clients)。两者接口不同、配置不同，不要混用。
+:::
+
+## 启用前提
+
+开始前请确认：
+
+- 平台已按「集成总览」完成部署，`./nexus-cli service status` 返回三项 `running`。
+- 至少有一个 Agent 的 `status=running`（在「Agent 管理」页面构建成功后状态即变为 `running`）。MCP Server 只会注册 `running` 的 Agent，其它状态会被自动跳过。
+- 宿主机的 `9000` 端口（或你自定义的端口）对 MCP 客户端可达。跨机连接时请同步放行防火墙规则。
+- Python 运行环境已安装 `fastmcp`（随 Nexus-AI 主依赖一起装好，无需额外操作）。
+
+## 配置步骤
+
+### 1. 选择 Token 模式
+
+启动时的 Token 有两种来源：
+
+| 模式 | 适用场景 | 如何启用 |
+|------|---------|---------|
+| **自动生成** | 开发、单机试用 | 不设任何环境变量，Server 启动时会生成一次性 Token 并打印到控制台 |
+| **固定值** | 生产、多节点部署、CI | 预先通过 `NEXUS_MCP_TOKEN` 提供一个长度 ≥ 32 的随机字符串 |
+
+::: warning 固定 Token 请妥善保管
+MCP Server 不支持 Token 轮转；一旦泄露，相当于把所有 Agent 的调用权限交给外部。建议用密钥管理服务（Secrets Manager、Vault 等）注入环境变量，不要明文写进 shell 历史或 Git。
+:::
+
+### 2. 选择端口（可选）
+
+默认 `9000`。如需修改，在启动前设置 `NEXUS_MCP_PORT`：
+
+```bash
+export NEXUS_MCP_PORT=9100
+export NEXUS_MCP_TOKEN=$(openssl rand -base64 48)
+```
+
+### 3. 启动 MCP Server
+
+MCP Server 作为独立模块启动，不随 `./nexus-cli service start` 自动拉起：
+
+```bash
+source .venv/bin/activate
+python -m nexus_utils.mcp.mcp_server
+```
+
+启动成功后控制台会打印一块以 `=` 分隔的配置信息：
+
+```text
+============================================================
+  Nexus-AI MCP Server
+============================================================
+  Port:  9000
+  URL:   http://localhost:9000/mcp
+
+  Security Token (auto-generated):
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+  MCP client config:
+  {
+    "mcpServers": {
+      "nexus-ai": {
+        "url": "http://localhost:9000/mcp",
+        "headers": {
+          "Authorization": "Bearer xxxxxxxx..."
+        }
+      }
+    }
+  }
+============================================================
+```
+
+如果 Token 来自环境变量，最后两行会变成 `Using token from NEXUS_MCP_TOKEN env var`，不会再回显明文。
+
+<!-- SCREENSHOT: mcp-server-startup-banner -->
+
+### 4. 后台常驻
+
+生产部署建议丢给 `systemd`、`supervisord` 或容器 restart policy 管理。示例 `systemd` 单元：
+
+```ini
+[Unit]
+Description=Nexus-AI MCP Server
+After=network.target
+
+[Service]
+Type=simple
+User=nexus
+Environment=NEXUS_MCP_PORT=9000
+Environment=NEXUS_MCP_TOKEN=__replace_me__
+WorkingDirectory=/opt/nexus-ai
+ExecStart=/opt/nexus-ai/.venv/bin/python -m nexus_utils.mcp.mcp_server
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### 5. 客户端配置
+
+把启动横幅中的 JSON 片段拷进 MCP 客户端（Claude Code、Cursor、Kiro 均使用同一份 `mcpServers` 格式）。下例是 Claude Code 的 `~/.claude/mcp.json`：
+
+```json
+{
+  "mcpServers": {
+    "nexus-ai": {
+      "url": "http://localhost:9000/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
+    }
+  }
+}
+```
+
+跨机调用时把 `localhost` 换成 MCP Server 所在主机的 IP 或域名；走 HTTPS 请在反向代理层（Nginx / ALB）做 TLS 终止，MCP Server 本身只监听明文 HTTP。
+
+### 6. Agent 暴露规则
+
+Server 启动时会调用 `list_agents(status="running", limit=100)` 拉取所有在运行的 Agent 并按以下规则注册为 Tool：
+
+| 字段 | 处理方式 |
+|------|---------|
+| Tool 名 | 取 `agent_name` → 转小写 → 非 `a-z0-9` 字符替换为 `_` → 合并连续下划线 → 去掉首尾下划线 → 截断到 64 字符 |
+| Tool 描述 | 优先用 Agent 的 `description` 字段；缺失时回退为 `Invoke Nexus-AI agent: <name>` |
+| 参数 | 固定一个 `query: str`，对应发给 Agent 的用户输入 |
+| 返回 | Agent 的文本响应；内部异常会以 `Error invoking agent: ...` 字符串形式返回，不中断客户端会话 |
+
+除按 Agent 注册的 Tool 外，还有一个内置管理工具：
+
+| 工具 | 作用 |
+|------|------|
+| `refresh_agents` | 重新拉取平台上的 `running` Agent 列表并注册 Tool。平台上新建/下线 Agent 后，MCP 客户端无需重启，让模型调用一次这个工具即可 |
+
+## 验证
+
+按顺序三步走。
+
+### 步骤 1：健康检查
+
+MCP Server 的健康探针 **不需要 Token**，可用作存活检测：
+
+```bash
+curl -i http://localhost:9000/health
+```
+
+返回 `200` 即说明进程已监听端口。`/health` 和 `/healthz` 两个路径等价，挂 Kubernetes `readinessProbe` 任选其一。
+
+### 步骤 2：带 Token 调用 MCP 端点
+
+```bash
+curl -X POST http://localhost:9000/mcp \
+  -H "Authorization: Bearer <your-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
+
+返回体中的 `result.tools[]` 数组应包含 `refresh_agents` 以及所有 `running` Agent 对应的 Tool 名。如果只看到 `refresh_agents`，说明平台上暂无 `running` Agent——不是配置错误。
+
+### 步骤 3：从 MCP 客户端真实调用
+
+1. 在 Claude Code / Cursor / Kiro 里重新加载 MCP 配置，让客户端重新连接。
+2. 对话框中问一句能触发某个 Agent 的 prompt（例如 Agent 名叫 `sql-expert`，就问「帮我写一条按月聚合订单金额的 SQL」）。
+3. 客户端会提示是否调用对应 Tool，确认后返回 Agent 的文本响应。
+
+<!-- SCREENSHOT: mcp-server-claude-code-invocation -->
+
+看到 Agent 实际产出结果才算端到端打通。如果客户端显示 Tool 列表但调用无响应，大概率是单次推理超出默认 **300 秒** 超时（见下表）。
+
+## 故障排查
+
+| 现象 | 可能原因 | 建议操作 |
+|------|---------|---------|
+| 启动后控制台没有打印 Token | 已设置 `NEXUS_MCP_TOKEN` | 属于正常行为，客户端应使用该环境变量的值 |
+| 客户端返回 `401 Missing or invalid Authorization header` | 客户端配置里 `Authorization` 字段缺失或未加 `Bearer ` 前缀 | 检查 `headers.Authorization` 应为 `Bearer <token>` |
+| 客户端返回 `403 Invalid token` | 客户端配置的 Token 与 Server 当前使用的不一致；常见于自动生成 Token 后 Server 被重启 | 重新从控制台拷 Token；或改用固定的 `NEXUS_MCP_TOKEN` |
+| `tools/list` 只看到 `refresh_agents` | 当前没有 `status=running` 的 Agent；或平台侧 Agent 注册失败 | 先在「Agent 管理」确认有 running 实例，再让客户端调用 `refresh_agents` |
+| 平台上新建的 Agent 没有出现在 MCP 客户端 | Server 只在启动与 `refresh_agents` 时枚举 Agent | 在客户端调用一次 `refresh_agents`，无需重启 Server |
+| 客户端调用报 `Agent X is not available` | 目标 Agent 已从 `running` 变为其它状态（构建中、已停止） | 在平台重启该 Agent 或选用其他 running Agent |
+| 调用时返回 `Agent X execution timed out (300s)` | 单次推理超过默认 300 秒 | 优化 Agent prompt 长度或工具链；或把耗时任务拆分为多次对话 |
+| 调用时返回 `Failed to instantiate Agent ...` | Agent 的 `prompt_path` / `agent_name` 缺失，或 prompt 模板文件丢失 | 回到平台「Agent 管理」重新保存并构建该 Agent |
+| `/health` 200，但 `/mcp` 握手超时 | 反向代理丢失了 `Transfer-Encoding: chunked` / SSE 流 | Nginx 配置 `proxy_buffering off;` 与 `proxy_http_version 1.1;`；ALB 用 HTTP/2 目标组 |
+| 并发调用被串行执行 | 内部线程池 `max_workers=4`，超过该值的调用会排队 | 单实例并发上限固定为 4；更高并发请水平扩容多实例并在前面做负载均衡 |
+| 重启后 Token 变了，所有客户端都掉线 | 用了自动生成模式 | 固定 `NEXUS_MCP_TOKEN` 环境变量，重启不再刷新 |
+
+::: info 排查顺序
+永远是：**`/health` 200 → `tools/list` 返回完整工具清单 → 客户端真实调用成功**。前两步没通之前不要怀疑平台侧的 Agent 配置。
+:::
+
+
+========== integrations/overview.md ==========
+
+---
+title: 集成总览
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - README.md
+    - config/default_config.yaml
+  generated_at: 2026-05-08T22:27:08+00:00
+  generated_by: docs-sync v2
+---
+
+# 集成总览
+
+Nexus-AI 不是一个"自给自足"的系统，它的绝大多数能力——模型推理、认证、存储、观测、IDE 调用、沙箱隔离——都来自与外部服务的集成。本章节按服务维度把每项集成单独展开：它是做什么的、为什么必须开启或可选、怎么在 `config/default_config.yaml` 里配置、怎么验证跑通、出了问题去哪里看。
+
+如果你是刚上手的部署者，建议先按"必须集成"→"推荐集成"→"可选集成"的顺序逐一打通；如果你已经有一套跑起来的环境，只想补一项能力（例如接入 SSO、把 Agent 暴露给 IDE），直接跳到对应页面即可。
+
+## 集成分类
+
+Nexus-AI 的集成按是否必需分三类：
+
+| 分类 | 说明 | 典型场景 |
+|------|------|----------|
+| **必须集成** | 平台核心依赖，不开启无法启动或关键功能不可用 | AWS Bedrock、Aurora、DynamoDB、Valkey、SQS、S3 |
+| **推荐集成** | 生产部署强烈建议开启，影响可观测性与合规 | OpenTelemetry、CloudWatch Logs、SAML SSO |
+| **可选集成** | 按需启用，带来独立增值能力 | MCP Server、Sandbox、AgentCore、Bridge |
+
+## 本章节文档
+
+| 文档 | 分类 | 简介 |
+|------|------|------|
+| [AWS Bedrock](./aws-bedrock) | 必须 | AI 模型推理的唯一入口，支持 Claude Sonnet / Opus / Haiku 全系列，默认区域 `us-west-2`。 |
+| [Aurora PostgreSQL](./aurora) | 必须 | 关系型数据层，承载项目、Agent、会话、消息等 12 张核心表；生产环境使用 Serverless v2。 |
+| [DynamoDB](./dynamodb) | 必须 | KV 数据层，承载工具、配置、事件调度、审计日志等 18 张表；表前缀 `nexus_`。 |
+| [ElastiCache Valkey](./valkey) | 必须 | 缓存与 Stream 事件缓冲层，支撑流式响应断点续播与热数据聚合。 |
+| [AWS SQS](./sqs) | 必须 | 异步任务队列，解耦 API 与 Worker，承担 Agent 构建、部署等长时任务。 |
+| [AWS S3 / S3 Vectors](./s3) | 必须 | 对象存储（制品、会话附件、多模态内容）与向量存储（工具/提示词/Agent 检索）。 |
+| [SAML 2.0 SSO](./sso) | 推荐 | 对接 AWS IAM Identity Center 或第三方 SAML IdP，替换默认账号密码模式。 |
+| [OpenTelemetry](./opentelemetry) | 推荐 | 通过 OTLP HTTP 协议把 Trace 数据推送到 Jaeger / ADOT Collector，追踪 Agent 全链路。 |
+| [CloudWatch](./cloudwatch) | 推荐 | 日志集中采集与指标面板，生产部署建议与 X-Ray 一起启用。 |
+| [MCP Server](./mcp-server) | 可选 | 把平台 Agent 暴露为 MCP Tool，让 Kiro / Claude Code / Cursor 直接调用。 |
+| [MCP 客户端](./mcp-client) | 可选 | 让 Agent 反过来调用外部 MCP 服务器，扩展能力边界。 |
+| [Sandbox (Firecracker)](./sandbox) | 可选 | 为每轮对话分配独立 microVM，承担代码执行、文件操作、shell 命令等高风险工具。 |
+| [AWS Bedrock AgentCore](./agentcore) | 可选 | 把构建完成的 Agent 一键部署成独立的 AgentCore Runtime。 |
+| [Bridge 多连接](./bridge) | 可选 | 通过单条 `curl` 把 Agent 接到自建服务器，最多同接 5 台。 |
+| [CloudFormation 部署](./cloudformation) | 可选 | `nexus-cli deploy` 一键创建 VPC + EC2 + Aurora + Valkey + ALB + CloudFront 的完整栈。 |
+
+## 统一配置入口
+
+所有集成的开关和参数都落在同一个文件里：
+
+```bash
+config/default_config.yaml
+```
+
+集成相关的顶层字段如下：
+
+| 字段 | 覆盖的集成 |
+|------|-----------|
+| `aws` | AWS 全局凭证、区域、Bedrock Endpoint |
+| `bedrock` | 模型 ID、Prompt Caching、超时重试 |
+| `aurora` | Aurora PostgreSQL 连接信息 |
+| `dynamodb` | DynamoDB 表前缀与表名映射 |
+| `valkey` | Valkey 端点、端口、SSL |
+| `sqs` | SQS 队列前缀与可见性超时 |
+| `nexus_ai.auth` / `nexus_ai.sso` | 账号密码模式 / SAML SSO |
+| `nexus_ai.sandbox` | Sandbox 开关、节点池、Firecracker 路径 |
+| `nexus_ai.artifacts_s3_bucket` 等 | S3 各用途存储桶 |
+| `s3_vectors` | 向量存储 Bucket 与 Embedding 模型 |
+| `observability` | OpenTelemetry 开关、采样、数据捕获粒度 |
+| `logging` | 本地日志级别与路径 |
+| `agentcore` | Bedrock AgentCore 执行角色与运行时超时 |
+
+::: tip
+云端部署时 CloudFormation 的 `UserData` 会通过 `update_config.py` 自动覆盖大部分字段；本地开发只需按需改动 `aws.*` 和 `bedrock.model_id`。
+:::
+
+## 通用启用流程
+
+每一篇集成文档都会详细讲各自的启用步骤，但大多数集成的流程是相同的：
+
+1. **确认前置条件** — 例如 AWS 账号已开通对应服务、IAM 权限到位。
+2. **修改 `config/default_config.yaml`** — 打开开关、填入端点/凭证。
+3. **重启服务** — `./nexus-cli service restart`。
+4. **验证** — 各集成有独立的验证命令或控制台入口。
+5. **排查** — 失败时先看 `logs/nexus_ai.log`，再看 CloudWatch / Jaeger。
+
+## 验证集成是否生效
+
+最快的总体验证方法：
+
+```bash
+# 1. 启动所有核心服务
+./nexus-cli service start
+
+# 2. 查看状态（API / Worker / Web 均应为 running）
+./nexus-cli service status
+
+# 3. 跑一个内置 Agent，端到端验证模型、数据库、SQS、S3 集成
+source .venv/bin/activate
+python agents/system_agents/magician.py -i "Hello"
+```
+
+若上述命令能正常返回 Agent 响应，说明 Bedrock + Aurora + DynamoDB + Valkey + SQS + S3 六项必须集成均已就位。
+
+## 故障排查
+
+| 现象 | 可能原因 | 建议操作 |
+|------|---------|---------|
+| 服务启动时报 `AccessDenied` | EC2 IAM Instance Profile 权限不足 | 比对 README 的「EC2 运行时 IAM 权限」清单补齐 |
+| Agent 响应报 `Could not connect to the endpoint URL` | `aws.bedrock_region_name` 填写错误或该区域未开通 Bedrock | 切回 `us-west-2` 或在 AWS 控制台申请目标区域的模型访问 |
+| 登录页报 `SSO metadata invalid` | `sso.idp_metadata_url` / `idp_metadata_xml` 错误或 IdP 未发布 | 检查 IdP 元数据 URL 可直接 `curl` 取回，并确认 SP Entity ID 与 IdP 侧一致 |
+| `service status` 显示 API running 但 Web 打不开 | 3000 端口被占用或 Next.js 构建失败 | `./nexus-cli service logs --web -f` 查看最新错误 |
+| MCP Server 启动失败、报 `token required` | 未设置 `NEXUS_MCP_TOKEN` 也未生成随机 token | 查看 `.pids/mcp_token` 文件或用 `--mcp` 选项重新启动 |
+| Jaeger UI 打不开 Trace | `observability.enabled = false` 或 Jaeger 未启动 | 改配置为 `true` 并启动 Jaeger 容器（见 README「链路追踪」） |
+| Sandbox 节点启不起来 | EC2 实例类型不支持 KVM、`firecracker_bin` 路径错 | 换成 c8i / c8id 等支持 KVM 的机型，检查 `/opt/firecracker/firecracker` 是否存在 |
+
+更详细的排查步骤请查阅各集成文档末尾的「故障排查」小节。
+
+
+========== integrations/sso-saml.md ==========
+
+---
+title: SSO (SAML 2.0)
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - api/v2/auth/**
+  generated_at: 2026-05-08T22:38:03+00:00
+  generated_by: docs-sync v2
+---
+
+# SSO (SAML 2.0)
+
+## 概述
+
+Nexus-AI 的默认登录是开发模式的账号密码，只适合单机或演示环境。生产部署建议通过 SAML 2.0 接入企业统一身份源，把用户生命周期、分组、密码策略、MFA 完全交给 IdP（Identity Provider）托管。平台内置的 SP（Service Provider）参考 AWS IAM Identity Center 实现，对其它主流 IdP（Okta、Microsoft Entra ID、Google Workspace、OneLogin、Keycloak 等）同样兼容，只要它们支持标准 SAML 2.0 断言即可。
+
+SSO 的所有配置落在 `config/default_config.yaml` 的 `sso` 小节。启用后，前端登录页会把「账号密码」按钮替换为「使用 SSO 登录」，用户被重定向到 IdP 完成认证后回到平台，平台签发 JWT 写入 Cookie，后续所有 API 请求按 RBAC 角色（admin / editor / viewer）鉴权。
+
+## 启用前提
+
+开始前请确认：
+
+- 一个可用的 SAML 2.0 IdP，并具备创建应用（SAML 应用 / Enterprise Application）的管理员权限。
+- Nexus-AI 服务的对外可达地址已经确定（例如 `https://nexus.example.com`），不能再用 `localhost`——SAML 断言里的回调 URL 必须与 IdP 登记的完全一致。
+- IdP 的 metadata 可以通过 URL 公开拉取，或者你能拿到一份 XML 文件放到 Nexus-AI 服务能读的目录。
+- IdP 的断言里至少能签发以下字段（字段名视 IdP 而定，后文会说如何配置）：
+  - 用户邮箱（作为用户唯一标识）
+  - 用户显示名
+  - 角色标签或分组名（映射到 `admin` / `editor` / `viewer`）
+
+::: tip 和 AWS IAM Identity Center 最贴合
+平台 SP 默认参数是针对 AWS IAM Identity Center 调优过的——禁用了 `RequestedAuthnContext`，避免 IdP 因不支持 `PasswordProtectedTransport exact` 比较而拒绝签发断言。其它 IdP 通常不会受影响。
+:::
+
+## 配置步骤
+
+### 1. 在 IdP 侧创建 SAML 应用
+
+以下三项是 IdP 创建应用时必填的：
+
+| 字段 | 值 |
+|------|---|
+| Entity ID（SP Entity ID / Audience）| `nexus-ai-sp`（可自定义，与步骤 2 中 `sp_entity_id` 一致即可）|
+| ACS URL / Reply URL | `https://<你的域名>/api/v2/auth/sso/acs` |
+| Single Logout URL（可选） | `https://<你的域名>/api/v2/auth/sso/sls` |
+| NameID 格式 | `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` |
+| Binding | ACS 使用 `HTTP-POST`；SLS 使用 `HTTP-Redirect` |
+
+在应用的「属性映射 / Attribute Mappings」里配置断言字段，至少提供以下三个：
+
+| SAML 属性名 | 说明 |
+|------------|------|
+| `email` 或 `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | 用户邮箱，作为 Nexus-AI 的登录标识 |
+| `name` 或 `displayName` | 在前端显示的用户名 |
+| `role` 或自定义属性 | 角色名，取值 `admin` / `editor` / `viewer` |
+
+<!-- SCREENSHOT: saml-idp-app-setup -->
+
+### 2. 填写 `sso` 小节
+
+打开 `config/default_config.yaml`，新增或修改 `sso` 小节：
+
+```yaml
+sso:
+  enabled: true
+
+  # IdP metadata —— 二选一
+  idp_metadata_url: https://portal.sso.us-east-1.amazonaws.com/saml/metadata/xxx
+  # idp_metadata_xml: /etc/nexus-ai/idp-metadata.xml
+
+  # SP 配置
+  sp_entity_id: nexus-ai-sp
+  sp_acs_url: https://nexus.example.com/api/v2/auth/sso/acs
+  sp_sls_url: https://nexus.example.com/api/v2/auth/sso/sls
+
+  # 登录完成后跳转的前端地址
+  frontend_url: https://nexus.example.com
+
+  # IdP 的单点登出地址（可选，填了则登出时会把用户重定向到 IdP）
+  idp_logout_url: https://portal.sso.us-east-1.amazonaws.com/saml/logout
+
+  # JWT 过期时间（小时）
+  jwt_expire_hours: 24
+
+  # 邮箱域名白名单，空数组表示不限制
+  allowed_email_domains:
+    - example.com
+    - partner.io
+```
+
+::: info metadata 二选一
+`idp_metadata_url`（优先）和 `idp_metadata_xml` 只需填一个。URL 模式适合 IdP 公开 metadata endpoint 的场景（AWS IAM Identity Center、Okta、Entra ID）；XML 模式适合内网隔离的 IdP，只需把导出的 metadata 文件放到服务能读的路径即可。
+:::
+
+::: warning SP 回调地址必须对外可达
+`sp_acs_url` / `sp_sls_url` 必须是 IdP 能把用户浏览器重定向到的公网（或企业内网）地址，且协议/端口/路径与 IdP 应用里登记的完全一致。任何差异都会被 SP 侧拒绝。
+:::
+
+### 3. 保护 JWT 签名密钥
+
+SSO 成功后，平台会签发 JWT 写入 `access_token` Cookie。JWT 的签名密钥必须在所有 API worker 之间保持一致，否则会出现「登录后随机被踢出」的问题。优先级：
+
+1. 环境变量 `AUTH_SECRET_KEY`（推荐，容器/EC2 部署最稳）
+2. `config/default_config.yaml` 中 `auth.secret_key`
+3. 若均未配置，则根据 `auth.password` 的 SHA-256 哈希派生（仅适用于单机开发）
+
+生产环境请显式设置 `AUTH_SECRET_KEY` 为一个 32 字节以上的随机字符串：
+
+```bash
+export AUTH_SECRET_KEY="$(openssl rand -hex 32)"
+```
+
+### 4. 配置用户域名白名单（可选）
+
+如果希望只允许特定邮箱域名的员工登录，把这些域名写进 `allowed_email_domains`。所有不在白名单里的邮箱，即使在 IdP 侧认证成功，也会在 ACS 回调中被拒绝。留空即对所有通过 IdP 认证的用户开放。
+
+### 5. 启用全局认证拦截
+
+在 `config/default_config.yaml` 的 `auth` 小节确认全局拦截已打开：
+
+```yaml
+auth:
+  enforce_auth: true     # 生产环境必须 true
+```
+
+设为 `false` 时，后端不会对受保护 API 强制校验 JWT，只会「尽力解析」，方便本地调试，**不要**在生产环境使用。
+
+### 6. 重启服务
+
+```bash
+./nexus-cli service restart
+```
+
+## 验证
+
+从浅到深三步确认 SSO 接入跑通。
+
+### 步骤 1：IdP metadata 可解析
+
+观察服务启动日志，确认没有 `Failed to load IdP metadata`。如果是 URL 模式，从服务主机直接请求一次：
+
+```bash
+curl -sS "$IDP_METADATA_URL" | head -20
+```
+
+能看到 `<EntityDescriptor>` 就说明网络可达、IdP 未限制来源 IP。
+
+### 步骤 2：登录页出现 SSO 入口
+
+打开前端 `https://<你的域名>`，登录页应该只保留「使用 SSO 登录」按钮，不再显示账号密码表单。
+
+<!-- SCREENSHOT: saml-login-button -->
+
+### 步骤 3：完成一次完整登录
+
+点击「使用 SSO 登录」后，浏览器被重定向到 IdP。完成认证（可能需要 MFA）后跳回 `sp_acs_url`，最终落在 `frontend_url`。在浏览器开发者工具中检查：
+
+- `Cookie` 里存在 `access_token`，`HttpOnly=true`
+- 进入「设置 → 个人信息」，邮箱、显示名、角色都来自 IdP 断言
+
+<!-- SCREENSHOT: saml-logged-in -->
+
+## 故障排查
+
+| 现象 | 可能原因 | 建议操作 |
+|------|---------|---------|
+| 登录页仍显示账号密码表单 | `sso.enabled` 没有生效 | 确认配置文件路径、重启服务，观察 `/api/v2/auth/config` 返回是否 `sso_enabled: true` |
+| 点击 SSO 按钮跳转 IdP 后报 `AuthnRequest is invalid` | `sp_entity_id` 或 `sp_acs_url` 与 IdP 登记的不一致 | 逐字符比对：协议（https）、域名、端口、路径、大小写都必须完全相同 |
+| IdP 认证通过后跳回 ACS 报 `Invalid Signature` | IdP 元数据被替换但平台侧未刷新，或断言未用 IdP 证书签名 | 重启 Nexus-AI 服务让 metadata 重新加载；确认 IdP 应用开启了「签名响应 + 签名断言」|
+| `Invalid Audience` | IdP 应用的 Audience 与 `sp_entity_id` 不一致 | 把 IdP 侧 Audience 改成 `nexus-ai-sp`（或自定义值），两侧严格相同 |
+| `RequestedAuthnContext` 相关错误 | IdP 只接受特定身份验证上下文 | 平台默认已关闭该特性；若 IdP 仍强制要求，联系 IdP 管理员放宽策略或改用其它 IdP |
+| 登录成功但立即被踢出 | 多 worker 间 `AUTH_SECRET_KEY` 不一致，各自签 / 验 JWT | 统一通过环境变量或 `auth.secret_key` 指定同一个密钥，重启所有 worker |
+| 登录后前端显示「User account is disabled」 | 用户在 Nexus-AI 里被管理员禁用 | 进入「设置 → 用户管理」把该账号恢复为启用状态 |
+| 特定员工报「邮箱域名不在白名单」 | `allowed_email_domains` 没覆盖该域名 | 把域名加到白名单或清空该字段 |
+| 登出后没有跳回 IdP | `idp_logout_url` 未配置，或 IdP 不支持 SLS | 按需填入 `idp_logout_url`；若 IdP 不支持，用户需要手动登出 IdP 会话 |
+| 通过反向代理（CloudFront / ALB）后 SAML 报协议不匹配 | 后端看到的是 HTTP，但外部是 HTTPS | 平台已按 `sp_acs_url` 的 scheme 判断协议；请确认 `sp_acs_url` 填的是 `https://...` 而不是 `http://...` |
+
+::: info 换 IdP 后必须重启
+平台在启动时一次性加载 IdP metadata 并缓存在内存。更换 IdP、轮换证书、修改属性映射后，都需要执行 `./nexus-cli service restart` 让新 metadata 生效。
+:::
+
+
 ========== overview/how-it-works.md ==========
 
 # 构建原理
@@ -2956,13 +6438,28 @@ Nexus-AI 构建在强大的 AWS 云服务之上，为用户提供企业级的可
 
 ## 当前阶段
 
-**阶段：** Spec v2 已完成，待写 Implementation Plan v2。
+**阶段：** v3 Batch 1 (Getting Started) 已完成。剩余 3 个 batch 待生成。
 
-**当前版本：**
-- Spec v2（有效）：`docs/superpowers/specs/2026-05-07-playbook-docs-sync-v2-design.md`
-- Spec v1（仅作历史参考，已被 supersede）：`docs/superpowers/specs/2026-05-06-playbook-docs-sync-design.md`
-- Plan v1（仅作历史参考）：`docs/superpowers/plans/2026-05-06-playbook-docs-sync.md`
-- Plan v2：**待写**
+- ✅ Restructure: 7-category persistent Hermes-style sidebar (`5bed523`)
+- ✅ /manual/ → /using/ migration with HUMAN-EDIT preservation (`eeb69bb`)
+- ✅ Batch 1 (Getting Started, Opus 4.7): 5 zh + 5 en + 2 index merged to `docs/` (`b867282`)
+- ✅ Developer/Reference prompts rewritten for reference-grade detail (`861086b`)
+- ✅ Developer/Reference sources expanded (`2234933`)
+- ⏳ Batch 2: Using (refresh for 8 existing docs) — separate plan
+- ⏳ Batch 3: Features + Integrations (~19 pages) — separate plan
+- ⏳ Batch 4: Developer + Reference + Guides (~23 pages) — separate plan
+
+**Active versions:**
+- Spec v2: `docs/superpowers/specs/2026-05-07-playbook-docs-sync-v2-design.md`
+- Plan v3: `docs/superpowers/plans/2026-05-08-playbook-docs-sync-v3.md`
+- Model: `global.anthropic.claude-opus-4-7` (switched from Sonnet for quality priority)
+- Sidebar: 7 categories, persistent across all routes
+- Content: Getting Started live at `/getting-started/*` (zh+en)
+
+**Historical (superseded):**
+- Spec v1: `docs/superpowers/specs/2026-05-06-playbook-docs-sync-design.md`
+- Plan v1: `docs/superpowers/plans/2026-05-06-playbook-docs-sync.md`
+- Plan v2: `docs/superpowers/plans/2026-05-07-playbook-docs-sync-v2.md`
 
 ## 进展时间线
 
@@ -10106,14 +13603,14 @@ v1 的 flags 全部保留。v2 新增：
 ========== using/build-progress.md ==========
 
 ---
-title: Build Progress
+title: 构建进度
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/build-progress.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - web/src/app/(authed)/projects/**
+    - worker/handlers/build_handler*.py
+  generated_at: 2026-05-08T15:00:18+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-build-progress -->
@@ -10440,14 +13937,15 @@ Token 是大语言模型处理文本的基本单位。输入 Token 代表 Builde
 ========== using/chat.md ==========
 
 ---
-title: Chat
+title: 对话
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/chat.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - api/v2/routers/sessions.py
+    - nexus_utils/magician.py
+    - web/src/app/(authed)/chat/**
+  generated_at: 2026-05-08T15:02:50+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-chat -->
@@ -10690,14 +14188,14 @@ Mermaid 图表会在对话中实时渲染为可视化图形，无需额外工具
 ========== using/create-agent.md ==========
 
 ---
-title: Create Agent
+title: 创建 Agent
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/create-agent.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - api/v2/routers/agents.py
+    - web/src/app/(authed)/create/**
+  generated_at: 2026-05-08T14:55:41+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-create-agent -->
@@ -10954,14 +14452,14 @@ AI 提问：
 ========== using/dashboard.md ==========
 
 ---
-title: Dashboard
+title: 工作台
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/dashboard.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - api/v2/routers/projects.py
+    - web/src/app/(authed)/dashboard/**
+  generated_at: 2026-05-08T14:54:10+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-dashboard -->
@@ -11092,17 +14590,49 @@ sync:
 <!-- HUMAN-EDIT-END: manual-dashboard -->
 
 
+========== using/index.md ==========
+
+---
+title: 使用 Nexus-AI
+sync:
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
+  source_files:
+    - (chapter index — aggregated)
+  generated_at: 2026-05-08T15:11:20+00:00
+  generated_by: docs-sync v2
+---
+
+# 使用 Nexus-AI
+
+本章节带你走完 Nexus-AI 的日常使用流程：从登录后的工作台出发，创建 Agent、观察构建过程、把 Agent 拉出来对话，再到后续的项目管理、Agent 管理、工具库和 MCP 服务器配置。每一页都对应控制台里的一个主功能区，按顺序读完就能掌握整个平台的操作面板。
+
+如果你刚完成「快速开始」，建议从「工作台」读起；如果你已经有具体任务，直接跳到对应页面即可。
+
+## 本章节文档
+
+| 文档 | 简介 |
+|------|------|
+| [工作台](./dashboard) | 登录后的首页与控制中心：快速构建入口、最近项目、Agent 概览和平台状态。 |
+| [创建 Agent](./create-agent) | 两种创建模式——快速创建与引导创建——的适用场景和完整操作流程。 |
+| [构建进度](./build-progress) | 实时追踪 Agent 构建的 9 个阶段，看清每个 Builder Agent 在做什么。 |
+| [对话](./chat) | 独立的多轮对话界面：选择 Agent、开启会话，验证功能与业务场景。 |
+| [项目管理](./projects) | 构建项目的列表与状态管理，追踪从需求到上线的完整生命周期。 |
+| [Agent 管理](./manage-agents) | 查看、搜索、筛选、启停和删除所有已构建 Agent 的操作中心。 |
+| [工具库](./tools) | 浏览与管理平台中所有可供 Agent 调用的能力工具。 |
+| [MCP 服务器](./mcp) | 通过 MCP 协议接入外部工具与服务，扩展 Agent 能力边界。 |
+
+
 ========== using/manage-agents.md ==========
 
 ---
-title: Manage Agents
+title: Agent 管理
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/manage-agents.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - api/v2/routers/agents.py
+    - web/src/app/(authed)/agents/**
+  generated_at: 2026-05-08T15:05:33+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-manage-agents -->
@@ -11342,14 +14872,14 @@ Agent 列表支持多个维度的筛选，帮助你在大量 Agent 中快速定�
 ========== using/mcp.md ==========
 
 ---
-title: Mcp
+title: MCP 服务器
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/mcp.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - config/mcp/**
+    - nexus_utils/mcp/**
+  generated_at: 2026-05-08T15:09:27+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-mcp -->
@@ -11587,14 +15117,14 @@ MCP 服务器需要有对应的网络访问权限和服务凭证才能正常工�
 ========== using/projects.md ==========
 
 ---
-title: Projects
+title: 项目管理
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/projects.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - api/v2/routers/projects.py
+    - web/src/app/(authed)/projects/**
+  generated_at: 2026-05-08T15:04:20+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-projects -->
@@ -11741,14 +15271,14 @@ sync:
 ========== using/tools.md ==========
 
 ---
-title: Tools
+title: 工具库
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/tools.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - api/v2/routers/agent_tools.py
+    - nexus_utils/skill/**
+  generated_at: 2026-05-08T15:06:54+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-tools -->

@@ -1,12 +1,12 @@
 ---
-title: Mcp
+title: MCP 服务器
 sync:
-  source_commit: migrated-from-manual
+  source_commit: ab4bae1c37761738f62e15ab8eedfc9a0a4cf352
   source_files:
-    - docs/using/mcp.md
-  generated_at: 2026-05-08T03:35:25Z
-  generated_by: migrate_human_edit v3
-  protected: true
+    - config/mcp/**
+    - nexus_utils/mcp/**
+  generated_at: 2026-05-08T15:09:27+00:00
+  generated_by: docs-sync v2
 ---
 
 <!-- HUMAN-EDIT-START: manual-mcp -->
