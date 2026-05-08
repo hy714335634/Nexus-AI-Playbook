@@ -10,11 +10,11 @@ hero:
     alt: Nexus-AI
   actions:
     - theme: brand
-      text: 🚀 快速上手
-      link: /guide/login
+      text: 🚀 快速开始
+      link: /getting-started/quickstart
     - theme: alt
-      text: 💡 了解 Nexus-AI
-      link: /overview/what-is-nexus
+      text: 📖 Agent 使用手册
+      link: /using/dashboard
 
 features:
   - icon: 🚀
