@@ -1,0 +1,33 @@
+# Nexus-AI Playbook — Docs Index for LLMs
+
+One line per document: `- [Title](URL) — summary`.
+
+- [系统设置](/admin/settings) — 设置页面用于管理你的账户信息和应用配置。通过左侧导航栏的 **「系统配置」** 进入。
+- [用户管理](/admin/users) — 用户管理页面用于管理平台的用户账号和权限。通过左侧导航栏的 **「用户管理」** 进入。
+- [常见问题](/faq) — Nexus-AI 是一个 **AI Agent 自动化构建平台**，采用"Agent Build Agent"理念 —— 用 8 个专业 AI Agent 协作来构建你想要的 AI Agent。你只需用自然语言描述需求，平台就能在几分钟内自动完成从需求分析、架构设计、代码开发到部署上线的全流程。
+- [AWS 环境准备](/getting-started/aws-setup) — Nexus-AI 运行在 AWS 上，依赖 Bedrock、Aurora、Valkey、DynamoDB、SQS、S3 等服务。在部署之前，你需要准备一个可用的 AWS 账号，并开通必要的服务权限。这一步做对了，后续 `nexus-cli deploy` 或 CloudFormation 一键部署才能顺利跑通。
+- [快速开始](/getting-started/index) — 本章节帮你把 Nexus-AI 从零跑起来：最短 5 分钟就能看到本地控制台和默认 Agent，然后按需把依赖装全、把 AWS 账号准备好、把后续升级和卸载流程理清。
+- [安装 Nexus-AI](/getting-started/installation) — Nexus-AI 在本地或 EC2 主机上以 Python 虚拟环境 + Node.js 前端 + Docker（可选）的形式运行。本篇介绍两种安装路径：**Amazon Linux 2023 一键脚本**（推荐，几分钟内把系统依赖、Python 3.13、uv、代码仓库、前端依赖全部装好）和**跨平台手动安装**（适合 macOS / 其他 Linux 发行版 / 已有 Python 环境的场景
+- [学习路径](/getting-started/learning-path) — 本指南帮你规划掌握 Nexus-AI 的顺序：从环境准备到构建第一个 Agent，再到按需开启 IDE 接入、SSO 和云端部署。按步推进，不必一次面对所有功能。
+- [5 分钟快速上手](/getting-started/quickstart) — 一份从零到跑通 Nexus-AI 的最短路径指南。完成下面的步骤后，你将拥有一套可以在本地访问的 Web 控制台，以及一个用自然语言就能向其提问的默认 Agent。
+- [升级与卸载](/getting-started/updating) — 这篇文档告诉你如何把 Nexus-AI 升级到最新版本，以及当你不再需要它时如何干净卸载。本地安装（虚拟环境）和云端部署（CloudFormation Stack）采用不同的操作路径，下面分别说明。
+- [创建第一个 Agent](/guide/first-agent) — 本指南将带你一步步创建你的第一个 AI Agent。我们将以一个真实案例——"数据分析助手"为例，详细演示整个创建流程。
+- [登录系统](/guide/login) — 打开浏览器，访问系统地址即可进入 Nexus-AI 登录页面。
+- [认识工作台](/guide/workspace) — 登录成功后，你将看到 Nexus-AI 的工作台（Dashboard）。这是你使用平台的起点和控制中心，提供全局概览和快捷操作入口。
+- [index.md](/index) — 
+- [构建原理](/overview/how-it-works) — 了解 Nexus-AI 是如何将你的自然语言需求转化为一个可运行的 AI Agent。
+- [什么是 Nexus-AI](/overview/what-is-nexus) — Nexus-AI 是一个基于 AWS 云端架构的 **AI Agent 自动化构建平台**。它采用独创的 **"Agent Build Agent"** 理念 —— 用 AI Agent 来构建 AI Agent。你只需用自然语言描述业务需求，平台内部的 8 个专业 AI Agent 就会自动协作，为你构建出一个完整的、可对话交互的 AI Agent。
+- [Playbook Docs-Sync — 开发状态跟踪](/superpowers/STATUS) — > 本文件记录 Playbook 自动同步框架（docs-sync）的开发进展。 > 供项目协作者快速了解当前所处阶段与下一步动作。
+- [Playbook 文档自动同步机制 Implementation Plan](/superpowers/plans/2026-05-06-playbook-docs-sync) — > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`
+- [Playbook Docs-Sync v2 Implementation Plan](/superpowers/plans/2026-05-07-playbook-docs-sync-v2) — > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`
+- [Playbook Docs-Sync v3 — Hermes-Style Restructure + Getting Started Batch](/superpowers/plans/2026-05-08-playbook-docs-sync-v3) — > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`
+- [Playbook 文档自动同步机制 — 设计文档](/superpowers/specs/2026-05-06-playbook-docs-sync-design) — **日期：** 2026-05-06 **状态：** 设计已批准，待实施 **作者：** Nexus-AI-Playbook 团队
+- [Playbook 文档自动同步机制 v2 — 设计文档](/superpowers/specs/2026-05-07-playbook-docs-sync-v2-design) — **日期：** 2026-05-07 **状态：** 设计待批准，待实施 **前置文档：** [2026-05-06-playbook-docs-sync-design.md](./2026-05-06-playbook-docs-sync-design.md)（v1，已部分实施） **作用：** supersedes v1
+- [构建进度](/using/build-progress) — 构建进度页面让你实时了解 Agent 构建的每一步。当你提交 Agent 创建请求后，会自动跳转到此页面。
+- [对话测试](/using/chat) — 对话页面提供独立的对话界面，让你与任意 Agent 进行多轮交互。这是验证 Agent 功能、测试业务场景的主要入口。通过左侧导航栏的 **「会话」** 进入。
+- [创建 Agent](/using/create-agent) — Nexus-AI 提供两种创建模式 —— **快速创建**和**引导创建**，适合不同场景的需求。点击左侧导航栏进入创建页面。
+- [工作台](/using/dashboard) — 工作台是你进入 Nexus-AI 后的首页，它是整个平台的控制中心，提供全局概览、快捷创建入口和状态监控。
+- [管理 Agent](/using/manage-agents) — Agent 管理页面是你查看、管理和操作所有已构建 Agent 的中心。通过左侧导航栏的 **「Agents」** 进入。
+- [MCP 服务器](/using/mcp) — MCP 服务器管理页面位于 **「能力工具」** 下的 **「MCP 服务器管理」** 标签页。在这里你可以管理通过 MCP 协议集成的外部工具和服务。
+- [项目管理](/using/projects) — 项目管理页面展示所有构建项目的列表和状态，是你追踪 Agent 构建全生命周期的管理中心。通过左侧导航栏的 **「构建项目」** 进入。
+- [工具库](/using/tools) — 能力工具页面展示平台中所有已注册的工具。通过左侧导航栏的 **「能力工具」** 进入，默认显示 **「工具列表」** 标签页。
