@@ -1,3 +1,15 @@
+---
+title: Chat
+sync:
+  source_commit: migrated-from-manual
+  source_files:
+    - docs/using/chat.md
+  generated_at: 2026-05-08T03:35:25Z
+  generated_by: migrate_human_edit v3
+  protected: true
+---
+
+<!-- HUMAN-EDIT-START: manual-chat -->
 # 对话测试
 
 对话页面提供独立的对话界面，让你与任意 Agent 进行多轮交互。这是验证 Agent 功能、测试业务场景的主要入口。通过左侧导航栏的 **「会话」** 进入。
@@ -15,7 +27,7 @@
 选择你要对话的 Agent 后，右侧会显示对话区域。下拉框中每个 Agent 会显示名称和简要描述，帮助你快速辨识。
 
 ::: tip 只有运行中的 Agent 可以对话
-如果你在下拉框中没有看到想要的 Agent，可能是该 Agent 处于离线或异常状态。请到 [Agent 管理](/manual/manage-agents) 页面检查其状态。
+如果你在下拉框中没有看到想要的 Agent，可能是该 Agent 处于离线或异常状态。请到 [Agent 管理](/using/manage-agents) 页面检查其状态。
 :::
 
 ### 第 2 步：创建或选择会话
@@ -231,3 +243,4 @@ Mermaid 图表会在对话中实时渲染为可视化图形，无需额外工具
 | 响应时间过长 | 处理内容量大或模型负载高 | 尝试减小文件体积或拆分请求 |
 | 上下文混乱 | 会话太长导致上下文过载 | 创建新会话重新开始 |
 | Agent 离线无法对话 | Agent 未启动 | 到 Agent 管理页面启动 Agent |
+<!-- HUMAN-EDIT-END: manual-chat -->

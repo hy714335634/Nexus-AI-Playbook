@@ -260,7 +260,7 @@ Agent 构建完成后，你可以：
 
 恭喜你成功创建了第一个 Agent！接下来建议了解：
 
-- [构建进度详情 →](/manual/build-progress) — 深入了解每个构建阶段的细节
-- [管理你的 Agent →](/manual/manage-agents) — 查看和管理 Agent 的完整指南
-- [对话技巧 →](/manual/chat) — 如何更好地与 Agent 对话
+- [构建进度详情 →](/using/build-progress) — 深入了解每个构建阶段的细节
+- [管理你的 Agent →](/using/manage-agents) — 查看和管理 Agent 的完整指南
+- [对话技巧 →](/using/chat) — 如何更好地与 Agent 对话
 - [构建原理 →](/overview/how-it-works) — 了解背后 8 个 Builder Agent 的协作机制

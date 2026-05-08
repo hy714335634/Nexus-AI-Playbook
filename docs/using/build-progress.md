@@ -1,3 +1,15 @@
+---
+title: Build Progress
+sync:
+  source_commit: migrated-from-manual
+  source_files:
+    - docs/using/build-progress.md
+  generated_at: 2026-05-08T03:35:25Z
+  generated_by: migrate_human_edit v3
+  protected: true
+---
+
+<!-- HUMAN-EDIT-START: manual-build-progress -->
 # 构建进度
 
 构建进度页面让你实时了解 Agent 构建的每一步。当你提交 Agent 创建请求后，会自动跳转到此页面。
@@ -315,3 +327,4 @@ Token 是大语言模型处理文本的基本单位。输入 Token 代表 Builde
 ::: tip
 构建过程中你不需要一直盯着页面。你可以做其他事情，稍后回来查看进展。如果开启了通知功能（在 [系统设置](/admin/settings) 中配置），构建完成或失败时会收到通知。
 :::
+<!-- HUMAN-EDIT-END: manual-build-progress -->

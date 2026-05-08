@@ -1,3 +1,15 @@
+---
+title: Projects
+sync:
+  source_commit: migrated-from-manual
+  source_files:
+    - docs/using/projects.md
+  generated_at: 2026-05-08T03:35:25Z
+  generated_by: migrate_human_edit v3
+  protected: true
+---
+
+<!-- HUMAN-EDIT-START: manual-projects -->
 # 项目管理
 
 项目管理页面展示所有构建项目的列表和状态，是你追踪 Agent 构建全生命周期的管理中心。通过左侧导航栏的 **「构建项目」** 进入。
@@ -89,7 +101,7 @@
 
 ## 查看项目详情
 
-点击项目卡片右侧的 **`>`** 箭头，进入项目的详情页面。详情页面等同于 [构建进度](/manual/build-progress) 页面，展示：
+点击项目卡片右侧的 **`>`** 箭头，进入项目的详情页面。详情页面等同于 [构建进度](/using/build-progress) 页面，展示：
 
 - 每个阶段的详细执行信息
 - 阶段产出物和资源文件
@@ -100,7 +112,7 @@
 
 ### 新建项目
 
-点击页面右上角的 **「+ 新建项目」** 按钮，可以直接创建新的构建项目。这等同于进入 [创建 Agent](/manual/create-agent) 页面。
+点击页面右上角的 **「+ 新建项目」** 按钮，可以直接创建新的构建项目。这等同于进入 [创建 Agent](/using/create-agent) 页面。
 
 ### 其他操作
 
@@ -111,7 +123,7 @@
 | **刷新列表** | 手动刷新项目列表获取最新状态 |
 
 ::: tip
-项目完成后，关联的 Agent 会自动出现在 [Agent 管理](/manual/manage-agents) 页面。你可以从项目列表直接跳转过去。
+项目完成后，关联的 Agent 会自动出现在 [Agent 管理](/using/manage-agents) 页面。你可以从项目列表直接跳转过去。
 :::
 
 ## 项目管理最佳实践
@@ -135,3 +147,4 @@
 - 查看各阶段产出物，了解平台是如何将你的需求转化为 Agent 的
 - 通过查看需求文档和架构设计，学习如何更好地描述需求
 - 比较不同项目的构建时间和 Token 消耗，了解复杂度与资源的关系
+<!-- HUMAN-EDIT-END: manual-projects -->

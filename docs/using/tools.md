@@ -1,3 +1,15 @@
+---
+title: Tools
+sync:
+  source_commit: migrated-from-manual
+  source_files:
+    - docs/using/tools.md
+  generated_at: 2026-05-08T03:35:25Z
+  generated_by: migrate_human_edit v3
+  protected: true
+---
+
+<!-- HUMAN-EDIT-START: manual-tools -->
 # 工具库
 
 能力工具页面展示平台中所有已注册的工具。通过左侧导航栏的 **「能力工具」** 进入，默认显示 **「工具列表」** 标签页。
@@ -20,7 +32,7 @@
 
 页面右上角显示两个全局统计数据：
 - **工具总数** — 平台中所有可用工具的数量
-- **MCP 服务器数** — 已配置的 [MCP 服务器](/manual/mcp) 数量
+- **MCP 服务器数** — 已配置的 [MCP 服务器](/using/mcp) 数量
 
 ## 工具类型详解
 
@@ -80,7 +92,7 @@ Nexus-AI 平台中的工具分为以下五种类型：
 - AWS Pricing MCP 服务器 → 提供 AWS 服务价格查询工具
 - AWS Core MCP 服务器 → 提供 AWS 资源管理工具
 
-MCP 工具的详细管理见 [MCP 服务器](/manual/mcp) 页面。
+MCP 工具的详细管理见 [MCP 服务器](/using/mcp) 页面。
 
 ## 浏览工具
 
@@ -214,6 +226,7 @@ Agent: [理解] 用户想分析数据
 
 ## 相关功能
 
-- [MCP 服务器管理 →](/manual/mcp) — 管理通过 MCP 协议集成的外部工具和服务
-- [Agent 管理 →](/manual/manage-agents) — 查看 Agent 使用了哪些工具
+- [MCP 服务器管理 →](/using/mcp) — 管理通过 MCP 协议集成的外部工具和服务
+- [Agent 管理 →](/using/manage-agents) — 查看 Agent 使用了哪些工具
 - [构建原理 →](/overview/how-it-works) — 了解 Tools Agent 如何自动开发工具
+<!-- HUMAN-EDIT-END: manual-tools -->

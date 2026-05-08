@@ -304,7 +304,7 @@ Agent Deployer 是流水线的最后一个阶段，负责将构建好的 Agent �
 
 ## 构建产物一览
 
-一次成功的构建会产生以下产物，所有产物都可以在 [项目管理](/manual/projects) 页面中查看：
+一次成功的构建会产生以下产物，所有产物都可以在 [项目管理](/using/projects) 页面中查看：
 
 | 产物 | 格式 | 说明 |
 |------|------|------|
@@ -404,7 +404,7 @@ Developer Agent → [Agent 代码] → DevManager Agent
 DevManager Agent → [审查通过] → Agent Deployer
 ```
 
-每个 Agent 的工作成果（构建产物）都保存在云端存储中，确保构建过程可追溯、可回放。你可以在 [构建进度](/manual/build-progress) 页面查看每个阶段的详细产出。
+每个 Agent 的工作成果（构建产物）都保存在云端存储中，确保构建过程可追溯、可回放。你可以在 [构建进度](/using/build-progress) 页面查看每个阶段的详细产出。
 
 ## 项目产出目录结构
 
@@ -471,6 +471,6 @@ projects/
 
 ## 延伸阅读
 
-- [构建进度详情 →](/manual/build-progress) — 实时查看每个阶段的执行状态
-- [项目管理 →](/manual/projects) — 管理所有构建项目
-- [Agent 管理 →](/manual/manage-agents) — 查看和管理构建好的 Agent
+- [构建进度详情 →](/using/build-progress) — 实时查看每个阶段的执行状态
+- [项目管理 →](/using/projects) — 管理所有构建项目
+- [Agent 管理 →](/using/manage-agents) — 查看和管理构建好的 Agent

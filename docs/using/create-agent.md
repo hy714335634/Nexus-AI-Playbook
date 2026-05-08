@@ -1,3 +1,15 @@
+---
+title: Create Agent
+sync:
+  source_commit: migrated-from-manual
+  source_files:
+    - docs/using/create-agent.md
+  generated_at: 2026-05-08T03:35:25Z
+  generated_by: migrate_human_edit v3
+  protected: true
+---
+
+<!-- HUMAN-EDIT-START: manual-create-agent -->
 # 创建 Agent
 
 Nexus-AI 提供两种创建模式 —— **快速创建**和**引导创建**，适合不同场景的需求。点击左侧导航栏进入创建页面。
@@ -96,7 +108,7 @@ Nexus-AI 提供两种创建模式 —— **快速创建**和**引导创建**，�
 确认所有信息无误后，点击 **「开始构建」** 按钮。系统会：
 
 1. 创建一个新的构建项目
-2. 自动跳转到 [构建进度](/manual/build-progress) 页面
+2. 自动跳转到 [构建进度](/using/build-progress) 页面
 3. 8 个 Builder Agent 开始按流水线协作构建
 4. 你可以实时查看每个阶段的进展
 
@@ -228,7 +240,7 @@ AI 提问：
 无论使用哪种创建模式，点击构建后会发生以下事情：
 
 1. **项目创建** — 系统自动创建一个新的构建项目
-2. **页面跳转** — 自动跳转到 [构建进度](/manual/build-progress) 页面
+2. **页面跳转** — 自动跳转到 [构建进度](/using/build-progress) 页面
 3. **流水线启动** — 8 个专业 Builder Agent 开始按序工作：
    - Orchestrator 分析需求并制定计划
    - Requirements Agent 将需求规格化
@@ -245,3 +257,4 @@ AI 提问：
 ::: info 构建期间
 构建过程中你可以离开页面做其他事情。如果开启了通知设置，构建完成或失败时会收到通知。
 :::
+<!-- HUMAN-EDIT-END: manual-create-agent -->

@@ -1,3 +1,15 @@
+---
+title: Mcp
+sync:
+  source_commit: migrated-from-manual
+  source_files:
+    - docs/using/mcp.md
+  generated_at: 2026-05-08T03:35:25Z
+  generated_by: migrate_human_edit v3
+  protected: true
+---
+
+<!-- HUMAN-EDIT-START: manual-mcp -->
 # MCP 服务器
 
 MCP 服务器管理页面位于 **「能力工具」** 下的 **「MCP 服务器管理」** 标签页。在这里你可以管理通过 MCP 协议集成的外部工具和服务。
@@ -99,7 +111,7 @@ MCP 协议支持两种传输方式：
 
 - 工具名称和功能描述
 - 参数定义
-- 这些工具也会同步出现在 [工具库](/manual/tools) 的 MCP 工具分类中
+- 这些工具也会同步出现在 [工具库](/using/tools) 的 MCP 工具分类中
 
 ### 服务器操作
 
@@ -199,7 +211,7 @@ MCP 协议支持两种传输方式：
 | **功能描述** | 工具做什么 |
 | **参数定义** | 工具需要什么输入 |
 
-这些工具也会同步出现在 [工具库](/manual/tools) 页面的 MCP 工具分类中，你可以在那里查看详情和进行测试。
+这些工具也会同步出现在 [工具库](/using/tools) 页面的 MCP 工具分类中，你可以在那里查看详情和进行测试。
 
 ## MCP 与 Agent 构建的关系
 
@@ -226,3 +238,4 @@ MCP 协议支持两种传输方式：
 ::: info
 MCP 服务器需要有对应的网络访问权限和服务凭证才能正常工作。如果服务器无法连接或工具执行失败，请联系管理员检查网络和权限配置。
 :::
+<!-- HUMAN-EDIT-END: manual-mcp -->

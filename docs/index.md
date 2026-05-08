@@ -25,27 +25,27 @@ features:
   - icon: 📋
     title: 工作台
     details: 平台控制中心 — 快速构建入口、数据概览、项目跟踪、Agent 管理一站式操作
-    link: /manual/dashboard
+    link: /using/dashboard
     linkText: 查看详情 →
   - icon: 🤖
     title: 创建 Agent
     details: 快速创建（直接构建）和引导创建（AI 多轮提问完善需求），支持多模态附件输入
-    link: /manual/create-agent
+    link: /using/create-agent
     linkText: 了解更多 →
   - icon: 📊
     title: 构建进度
     details: 实时查看 8 个 Builder Agent 在 9 个阶段的协作进展，了解每个阶段的具体产出
-    link: /manual/build-progress
+    link: /using/build-progress
     linkText: 查看流程 →
   - icon: 💬
     title: 对话测试
     details: 多轮对话交互，支持文件上传（PDF/Excel/CSV/图片），Agent 响应支持 Markdown 和图表
-    link: /manual/chat
+    link: /using/chat
     linkText: 开始对话 →
   - icon: 🔧
     title: 能力工具 & MCP
     details: 5 种工具类型（内置/模板/生成/系统/MCP），通过 MCP 协议即插即用集成外部服务
-    link: /manual/tools
+    link: /using/tools
     linkText: 浏览工具 →
 ---
 

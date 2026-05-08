@@ -1,3 +1,15 @@
+---
+title: Dashboard
+sync:
+  source_commit: migrated-from-manual
+  source_files:
+    - docs/using/dashboard.md
+  generated_at: 2026-05-08T03:35:25Z
+  generated_by: migrate_human_edit v3
+  protected: true
+---
+
+<!-- HUMAN-EDIT-START: manual-dashboard -->
 # 工作台
 
 工作台是你进入 Nexus-AI 后的首页，它是整个平台的控制中心，提供全局概览、快捷创建入口和状态监控。
@@ -17,7 +29,7 @@
    > 帮我创建一个医学文献研究助手，能在 PubMed 搜索论文并生成 APA 引用
 
 2. 点击右侧的 **发送按钮**（或按 Enter 键）
-3. 系统自动创建构建项目，页面跳转到 [构建进度](/manual/build-progress) 页面
+3. 系统自动创建构建项目，页面跳转到 [构建进度](/using/build-progress) 页面
 4. 8 个专业 Builder Agent 开始自动协作构建你的 Agent
 
 ::: tip 多模态输入
@@ -35,7 +47,7 @@
 | **新闻简报** | 创建每日新闻摘要 Agent | 支持多源新闻采集、摘要生成、分类整理 |
 
 ::: info
-快捷模板的需求描述是预设的，会直接触发快速创建流程。如果你想自定义需求描述或使用引导创建模式，请使用 [创建 Agent](/manual/create-agent) 页面。
+快捷模板的需求描述是预设的，会直接触发快速创建流程。如果你想自定义需求描述或使用引导创建模式，请使用 [创建 Agent](/using/create-agent) 页面。
 :::
 
 ### 需求描述最佳实践
@@ -88,7 +100,7 @@
 | **更新时间** | 最后一次状态变更的时间（如 "17天前"、"2小时前"） |
 
 **快捷操作：**
-- 点击项目名称 → 跳转到 [构建进度](/manual/build-progress) 详情页
+- 点击项目名称 → 跳转到 [构建进度](/using/build-progress) 详情页
 - 对于已完成的项目 → 可以直接跳转到关联的 Agent
 
 ## 运行中的 Agent
@@ -112,9 +124,9 @@
 
 | 操作 | 说明 |
 |------|------|
-| **创建 Agent** | 跳转到 [创建 Agent](/manual/create-agent) 页面，使用完整的创建模式 |
-| **查看全部项目** | 跳转到 [项目管理](/manual/projects) 页面，查看所有构建项目 |
-| **查看全部 Agent** | 跳转到 [Agent 管理](/manual/manage-agents) 页面，管理所有 Agent |
+| **创建 Agent** | 跳转到 [创建 Agent](/using/create-agent) 页面，使用完整的创建模式 |
+| **查看全部项目** | 跳转到 [项目管理](/using/projects) 页面，查看所有构建项目 |
+| **查看全部 Agent** | 跳转到 [Agent 管理](/using/manage-agents) 页面，管理所有 Agent |
 
 ## 使用技巧
 
@@ -122,3 +134,4 @@
 2. **关注构建成功率** — 如果成功率较低，尝试使用引导创建模式来获得更精确的需求描述
 3. **定期查看最近项目** — 构建过程可能需要几分钟，你可以先做其他事情，稍后回来查看进展
 4. **利用快速对话** — 在"运行中的 Agent"区域可以最快速地测试 Agent
+<!-- HUMAN-EDIT-END: manual-dashboard -->

@@ -130,7 +130,7 @@ Nexus-AI-Playbook/
 │
 └── drafts/                        # 【本次新增】生成的草稿（gitignored，临时工作区）
     ├── SUMMARY.md                 # 本次同步的改动摘要
-    ├── manual/                    # 与 docs/manual/ 结构对齐
+    ├── manual/                    # 与 docs/using/ 结构对齐
     ├── manual/en/
     └── images-todo/               # 需要手动更新截图的清单
 ```
@@ -254,8 +254,8 @@ git diff --name-only $last_commit_sha HEAD
 state/work/<mapping-id>/
 ├── prompt.md              # 从 prompts/ 复制，填入变量
 ├── changed-files.md       # 每个变更文件的完整内容 + diff 片段
-├── current-doc-zh.md      # docs/manual/xxx.md 的当前内容
-├── current-doc-en.md      # docs/manual/en/xxx.md 的当前内容（若存在）
+├── current-doc-zh.md      # docs/using/xxx.md 的当前内容
+├── current-doc-en.md      # docs/using/en/xxx.md 的当前内容（若存在）
 └── style-guide.md         # 全局文风指南
 ```
 
@@ -293,8 +293,8 @@ claude -p "$(cat prompt.md)" \
 
 ## 输出
 写入到以下路径：
-- ../../drafts/manual/<doc>.md      (中文)
-- ../../drafts/manual/en/<doc>.md   (英文)
+- ../../drafts/using/<doc>.md      (中文)
+- ../../drafts/using/en/<doc>.md   (英文)
 ```
 
 ### 5.4 Stage 4 · Screenshot（可选）
@@ -327,7 +327,7 @@ fi
 
 ## 下一步
 1. 对比 drafts/ 与 docs/ 的差异
-2. 确认无误后，`cp drafts/manual/xxx.md docs/manual/xxx.md` 合并
+2. 确认无误后，`cp drafts/using/xxx.md docs/using/xxx.md` 合并
 3. 合并完成后，运行 `./sync.sh --commit-sync` 更新 last_sync.json
 ```
 
@@ -389,7 +389,7 @@ fi
 - 3 个 prompt 模板：`feature-update.md`、`config-reference.md`、`style-guide.md`
 - Playwright 截图脚本 + 2-3 个页面示范
 - `scripts/README.md` 使用说明
-- `docs/manual/en/` 英文目录初始化（可为空）
+- `docs/using/en/` 英文目录初始化（可为空）
 
 ### MVP 不包含（后续迭代）
 
@@ -406,7 +406,7 @@ MVP 成功 = 能跑通以下场景：
 
 1. 给定 Nexus-AI 从 `abc123` 到 `HEAD` 的真实变更（涉及 MCP 功能）
 2. 运行 `cd scripts && ./sync.sh`
-3. 得到 `drafts/manual/mcp.md` 和 `drafts/manual/en/mcp.md`，内容体现代码变更、文风与现有文档一致
+3. 得到 `drafts/using/mcp.md` 和 `drafts/using/en/mcp.md`，内容体现代码变更、文风与现有文档一致
 4. 截图目录有自动截图（服务运行时）或有 TODO 清单（服务未运行）
 5. 人工 review 后能直接合并到 `docs/` 使用
 

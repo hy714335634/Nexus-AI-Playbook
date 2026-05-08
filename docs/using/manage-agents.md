@@ -1,3 +1,15 @@
+---
+title: Manage Agents
+sync:
+  source_commit: migrated-from-manual
+  source_files:
+    - docs/using/manage-agents.md
+  generated_at: 2026-05-08T03:35:25Z
+  generated_by: migrate_human_edit v3
+  protected: true
+---
+
+<!-- HUMAN-EDIT-START: manual-manage-agents -->
 # 管理 Agent
 
 Agent 管理页面是你查看、管理和操作所有已构建 Agent 的中心。通过左侧导航栏的 **「Agents」** 进入。
@@ -228,3 +240,4 @@ Agent 列表支持多个维度的筛选，帮助你在大量 Agent 中快速定�
 3. **监控调用数据** — 通过详情页的指标了解 Agent 的使用情况
 4. **及时更新** — 当 Agent 的功能需要调整时，使用增量更新而非重新构建
 5. **合理部署** — 测试阶段使用本地部署，稳定后再考虑部署到云端
+<!-- HUMAN-EDIT-END: manual-manage-agents -->
