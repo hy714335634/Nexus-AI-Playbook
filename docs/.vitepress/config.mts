@@ -44,12 +44,18 @@ export default defineConfig({
           { text: '🔌 MCP 服务器', link: '/manual/mcp' },
         ]
       },
+      { text: '功能特性', link: '/features/' },
+      { text: '集成', link: '/integrations/' },
+      { text: '教程', link: '/tutorials/' },
+      { text: '开发者', link: '/developer/' },
+      { text: '参考', link: '/reference/' },
       {
         text: '了解更多',
         items: [
           { text: '💡 平台概述', link: '/overview/what-is-nexus' },
           { text: '⚙️ 构建原理', link: '/overview/how-it-works' },
           { text: '🛡️ 管理员指南', link: '/admin/settings' },
+          { text: '📖 术语表', link: '/glossary/' },
           { text: '❓ 常见问题', link: '/faq' },
         ]
       },
@@ -109,11 +115,36 @@ export default defineConfig({
           ]
         }
       ],
+      '/features/': [
+        { text: '⚡ 功能特性', items: [] }
+      ],
+      '/integrations/': [
+        { text: '🔌 集成', items: [] }
+      ],
+      '/tutorials/': [
+        { text: '📚 教程', items: [] }
+      ],
+      '/developer/': [
+        { text: '👨‍💻 开发者指南', items: [] }
+      ],
+      '/reference/': [
+        { text: '📋 参考', items: [] }
+      ],
+      '/glossary/': [
+        { text: '📖 术语表', items: [
+          { text: 'Nexus-AI 术语表', link: '/glossary/' }
+        ] }
+      ],
     },
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/hy714335634/Nexus-AI' }
     ],
+
+    editLink: {
+      pattern: 'https://github.com/hy714335634/Nexus-AI-Playbook/edit/main/docs/:path',
+      text: '在 GitHub 上编辑此页'
+    },
 
     footer: {
       message: 'Released under the MIT License.',
