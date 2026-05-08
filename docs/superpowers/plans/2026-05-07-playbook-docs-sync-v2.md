@@ -2512,14 +2512,14 @@ In the `nav: [ ... ]` array inside `themeConfig`, replace the existing array wit
       {
         text: '使用手册',
         items: [
-          { text: '🏠 工作台', link: '/using/dashboard' },
-          { text: '🤖 创建 Agent', link: '/using/create-agent' },
-          { text: '📊 构建进度', link: '/using/build-progress' },
-          { text: '📋 项目管理', link: '/using/projects' },
-          { text: '🗂️ 管理 Agent', link: '/using/manage-agents' },
-          { text: '💬 对话测试', link: '/using/chat' },
-          { text: '🔧 能力工具', link: '/using/tools' },
-          { text: '🔌 MCP 服务器', link: '/using/mcp' },
+          { text: '🏠 工作台', link: '/manual/dashboard' },
+          { text: '🤖 创建 Agent', link: '/manual/create-agent' },
+          { text: '📊 构建进度', link: '/manual/build-progress' },
+          { text: '📋 项目管理', link: '/manual/projects' },
+          { text: '🗂️ 管理 Agent', link: '/manual/manage-agents' },
+          { text: '💬 对话测试', link: '/manual/chat' },
+          { text: '🔧 能力工具', link: '/manual/tools' },
+          { text: '🔌 MCP 服务器', link: '/manual/mcp' },
         ]
       },
       { text: '功能特性', link: '/features/' },
@@ -2542,7 +2542,7 @@ In the `nav: [ ... ]` array inside `themeConfig`, replace the existing array wit
 
 - [ ] **Step 4: Extend `sidebar` with empty placeholders for each new chapter**
 
-In the `sidebar: { ... }` object inside `themeConfig`, add these keys alongside the existing `/guide/`, `/using/`, `/overview/`, `/admin/` entries (keeping existing entries intact):
+In the `sidebar: { ... }` object inside `themeConfig`, add these keys alongside the existing `/guide/`, `/manual/`, `/overview/`, `/admin/` entries (keeping existing entries intact):
 
 ```ts
       '/features/': [

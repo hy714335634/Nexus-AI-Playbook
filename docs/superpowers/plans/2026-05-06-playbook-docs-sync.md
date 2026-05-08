@@ -29,7 +29,7 @@
 - `scripts/screenshots/` — Playwright project (isolated node_modules)
 - `scripts/state/` — sync state; `last_sync.json` git-tracked, `work/` and `changes.json` gitignored
 - `drafts/` — generated draft output (gitignored root)
-- `docs/using/en/` — English manual mirror (git-tracked, starts empty)
+- `docs/manual/en/` — English manual mirror (git-tracked, starts empty)
 
 **New files (created across tasks):**
 - `scripts/sync.sh` — main entry + CLI flag parser
@@ -60,7 +60,7 @@
 **Files:**
 - Create: `scripts/` directory tree
 - Create: `drafts/` (gitignored)
-- Create: `docs/using/en/.gitkeep`
+- Create: `docs/manual/en/.gitkeep`
 - Modify: `.gitignore` at repo root (create if missing)
 
 - [ ] **Step 1: Create directories**
@@ -68,9 +68,9 @@
 ```bash
 cd /home/ubuntu/mydev/Nexus-AI-Playbook
 mkdir -p scripts/lib scripts/prompts scripts/screenshots scripts/state/work
-mkdir -p drafts/using/en drafts/images-todo
-mkdir -p docs/using/en
-touch docs/using/en/.gitkeep
+mkdir -p drafts/manual/en drafts/images-todo
+mkdir -p docs/manual/en
+touch docs/manual/en/.gitkeep
 ```
 
 - [ ] **Step 2: Write / update `.gitignore`**
@@ -106,15 +106,15 @@ EOF
 
 - [ ] **Step 3: Verify directory layout**
 
-Run: `find scripts drafts docs/using/en -type d | sort`
+Run: `find scripts drafts docs/manual/en -type d | sort`
 
 Expected output includes:
 ```
-docs/using/en
+docs/manual/en
 drafts
 drafts/images-todo
 drafts/manual
-drafts/using/en
+drafts/manual/en
 scripts
 scripts/lib
 scripts/prompts
@@ -130,13 +130,13 @@ Expected: all three paths printed (confirming they are gitignored).
 - [ ] **Step 4: Commit**
 
 ```bash
-git add .gitignore scripts/ drafts/ docs/using/en/.gitkeep
+git add .gitignore scripts/ drafts/ docs/manual/en/.gitkeep
 git status  # confirm drafts/ is NOT staged (ignored)
-git add scripts/ docs/using/en/.gitkeep .gitignore
+git add scripts/ docs/manual/en/.gitkeep .gitignore
 git commit -m "chore(scripts): scaffold docs-sync directory structure"
 ```
 
-Note: `drafts/` being gitignored means `git add drafts/` is a no-op. That is expected. The `docs/using/en/.gitkeep` placeholder keeps the en directory tracked.
+Note: `drafts/` being gitignored means `git add drafts/` is a no-op. That is expected. The `docs/manual/en/.gitkeep` placeholder keeps the en directory tracked.
 
 ---
 
@@ -565,7 +565,7 @@ git commit -m "feat(scripts): add Stage 1 detect — git diff + mapping match"
 Reads `changes.json`. For each triggered mapping, builds `state/work/<id>/` containing:
 - `changed-files.md` — each changed file's full current content + diff vs `from_sha`
 - `current-doc-zh.md` — copy of `docs/<path>.md` (or empty marker if file doesn't exist)
-- `current-doc-en.md` — copy of `docs/using/en/<...>.md` (or empty marker)
+- `current-doc-en.md` — copy of `docs/manual/en/<...>.md` (or empty marker)
 - `style-guide.md` — copy of `prompts/style-guide.md`
 - `prompt.md` — the mapping's prompt template copied over (filled in Task 8)
 
@@ -749,8 +749,8 @@ git commit -m "feat(scripts): add Stage 2 prepare — context pack assembly"
 
 将结果写入（路径相对当前工作目录）：
 
-- `../../../drafts/using/<slug-or-path>.md`（中文）
-- `../../../drafts/using/en/<slug-or-path>.md`（英文）
+- `../../../drafts/manual/<slug-or-path>.md`（中文）
+- `../../../drafts/manual/en/<slug-or-path>.md`（英文）
 
 具体的输出路径由操作者传入的 `OUTPUT_ZH` 与 `OUTPUT_EN` 环境变量决定 —— 请优先写入这两个路径。
 
@@ -833,7 +833,7 @@ Iterates prepared work dirs; for each `(mapping, doc)` pair, invokes `claude -p`
 #!/usr/bin/env bash
 # Stage 3: Invoke Claude Code to generate draft docs.
 # Reads state/changes.json + state/work/*.
-# Writes drafts to drafts/<path>.md and drafts/using/en/<path>.md.
+# Writes drafts to drafts/<path>.md and drafts/manual/en/<path>.md.
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
@@ -846,7 +846,7 @@ CHANGES_FILE="$STATE_DIR/changes.json"
 MODEL_DEFAULT="$(yaml_get '.models.default' | tr -d '"')"
 MODEL_COMPLEX="$(yaml_get '.models.complex' | tr -d '"')"
 
-mkdir -p "$DRAFTS_DIR/using/en" "$DRAFTS_DIR/admin" "$DRAFTS_DIR/guide" "$DRAFTS_DIR/overview"
+mkdir -p "$DRAFTS_DIR/manual/en" "$DRAFTS_DIR/admin" "$DRAFTS_DIR/guide" "$DRAFTS_DIR/overview"
 
 COUNT="$(jq '.triggered_mappings | length' "$CHANGES_FILE")"
 [ "$COUNT" -gt 0 ] || { log "Generate: nothing to do"; exit 0; }
@@ -1344,7 +1344,7 @@ mkdir -p "$DRAFTS_DIR"
     echo "## 下一步"
     echo
     echo "1. 对比 \`drafts/\` 与 \`docs/\` 的差异。"
-    echo "2. 确认无误后，将草稿合并到正式目录（例如 \`cp drafts/using/xxx.md docs/using/xxx.md\`）。"
+    echo "2. 确认无误后，将草稿合并到正式目录（例如 \`cp drafts/manual/xxx.md docs/manual/xxx.md\`）。"
     echo "3. 合并完成后运行 \`./scripts/sync.sh --commit-sync\` 更新 \`last_sync.json\`。"
 } > "$SUMMARY"
 
@@ -1565,7 +1565,7 @@ git commit -m "feat(scripts): add sync.sh main entry with CLI flag parsing"
 ## 输出
 
 - `drafts/SUMMARY.md` — 本次同步摘要与下一步建议
-- `drafts/using/*.md`、`drafts/using/en/*.md`、`drafts/admin/*.md` — 草稿
+- `drafts/manual/*.md`、`drafts/manual/en/*.md`、`drafts/admin/*.md` — 草稿
 - `drafts/images-todo/TODO.md` — 需要手动补的截图（服务未运行时产生）
 - `scripts/state/errors.log` — 生成过程中的错误与警告
 
@@ -1574,11 +1574,11 @@ git commit -m "feat(scripts): add sync.sh main entry with CLI flag parsing"
 草稿生成后请人工 diff 与合并：
 
 ```bash
-diff -u docs/using/mcp.md drafts/using/mcp.md
+diff -u docs/manual/mcp.md drafts/manual/mcp.md
 # 满意后：
-cp drafts/using/mcp.md docs/using/mcp.md
-cp drafts/using/en/mcp.md docs/using/en/mcp.md
-git add docs/using/mcp.md docs/using/en/mcp.md
+cp drafts/manual/mcp.md docs/manual/mcp.md
+cp drafts/manual/en/mcp.md docs/manual/en/mcp.md
+git add docs/manual/mcp.md docs/manual/en/mcp.md
 git commit -m "docs: sync mcp from Nexus-AI <short-sha>"
 # 最后更新同步点
 ./scripts/sync.sh --commit-sync
@@ -1645,7 +1645,7 @@ DRAFT=$(find drafts/manual drafts/admin -name '*.md' -not -path '*/en/*' | head 
 echo "=== $DRAFT ==="
 head -60 "$DRAFT"
 
-EN="${DRAFT/\/manual\///using/en/}"
+EN="${DRAFT/\/manual\///manual/en/}"
 EN="${EN/\/admin\///admin/en/}"
 echo "=== $EN ==="
 head -60 "$EN"
@@ -1660,7 +1660,7 @@ cat drafts/images-todo/TODO.md 2>/dev/null || echo "(no TODO file)"
 - [ ] At least one zh draft and one en draft exist and are non-empty.
 - [ ] The zh and en drafts have the **same heading structure** (eyeball check: both have the same number of `#`/`##`/`###` lines).
 - [ ] Drafts reference actual features from the source (spot-check by searching for real keywords from `changed-files.md`).
-- [ ] Drafts do NOT contain internal implementation references (no Python module paths, no class names from the code — a grep like `grep -E 'class |def |from [a-z_]+ import' drafts/using/*.md drafts/admin/*.md` should return nothing).
+- [ ] Drafts do NOT contain internal implementation references (no Python module paths, no class names from the code — a grep like `grep -E 'class |def |from [a-z_]+ import' drafts/manual/*.md drafts/admin/*.md` should return nothing).
 - [ ] Screenshot TODO list OR actual screenshot files exist, matching the requested names.
 - [ ] `scripts/state/errors.log` is empty or contains only non-fatal warnings.
 
@@ -1691,6 +1691,6 @@ git commit -m "docs(scripts): mark docs-sync MVP verified end-to-end"
 | `No from_sha. Run 'sync.sh --init …'` | First-time use without init | Run `./scripts/sync.sh --init <sha>` once. |
 | `claude: command not found` | Claude Code CLI not installed or not in PATH | Install / fix PATH. |
 | `Prompt not found: <file>` | Mapping references a template that doesn't exist in `prompts/` | Add the template or fix the mapping's `prompt:` field. |
-| `drafts/using/xxx.md` is empty | Claude wrote to a different path, or failed silently | Look at `scripts/state/errors.log` and `scripts/state/work/<id>/` — re-run `generate.sh` after fixing. |
+| `drafts/manual/xxx.md` is empty | Claude wrote to a different path, or failed silently | Look at `scripts/state/errors.log` and `scripts/state/work/<id>/` — re-run `generate.sh` after fixing. |
 | Screenshot always falls back to TODO | Base URL wrong or service not up | `curl $base_url` to diagnose; update `screenshots.base_url` if needed. |
 | en draft is empty but zh is fine | Prompt didn't write OUTPUT_EN | Ensure the prompt template explicitly names both output paths; re-run with `--mapping <id>`. |

@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Restructure Playbook into a Hermes-style 6-category sidebar (persistent, always-visible), fold existing `/using/*.md` into `/using/` with HUMAN-EDIT preservation, then full-generate the **Getting Started** category (5 pages, zh+en = 10 files) as Batch 1 out of 4 planned batches.
+**Goal:** Restructure Playbook into a Hermes-style 6-category sidebar (persistent, always-visible), fold existing `/manual/*.md` into `/using/` with HUMAN-EDIT preservation, then full-generate the **Getting Started** category (5 pages, zh+en = 10 files) as Batch 1 out of 4 planned batches.
 
-**Architecture:** Re-use v2's full-generate pipeline (`resolve.sh` + `full_generate.sh` + `index_gen.sh` + `sidebar_gen.sh`) unchanged. Swap `config.yaml`'s `chapters:` block to the 6-category structure. Preview kept as `/preview/` scratch. Migrate `/using/*.md` to `/using/` via git mv + inject `HUMAN-EDIT-START/END` markers so subsequent regenerations respect them. Build sidebar in `config.mts` as a single persistent tree spanning all 6 categories (not per-route switching).
+**Architecture:** Re-use v2's full-generate pipeline (`resolve.sh` + `full_generate.sh` + `index_gen.sh` + `sidebar_gen.sh`) unchanged. Swap `config.yaml`'s `chapters:` block to the 6-category structure. Preview kept as `/preview/` scratch. Migrate `/manual/*.md` to `/using/` via git mv + inject `HUMAN-EDIT-START/END` markers so subsequent regenerations respect them. Build sidebar in `config.mts` as a single persistent tree spanning all 6 categories (not per-route switching).
 
 **Tech Stack:** VitePress 1.6, bash scripts already built in v1/v2, Claude Code CLI, `jq`, Python 3.
 
@@ -43,7 +43,7 @@
   ├─ Updating
   └─ Learning Path
 
-📖 Using Nexus-AI              ← folded in from /using/
+📖 Using Nexus-AI              ← folded in from /manual/
   ├─ Dashboard (from manual/dashboard.md)
   ├─ Creating an Agent (manual/create-agent.md)
   ├─ Build Progress (manual/build-progress.md)
@@ -126,7 +126,7 @@ scripts/
     └── migrate_human_edit.py       # NEW: inject HUMAN-EDIT markers into legacy manual/*.md
 
 docs/
-├── using/                          # NEW directory: /using/* moves here (git mv)
+├── using/                          # NEW directory: /manual/* moves here (git mv)
 │   ├── index.md                    # NEW: chapter landing
 │   ├── dashboard.md                # MOVED from manual/dashboard.md + HUMAN-EDIT block
 │   ├── create-agent.md             # MOVED
@@ -531,7 +531,7 @@ Purpose: take a hand-written `manual/xxx.md`, wrap its entire body in a single `
 ```python
 #!/usr/bin/env python3
 """
-Migrate a hand-written markdown doc from /using/ (or elsewhere) into a v3 /using/
+Migrate a hand-written markdown doc from /manual/ (or elsewhere) into a v3 /using/
 doc that survives regen.
 
 Wraps the full body (below any existing frontmatter) in a single
@@ -543,7 +543,7 @@ Usage:
 
 Example:
     python3 scripts/lib/migrate_human_edit.py \
-        docs/using/chat.md docs/using/chat.md chat
+        docs/manual/chat.md docs/using/chat.md chat
 """
 from __future__ import annotations
 
@@ -572,7 +572,7 @@ def build_frontmatter(slug: str, existing_fm: str) -> str:
         f"title: {title}\n"
         "sync:\n"
         "  source_commit: migrated-from-manual\n"
-        f"  source_files:\n    - docs/using/{slug}.md\n"
+        f"  source_files:\n    - docs/manual/{slug}.md\n"
         f"  generated_at: {ts}\n"
         "  generated_by: migrate_human_edit v3\n"
         "  protected: true\n"
@@ -617,7 +617,7 @@ if __name__ == "__main__":
 
 ```bash
 chmod +x scripts/lib/migrate_human_edit.py
-cp docs/using/chat.md /tmp/chat-in.md
+cp docs/manual/chat.md /tmp/chat-in.md
 python3 scripts/lib/migrate_human_edit.py /tmp/chat-in.md /tmp/chat-out.md chat
 head -20 /tmp/chat-out.md
 grep -c "HUMAN-EDIT-START\|HUMAN-EDIT-END" /tmp/chat-out.md
@@ -636,10 +636,10 @@ git commit -m "feat(lib): add migrate_human_edit.py for manual→using migration
 
 ---
 
-## Task 3: Migrate `/using/*.md` → `/using/*.md`
+## Task 3: Migrate `/manual/*.md` → `/using/*.md`
 
 **Files:**
-- Modify (move): 8 files under `docs/using/` → `docs/using/`
+- Modify (move): 8 files under `docs/manual/` → `docs/using/`
 - Create: `docs/using/en/.gitkeep`
 
 This uses `git mv` (preserves history) followed by in-place mutation to add HUMAN-EDIT wrapping.
@@ -657,12 +657,12 @@ For each of the 8 files, do `git mv` to preserve history, then run the migration
 
 ```bash
 for slug in dashboard create-agent build-progress chat projects manage-agents tools mcp; do
-    if [ -f "docs/using/$slug.md" ]; then
-        git mv "docs/using/$slug.md" "docs/using/$slug.md"
+    if [ -f "docs/manual/$slug.md" ]; then
+        git mv "docs/manual/$slug.md" "docs/using/$slug.md"
         # Wrap in HUMAN-EDIT and add sync frontmatter (operates in place)
         python3 scripts/lib/migrate_human_edit.py "docs/using/$slug.md" "docs/using/$slug.md" "$slug"
     else
-        echo "WARN: docs/using/$slug.md missing"
+        echo "WARN: docs/manual/$slug.md missing"
     fi
 done
 ```
@@ -676,24 +676,24 @@ ls docs/using/
 # Expect: 8 .md files + en/ + (no index.md yet)
 grep -l "HUMAN-EDIT-START" docs/using/*.md | wc -l    # expect 8
 # Old manual/ should be empty
-ls docs/using/ 2>&1 || echo "manual dir removed"
+ls docs/manual/ 2>&1 || echo "manual dir removed"
 ```
 
 Expected: 8 `.md` files all contain HUMAN-EDIT markers, `manual/` directory is empty or removed.
 
 - [ ] **Step 4: Handle link references from the rest of the site**
 
-The existing `/using/...` links in `docs/guide/*.md`, `docs/overview/*.md`, `docs/admin/*.md`, `docs/index.md`, and the nav in `config.mts` need updating.
+The existing `/manual/...` links in `docs/guide/*.md`, `docs/overview/*.md`, `docs/admin/*.md`, `docs/index.md`, and the nav in `config.mts` need updating.
 
 Run:
 ```bash
-grep -rln "/using/" docs/ --include='*.md' | grep -v /using/
+grep -rln "/manual/" docs/ --include='*.md' | grep -v /manual/
 ```
 
-For each match, replace `/using/` with `/using/` using sed:
+For each match, replace `/manual/` with `/using/` using sed:
 
 ```bash
-grep -rln "/using/" docs/ --include='*.md' | grep -v /using/ | xargs sed -i 's|/using/|/using/|g'
+grep -rln "/manual/" docs/ --include='*.md' | grep -v /manual/ | xargs sed -i 's|/manual/|/using/|g'
 ```
 
 Verify the home page:
@@ -701,13 +701,13 @@ Verify the home page:
 grep "link:" docs/index.md | head
 ```
 
-Expected: any `link: /using/xxx` now reads `link: /using/xxx`.
+Expected: any `link: /manual/xxx` now reads `link: /using/xxx`.
 
 - [ ] **Step 5: Commit**
 
 ```bash
 git add -A docs/manual docs/using
-git commit -m "refactor(docs): migrate /using/ → /using/ with HUMAN-EDIT wrappers"
+git commit -m "refactor(docs): migrate /manual/ → /using/ with HUMAN-EDIT wrappers"
 ```
 
 If `docs/manual` is now empty, git mv already handled the move and the dir may or may not still exist; that's fine.
@@ -720,7 +720,7 @@ If `docs/manual` is now empty, git mv already handled the move and the dir may o
 - Modify: `docs/.vitepress/config.mts`
 
 Key changes:
-1. Remove per-route sidebar (current behavior: different sidebar per `/using/` vs `/admin/`)
+1. Remove per-route sidebar (current behavior: different sidebar per `/manual/` vs `/admin/`)
 2. Build one persistent sidebar used for **every** `/getting-started/`, `/using/`, `/features/`, ... route
 3. Drop the long `nav` with dropdowns; keep nav to 3 items (首页 / Docs / 简体中文) mirroring Hermes
 4. Add the `/preview/` to srcExclude so preview pages stop showing up
@@ -729,7 +729,7 @@ Key changes:
 
 Run: `cat docs/.vitepress/config.mts | head -40`
 
-Expected: sees `srcExclude: ['superpowers/**']`, `nav: [...]`, `sidebar: { '/guide/': [...], '/using/': [...] }`.
+Expected: sees `srcExclude: ['superpowers/**']`, `nav: [...]`, `sidebar: { '/guide/': [...], '/manual/': [...] }`.
 
 - [ ] **Step 2: Rewrite entire config**
 
@@ -1048,12 +1048,12 @@ Expected: sees the three items (`/overview/what-is-nexus`, `/admin/settings`, `/
 **Files:**
 - Modify: `docs/index.md`
 
-The homepage still advertises `/guide/login` and multiple `/using/...` feature cards. After the migration we want:
+The homepage still advertises `/guide/login` and multiple `/manual/...` feature cards. After the migration we want:
 - Primary CTA → `/getting-started/quickstart`
 - Secondary CTA → `/using/create-agent` (the core workflow)
 - Feature cards remain but their `link:` values use `/using/...`
 
-Task 3 Step 4 already sed-replaced `/using/` → `/using/` in `docs/index.md`. We just need to retarget the hero.
+Task 3 Step 4 already sed-replaced `/manual/` → `/using/` in `docs/index.md`. We just need to retarget the hero.
 
 - [ ] **Step 1: Read current hero section**
 
@@ -1130,7 +1130,7 @@ npm run docs:dev -- --host 0.0.0.0
 Open:
 - `http://localhost:5173/playbook/` — home with new CTAs
 - `http://localhost:5173/playbook/getting-started/quickstart` — expect sidebar listing all 7 categories on left, page 404 or empty-but-clean on right (content generated in T10–T12)
-- `http://localhost:5173/playbook/using/chat` — migrated page, content renders exactly as old /using/chat.md did
+- `http://localhost:5173/playbook/using/chat` — migrated page, content renders exactly as old /manual/chat.md did
 - `http://localhost:5173/playbook/preview/` — expect 404 (removed)
 
 - [ ] **Step 3: Stop server**
@@ -1143,7 +1143,7 @@ pkill -f "vitepress dev"
 
 Restructure is landed. Before generating Batch 1 content (which hits the Claude API), present to the user:
 
-> "Restructure complete (commits T1–T8). Sidebar is persistent 7-category Hermes-style, /using/ moved to /using/ with HUMAN-EDIT markers, preview/ removed. Ready to run Batch 1 (Getting Started, 5 docs, ~$1.50 USD). Confirm to proceed?"
+> "Restructure complete (commits T1–T8). Sidebar is persistent 7-category Hermes-style, /manual/ moved to /using/ with HUMAN-EDIT markers, preview/ removed. Ready to run Batch 1 (Getting Started, 5 docs, ~$1.50 USD). Confirm to proceed?"
 
 Wait for explicit approval before T10.
 
@@ -1268,7 +1268,7 @@ Edit `docs/superpowers/STATUS.md` replacing the **当前阶段** section with:
 **阶段：** v3 Batch 1 (Getting Started) 已完成。剩余 3 个 batch 待生成。
 
 - ✅ Restructure: 7-category persistent Hermes-style sidebar
-- ✅ /using/ → /using/ migration（HUMAN-EDIT 保护启用）
+- ✅ /manual/ → /using/ migration（HUMAN-EDIT 保护启用）
 - ✅ Batch 1: Getting Started 5 页（zh+en）已合并至 docs/
 - ⏳ Batch 2: Using(wrap existing)+Features-Core (~12 页) — 待单独 plan
 - ⏳ Batch 3: Features-rest+Integrations (~13 页) — 待单独 plan
