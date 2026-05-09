@@ -116,7 +116,7 @@ dynamodb:
     session_template_bindings: session_template_bindings
 ```
 
-最终表名为 `<table_prefix><table_name>`，例如 `nexus_tasks`。若相同账户部署多套环境，建议使用不同前缀（如 `nexus_prod_`、`nexus_dev_`）隔离。
+最终表名为 `&lt;table_prefix&gt;&lt;table_name&gt;`，例如 `nexus_tasks`。若相同账户部署多套环境，建议使用不同前缀（如 `nexus_prod_`、`nexus_dev_`）隔离。
 
 ### 第 4 步：配置 SQS 队列
 
@@ -226,12 +226,12 @@ aws sqs list-queues --region us-west-2 --queue-name-prefix nexus-
 Valkey 缓存已连接 (endpoint=nexus-cache.serverless.use1.cache.amazonaws.com)
 ```
 
-或新建一个项目后，在 **系统 → 缓存监控** 面板中看到 `project:dashboard:<id>` 等 key 被写入。
+或新建一个项目后，在 **系统 → 缓存监控** 面板中看到 `project:dashboard:&lt;id&gt;` 等 key 被写入。
 
 ### 6. 端到端验证
 
 1. 在控制台创建一个测试 Agent，提交一条构建任务。
-2. 任务应被写入 `nexus-build-queue`，控制台日志打印 `Sent message to nexus-build-queue: <message-id>`。
+2. 任务应被写入 `nexus-build-queue`，控制台日志打印 `Sent message to nexus-build-queue: &lt;message-id&gt;`。
 3. Worker 消费后，Aurora `agents` 表新增一行记录（可通过 **Agent 列表** 页查看）。
 4. 控制台 Dashboard 数据刷新时命中 Valkey（响应时间 < 50 ms）。
 
@@ -243,7 +243,7 @@ Valkey 缓存已连接 (endpoint=nexus-cache.serverless.use1.cache.amazonaws.com
 | `ProfileNotFound: default` | EC2 IAM Role 环境下配置了 `aws_profile_name: default` | 将 `aws_profile_name` 置为空字符串 |
 | Aurora 连接拒绝 / 超时 | 安全组未放行 5432 端口、或子网不互通 | 检查 RDS 安全组、VPC 路由；若跨 VPC 部署，启用 PrivateLink |
 | DynamoDB 写入返回 `ProvisionedThroughputExceededException` | 表配置为 Provisioned 且容量不足 | 切换为按需容量，或上调 RCU/WCU；客户端已带自动退避重试 |
-| `Queue <name> does not exist` | 队列未创建或 `queue_prefix` 不一致 | 通过部署脚本重新建队列，确保 `queue_prefix + name` 与实际一致 |
+| `Queue &lt;name&gt; does not exist` | 队列未创建或 `queue_prefix` 不一致 | 通过部署脚本重新建队列，确保 `queue_prefix + name` 与实际一致 |
 | SQS 消息被重复消费 | `build_visibility_timeout` 短于 Worker 处理耗时 | 上调 `build_visibility_timeout`，或在 Worker 内定期 `change_message_visibility` 续租 |
 | Valkey 启动日志 `缓存层禁用` | `endpoint` 为空或网络不通 | 填入 endpoint；检查 ElastiCache 安全组、TLS 设置 |
 | Valkey 连接偶发 `Timeout` | 流事件长轮询默认 socket_timeout 5s | 控制台已内置独立的 stream_client（60s 超时），升级到最新版本即可 |

@@ -159,7 +159,7 @@ python agents/system_agents/magician.py
 
 ### Q4：我想跳过 Web 控制台，直接用命令行玩 Agent？
 
-`agents/system_agents/magician.py` 就是为这种场景准备的。不加参数进入默认 Agent 交互模式；`-a <agent_path>` 指定已有 Agent；`-i "<问题>"` 发送一次性问题。
+`agents/system_agents/magician.py` 就是为这种场景准备的。不加参数进入默认 Agent 交互模式；`-a &lt;agent_path&gt;` 指定已有 Agent；`-i "<问题>"` 发送一次性问题。
 
 ### Q5：默认账号登录后想改密码怎么办？
 

@@ -41,8 +41,8 @@ These three fields are required on the IdP side:
 | Field | Value |
 |-------|-------|
 | Entity ID (SP Entity ID / Audience) | `nexus-ai-sp` (any value, as long as it matches `sp_entity_id` below) |
-| ACS URL / Reply URL | `https://<your-domain>/api/v2/auth/sso/acs` |
-| Single Logout URL (optional) | `https://<your-domain>/api/v2/auth/sso/sls` |
+| ACS URL / Reply URL | `https://&lt;your-domain&gt;/api/v2/auth/sso/acs` |
+| Single Logout URL (optional) | `https://&lt;your-domain&gt;/api/v2/auth/sso/sls` |
 | NameID format | `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` |
 | Binding | ACS uses `HTTP-POST`; SLS uses `HTTP-Redirect` |
 
@@ -147,7 +147,7 @@ Seeing an `<EntityDescriptor>` element confirms the network path works and the I
 
 ### Step 2 — The login page offers SSO only
 
-Open `https://<your-domain>`. The login page should show a single "Sign in with SSO" button — the username/password form should be hidden.
+Open `https://&lt;your-domain&gt;`. The login page should show a single "Sign in with SSO" button — the username/password form should be hidden.
 
 <!-- SCREENSHOT: saml-login-button -->
 

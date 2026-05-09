@@ -154,7 +154,7 @@ nexus-cli deploy list
 A：通常是新增依赖未安装。先 `source .venv/bin/activate`，再执行 `pip install -r requirements.txt` 与 `pip install -e .`，然后 `./nexus-cli service restart`。
 
 **Q2：我只想升级到指定分支或某个 tag，可以吗？**
-A：本地用 `git checkout <branch|tag>` 后重复升级步骤即可；云端在 `nexus-cli deploy up` 时传 `--branch <branch>` 重新部署。
+A：本地用 `git checkout &lt;branch|tag&gt;` 后重复升级步骤即可；云端在 `nexus-cli deploy up` 时传 `--branch &lt;branch&gt;` 重新部署。
 
 **Q3：`nexus-cli deploy down` 删完后还收到 AWS 账单怎么办？**
 A：默认不加 `--clean-data` 时，S3 桶、DynamoDB 表、SQS 队列会保留，它们可能继续产生存储/请求费用。在 AWS 控制台确认这些资源是否还需要，或用 `--clean-data` 重新执行一次删除命令。
@@ -166,4 +166,4 @@ A：生成的 Agent 代码默认只保存在本地 `agents/generated_agents/` �
 A：本地升级只替换平台代码，不会触碰你在数据库和 S3 里的 Agent 配置、会话记录和制品。但如果新版本改动了数据模型，请在升级说明里留意是否需要手动迁移。
 
 **Q6：可以回退到旧版本吗？**
-A：本地执行 `git checkout <old-commit>` 后重跑 `pip install -e .` 即可回退代码；但新版本写入数据库/DynamoDB 的新字段不会自动清理，旧代码读到新数据可能异常。生产环境建议先在独立环境验证回退方案。
+A：本地执行 `git checkout &lt;old-commit&gt;` 后重跑 `pip install -e .` 即可回退代码；但新版本写入数据库/DynamoDB 的新字段不会自动清理，旧代码读到新数据可能异常。生产环境建议先在独立环境验证回退方案。

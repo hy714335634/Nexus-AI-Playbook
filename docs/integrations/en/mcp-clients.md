@@ -200,7 +200,7 @@ End-to-end success means you can see the tool actually invoked with a correct re
 | Symptom | Likely cause | Suggested fix |
 |---------|-------------|---------------|
 | Startup log: `Failed to import MCP client library` | The `mcp` Python package is missing from the runtime. | Activate `.venv` and re-run `pip install -r requirements.txt`. |
-| Test connection: `Connection timeout after 30 seconds` | First-run stdio dependency install is slow, or the HTTP URL is unreachable. | Warm up with a manual `uvx <package>` on the host; or `curl` the URL first to confirm reachability. |
+| Test connection: `Connection timeout after 30 seconds` | First-run stdio dependency install is slow, or the HTTP URL is unreachable. | Warm up with a manual `uvx &lt;package&gt;` on the host; or `curl` the URL first to confirm reachability. |
 | `Invalid configuration for server 'X'` | stdio entry missing `command`, or SSE/HTTP missing `url`. | Fill in the required fields per the transport table above. |
 | A newly added MCP is invisible in the UI | Created with `scope=private` while you're not the creator; or the page wasn't refreshed. | Switch to `scope=shared`, or log in as the creator. |
 | Agent runtime cannot find an existing MCP | The server is `disabled=true`, or the name is misspelled. | Re-enable it from the list page, or re-check `mcp_dependencies` on the agent. |

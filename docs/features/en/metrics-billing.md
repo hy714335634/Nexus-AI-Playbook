@@ -158,14 +158,14 @@ Total cost formula: `tokens_in × 1.0 + cache_read × 0.1 + cache_write × 1.25 
 
 | Log group                       | Retention | Purpose                  |
 | ------------------------------- | --------- | ------------------------ |
-| `/<slug>/application/*`         | 30 days   | Per-service app logs     |
-| `/<slug>/agent`                 | 30 days   | Agent execution detail   |
-| `/<slug>/build`                 | 30 days   | Build pipeline           |
-| `/<slug>/access`                | **90 d**  | API access (compliance)  |
-| `/<slug>/audit`                 | **90 d**  | Sensitive-op audit       |
-| `/<slug>/security`              | **90 d**  | Auth / RBAC denials      |
-| `/<slug>/metrics`               | 7 days    | EMF metric spill         |
-| `/<slug>/debug`                 | 3 days    | Temporary debugging      |
+| `/&lt;slug&gt;/application/*`         | 30 days   | Per-service app logs     |
+| `/&lt;slug&gt;/agent`                 | 30 days   | Agent execution detail   |
+| `/&lt;slug&gt;/build`                 | 30 days   | Build pipeline           |
+| `/&lt;slug&gt;/access`                | **90 d**  | API access (compliance)  |
+| `/&lt;slug&gt;/audit`                 | **90 d**  | Sensitive-op audit       |
+| `/&lt;slug&gt;/security`              | **90 d**  | Auth / RBAC denials      |
+| `/&lt;slug&gt;/metrics`               | 7 days    | EMF metric spill         |
+| `/&lt;slug&gt;/debug`                 | 3 days    | Temporary debugging      |
 
 ### Permissions
 

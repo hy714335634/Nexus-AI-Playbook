@@ -155,7 +155,7 @@ If the second command lists models, Bedrock access is working.
 
 ### Q1: Do I have to use us-west-2?
 
-**Strongly recommended**. Nexus-AI's default models (Claude Sonnet 4.5 / Opus 4.5 / Haiku 4.5) have the most complete support in `us-west-2`. If you must use a different region, first confirm in that region's Bedrock console that all three models can be requested, then pass `--region <region>` when deploying.
+**Strongly recommended**. Nexus-AI's default models (Claude Sonnet 4.5 / Opus 4.5 / Haiku 4.5) have the most complete support in `us-west-2`. If you must use a different region, first confirm in that region's Bedrock console that all three models can be requested, then pass `--region &lt;region&gt;` when deploying.
 
 ### Q2: What if my Bedrock model request isn't approved?
 

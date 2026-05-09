@@ -167,7 +167,7 @@ A: Three levers: (1) ask the Agent in its prompt to emit `## Task complete` when
 
 **Q5: How long are Agent outputs kept? Can I browse history?**
 
-A: Each run has its own S3 workspace (`s3://<bucket>/<event_job_id>/<task_id>/`). `agent_response.out` holds the Agent's raw reply; other files generated during the run live alongside it. A per-job `mission_log.md` appends each summary for easy browsing. These records are cascade-deleted when you delete the job.
+A: Each run has its own S3 workspace (`s3://&lt;bucket&gt;/&lt;event_job_id&gt;/&lt;task_id&gt;/`). `agent_response.out` holds the Agent's raw reply; other files generated during the run live alongside it. A per-job `mission_log.md` appends each summary for easy browsing. These records are cascade-deleted when you delete the job.
 
 **Q6: Can I pick a cheaper model for a scheduled job?**
 

@@ -167,7 +167,7 @@ A：三种方式都可以让它停下：1) 在 Agent 的提示词里让它在目
 
 **Q5：Agent 每次的输出会保留多久？能看历史吗？**
 
-A：每次执行都有独立的 S3 工作空间（路径形如 `s3://<bucket>/<event_job_id>/<task_id>/`），`agent_response.out` 是 Agent 的完整原始输出，工作空间里的其他文件也会保留；任务级别的 `mission_log.md` 会追加每次的摘要索引。这些文件在任务被删除时会与执行记录一并级联删除。
+A：每次执行都有独立的 S3 工作空间（路径形如 `s3://&lt;bucket&gt;/&lt;event_job_id&gt;/&lt;task_id&gt;/`），`agent_response.out` 是 Agent 的完整原始输出，工作空间里的其他文件也会保留；任务级别的 `mission_log.md` 会追加每次的摘要索引。这些文件在任务被删除时会与执行记录一并级联删除。
 
 **Q6：可以给调度任务指定一个更便宜的模型吗？**
 

@@ -102,7 +102,7 @@ For any created agent, the **Health** card on its detail page shows:
 | Prompt caching | Active only for Claude 3.5 / 4 / 4.5 (Sonnet, Opus, Haiku) and Amazon Nova (Pro, Lite, Micro); skipped on other model families |
 | Cache pricing | First write billed at 1.25× standard; cache hits within 5 minutes billed at 0.1× (90% discount) |
 | Third-party provider dependencies | Ollama / OpenAI / Anthropic / LiteLLM / LlamaAPI / Mistral / Gemini require the matching extension installed in the environment; otherwise creation fails with a "missing dependency" error |
-| Tool sync | Auto-sync fires only when the tool path follows the platform convention (for example, `generated_tools/<dir>/<script>/<function>`) |
+| Tool sync | Auto-sync fires only when the tool path follows the platform convention (for example, `generated_tools/&lt;dir&gt;/&lt;script&gt;/&lt;function&gt;`) |
 | Credential refresh | A fresh credential session is created each time a Bedrock model is built, so long-lived sessions keep working |
 | Self-check failure handling | A failed self-check does not block the agent from being returned; it's surfaced as a warning in the health panel |
 

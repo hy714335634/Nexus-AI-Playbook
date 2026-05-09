@@ -28,8 +28,8 @@ Flip one switch and you immediately get:
 | 5xx spike in production — who / which endpoint failed first?        | CloudWatch → `<Prefix>-OpsOverview` dashboard                        |
 | A user reports "the agent feels slow"                               | CloudWatch → `<Prefix>-AgentRuntime` + X-Ray Service Map             |
 | Build is stuck on some stage                                        | `<Prefix>-BuildPipeline` → Logs Insights panel at the bottom         |
-| Audit: who changed a quota / deleted an agent last month?           | CloudWatch Logs → `/<slug>/audit` log group                          |
-| Security post-mortem: brute-force logins, RBAC denials              | CloudWatch Logs → `/<slug>/security` log group                       |
+| Audit: who changed a quota / deleted an agent last month?           | CloudWatch Logs → `/&lt;slug&gt;/audit` log group                          |
+| Security post-mortem: brute-force logins, RBAC denials              | CloudWatch Logs → `/&lt;slug&gt;/security` log group                       |
 | Local dev — I want colourful text logs, not JSON                    | `observability.enabled: false`                                       |
 
 ## How to use it
@@ -185,24 +185,24 @@ Each process must pass a distinct `service_name` so the X-Ray Service Map can se
 
 | `service_name`          | Process                              | Log group written into               |
 | ----------------------- | ------------------------------------ | ------------------------------------ |
-| `nexus-ai-api`          | API service                          | `/<slug>/application/api`            |
-| `nexus-ai-worker`       | Worker service                       | `/<slug>/application/worker`         |
-| `nexus-ai-bridge`       | Bridge service                       | `/<slug>/application/bridge`         |
-| `nexus-ai-agent-vm`     | Agent running inside a sandbox VM    | `/<slug>/agent`                      |
-| `nexus-ai`              | Other local agent processes (default)| `/<slug>/application`                |
+| `nexus-ai-api`          | API service                          | `/&lt;slug&gt;/application/api`            |
+| `nexus-ai-worker`       | Worker service                       | `/&lt;slug&gt;/application/worker`         |
+| `nexus-ai-bridge`       | Bridge service                       | `/&lt;slug&gt;/application/bridge`         |
+| `nexus-ai-agent-vm`     | Agent running inside a sandbox VM    | `/&lt;slug&gt;/agent`                      |
+| `nexus-ai`              | Other local agent processes (default)| `/&lt;slug&gt;/application`                |
 
 ### Log-group retention
 
 | Log group                     | Retention | Purpose                           |
 | ----------------------------- | --------- | --------------------------------- |
-| `/<slug>/application/*`       | 30 days   | API / Worker / Gateway / …        |
-| `/<slug>/agent`               | 30 days   | Agent execution details           |
-| `/<slug>/build`               | 30 days   | Build pipeline                    |
-| `/<slug>/access`              | **90 days** | API access logs (compliance)    |
-| `/<slug>/audit`               | **90 days** | Sensitive-operation audit       |
-| `/<slug>/security`            | **90 days** | Auth failures / RBAC denials    |
-| `/<slug>/metrics`             | 7 days    | EMF metric stream                 |
-| `/<slug>/debug`               | 3 days    | Ad-hoc debugging                  |
+| `/&lt;slug&gt;/application/*`       | 30 days   | API / Worker / Gateway / …        |
+| `/&lt;slug&gt;/agent`               | 30 days   | Agent execution details           |
+| `/&lt;slug&gt;/build`               | 30 days   | Build pipeline                    |
+| `/&lt;slug&gt;/access`              | **90 days** | API access logs (compliance)    |
+| `/&lt;slug&gt;/audit`               | **90 days** | Sensitive-operation audit       |
+| `/&lt;slug&gt;/security`            | **90 days** | Auth failures / RBAC denials    |
+| `/&lt;slug&gt;/metrics`             | 7 days    | EMF metric stream                 |
+| `/&lt;slug&gt;/debug`               | 3 days    | Ad-hoc debugging                  |
 
 ### Allow-listed metric dimensions
 

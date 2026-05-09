@@ -140,7 +140,7 @@ At startup the server calls `list_agents(status="running", limit=100)` and regis
 | Field | Behavior |
 |-------|----------|
 | Tool name | `agent_name` → lowercase → non-`a-z0-9` chars replaced with `_` → runs of `_` collapsed → leading/trailing `_` stripped → truncated to 64 chars |
-| Tool description | Agent's `description` field first; falls back to `Invoke Nexus-AI agent: <name>` if empty |
+| Tool description | Agent's `description` field first; falls back to `Invoke Nexus-AI agent: &lt;name&gt;` if empty |
 | Parameter | A single `query: str` carrying the user input |
 | Return value | Agent's text response; internal errors are returned as `Error invoking agent: ...` string instead of failing the client session |
 
@@ -190,7 +190,7 @@ You have a working end-to-end path only when the Agent actually produces output.
 | Symptom | Likely cause | What to do |
 |---------|--------------|------------|
 | Console has no token printed after start | `NEXUS_MCP_TOKEN` is already set | Expected behavior; the client must use the value from that env var |
-| Client returns `401 Missing or invalid Authorization header` | `Authorization` header is missing or lacks the `Bearer ` prefix | Check `headers.Authorization` equals `Bearer <token>` |
+| Client returns `401 Missing or invalid Authorization header` | `Authorization` header is missing or lacks the `Bearer ` prefix | Check `headers.Authorization` equals `Bearer &lt;token&gt;` |
 | Client returns `403 Invalid token` | Token in the client no longer matches the server's current one — usually after a restart under auto-generated mode | Copy the fresh token from the console, or pin one with `NEXUS_MCP_TOKEN` |
 | `tools/list` only shows `refresh_agents` | No Agents are in `status=running`, or registration failed on the platform side | Confirm a running Agent exists in Agent management, then have the client call `refresh_agents` |
 | A newly built Agent does not appear in the client | The server enumerates Agents only on startup and on `refresh_agents` | Have the client invoke `refresh_agents` once — no server restart required |

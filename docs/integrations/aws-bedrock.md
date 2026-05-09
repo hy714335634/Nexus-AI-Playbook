@@ -27,7 +27,7 @@ AWS Bedrock 是 Nexus-AI 默认且唯一开箱即用的模型推理入口。平�
   - `bedrock:InvokeModel`
   - `bedrock:InvokeModelWithResponseStream`
   - `bedrock:ListFoundationModels`
-- 本地或容器内可直达 `https://bedrock-runtime.<region>.amazonaws.com`（企业网络下需放行出站 HTTPS）。
+- 本地或容器内可直达 `https://bedrock-runtime.&lt;region&gt;.amazonaws.com`（企业网络下需放行出站 HTTPS）。
 
 ::: tip 凭证如何刷新
 主机部署（EC2）走 IAM Instance Profile，凭证由 AWS 自动轮换；Sandbox VM 内通过环境变量定期刷新。两种模式下都无需手动配置长期 Access Key。

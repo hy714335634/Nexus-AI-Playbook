@@ -4,6 +4,17 @@ One line per document: `- [Title](URL) — summary`.
 
 - [系统设置](/admin/settings) — 设置页面用于管理你的账户信息和应用配置。通过左侧导航栏的 **「系统配置」** 进入。
 - [用户管理](/admin/users) — 用户管理页面用于管理平台的用户账号和权限。通过左侧导航栏的 **「用户管理」** 进入。
+- [添加 Agent](/developer/adding-agents) — Nexus-AI 的 Agent 是围绕 **Strands SDK** `Agent` 类构建的。每个 Agent 由三件事定义：
+- [添加技能](/developer/adding-skills) — Nexus-AI 的 "Skill" 是**兼容 Anthropic Agent Skills 标准**的能力包，由一份 `SKILL.md`（YAML frontmatter + Markdown 正文）和可选的 `scripts/` / `references/` / `evals/` / `agents/` / `assets/` / `eval-viewer/` / `config/` 子
+- [添加工具](/developer/adding-tools) — Nexus-AI 的 "Tool" 是 Strands Agent 在推理循环中可调用的 Python 函数。平台一共识别 **五种工具类型**（`builtin` / `generated` / `system` / `template` / `mcp`）以及一个可选的 **Skill 渐进加载子系统**，统一通过 `api/v2/routers/agent_tools.py` 暴露给前端，通过
+- [API 层架构](/developer/api-layer) — API 层是 Nexus-AI 平台的前端服务入口，位于 `api/v2/` 包下。它是一个 **FastAPI** 应用（`api/v2/main.py`），对外暴露 `/api/v2/*` 下的 HTTP / SSE 路由，对内封装四类基础设施客户端（DynamoDB / Aurora PostgreSQL / Valkey / SQS），并统一装载认证中间件、请求 ID / trace 注入
+- [架构总览](/developer/architecture-overview) — Nexus-AI 是一个基于 **AWS Bedrock + Strands Agents** 的开源 AI Agent 开发平台。整个平台由 **5 个核心服务 + 2 个可选服务**组成：API、Worker、Web、Gateway、Bridge 为核心；MCP Server 与 Event Scheduler 按需启用。所有服务通过 `nexus-cli` 脚本统一管理。
+- [贡献指南](/developer/contributing) — 本文档是 **Nexus-AI 代码贡献者的工作手册**。它以源码仓库里的 `CONTRIBUTING.md`、`CLAUDE.md`、`pyproject.toml` 与 `.python-version` 为唯一事实来源，告诉你：本地环境要装什么、分支/提交/PR 走什么流程、代码该写成什么样、Python 和依赖版本是如何被固定的。
+- [动态 Prompt 构建](/developer/dynamic-prompt) — Nexus-AI 的 Agent system prompt 不是单一的硬编码字符串，而是在运行时由两层代码流水线构建：
+- [开发者指南](/developer/index) — 本章节面向**向 Nexus-AI 仓库贡献代码**或**在平台上扩展 Agent / 工具 / 技能**的开发者。内容以源码仓库为唯一事实来源，覆盖本地开发流程、系统架构、核心运行时、扩展方式与内部存储模型。
+- [会话存储](/developer/session-storage) — "会话存储"是 Nexus-AI 中承载一次 Agent 对话全生命周期的持久化子系统。它不是单一数据库，而是五个存储介质协作：**Aurora PostgreSQL** 放会话元数据与消息流、**Valkey Streams** 缓冲 SSE 实时事件、**S3**（`S3SessionManager`）持久化多轮对话的模型级上下文、**本地 `.cache/`** 目录承载 Agent 运行时
+- [Stage 引擎](/developer/stage-engine) — Stage 引擎是 Nexus-AI 工作流执行的内核，负责把一条用户需求驱动的工作流切分成若干个**阶段（Stage）**，每个阶段由一个 Agent（基于提示词模板）执行，产出的 `StageOutput` 作为下一阶段的上下文输入。代码主要位于 `nexus_utils/workflow/`，阶段序列、Agent 显示名、前置关系、规则注入键等在 `config/workflows.yaml
+- [Worker 架构](/developer/worker) — Worker 是 Nexus-AI 的后台执行进程。它从 SQS 队列长轮询消息、解析工作流任务、调用 `WorkflowEngine`/`WorkflowEngineV2` 执行单个阶段或完整流水线，并把结果写回 DynamoDB 与 S3。Worker 不暴露 HTTP 接口，也不参与 API 层的请求处理——它是一个**纯消费者**进程。
 - [常见问题](/faq) — Nexus-AI 是一个 **AI Agent 自动化构建平台**，采用"Agent Build Agent"理念 —— 用 8 个专业 AI Agent 协作来构建你想要的 AI Agent。你只需用自然语言描述需求，平台就能在几分钟内自动完成从需求分析、架构设计、代码开发到部署上线的全流程。
 - [Agent Factory](/features/agent-factory) — Agent Factory 是 Nexus-AI 把「提示词模板 + 模型 + 工具」组装成一个可对话 Agent 的核心装配线。你在平台上点击「创建 Agent」、把 Agent 加入编排，或批量拉起多个 Agent 时，后台都是 Agent Factory 在按模板拉取配置、挑选模型、绑定工具，并在返回给你之前完成一次健康体检。
 - [Bridge 多连接](/features/bridge) — **Nexus Bridge** 是一条把 AI 助手和你自己服务器连起来的安全通道。只要在服务器上粘贴一条 `curl` 指令，Agent 就能在该服务器上执行 Shell 命令、读取状态、提交长任务——同一个会话最多可以**同时接入 5 台服务器**，一条指令还能在所有服务器上**并行执行**。
@@ -28,6 +39,11 @@ One line per document: `- [Title](URL) — summary`.
 - [创建第一个 Agent](/guide/first-agent) — 本指南将带你一步步创建你的第一个 AI Agent。我们将以一个真实案例——"数据分析助手"为例，详细演示整个创建流程。
 - [登录系统](/guide/login) — 打开浏览器，访问系统地址即可进入 Nexus-AI 登录页面。
 - [认识工作台](/guide/workspace) — 登录成功后，你将看到 Nexus-AI 的工作台（Dashboard）。这是你使用平台的起点和控制中心，提供全局概览和快捷操作入口。
+- [构建 Hermes 分析 Agent](/guides/build-hermes-analyst) — 本教程带你在 Nexus-AI 平台上从零构建一个 **Hermes 分析 Agent**：只需给出一个写作要求，它会自动检索技术资料、分析架构与原理、总结最佳实践，最终生成一篇结构完整的 Markdown 技术博文并保存到本地。
+- [构建技术博客生成 Agent](/guides/build-tech-blog) — 本教程带你在 Nexus-AI 平台上从零构建一个 **技术博客生成 Agent**：给它一个技术主题和几项偏好参数，它会自动检索公开技术资料、分析架构与原理、总结最佳实践，最终生成一篇结构完整的 Markdown 技术博文并保存到本地。
+- [使用指南](/guides/index) — 这一章是动手实践的部分：先用几篇实战教程带你从零构建几个真实可用的 Agent，再把 Nexus-AI 与外部 MCP 生态打通，最后汇总一批日常使用中积累下来的技巧与最佳实践。
+- [技巧与最佳实践](/guides/tips) — 这一页汇总了在使用 Nexus-AI 过程中常见的实用技巧，帮助你写出更好的需求描述、选对模型、减少排障时间、控制云端成本。
+- [在 Nexus-AI 中使用 MCP](/guides/use-mcp-with-nexus) — 这篇教程带你把 Nexus-AI 与 Model Context Protocol (MCP) 生态打通：一方面把平台上的 Agent 暴露给 Kiro / Claude Code / Cursor 等 IDE 调用，另一方面让 Agent 调用外部 MCP 服务器的工具。
 - [index.md](/index) — 
 - [AWS Bedrock 模型接入](/integrations/aws-bedrock) — AWS Bedrock 是 Nexus-AI 默认且唯一开箱即用的模型推理入口。平台上所有 Agent 的对话、工具调用、多模态输入，最终都通过 Bedrock 统一访问 Claude、Nova、Llama、Mistral、DeepSeek、Qwen、Gemma、GPT OSS 等模型。不开 Bedrock，平台无法启动；切换到其它提供商（OpenAI、Anthropic 直连、Gemini 等）
 - [数据存储](/integrations/data-stores) — Nexus-AI 的数据层由四个存储系统组成，共同支撑元数据、业务关系数据、缓存与异步任务队列：
@@ -38,6 +54,16 @@ One line per document: `- [Title](URL) — summary`.
 - [SSO (SAML 2.0)](/integrations/sso-saml) — Nexus-AI 的默认登录是开发模式的账号密码，只适合单机或演示环境。生产部署建议通过 SAML 2.0 接入企业统一身份源，把用户生命周期、分组、密码策略、MFA 完全交给 IdP（Identity Provider）托管。平台内置的 SP（Service Provider）参考 AWS IAM Identity Center 实现，对其它主流 IdP（Okta、Microsoft Entra
 - [构建原理](/overview/how-it-works) — 了解 Nexus-AI 是如何将你的自然语言需求转化为一个可运行的 AI Agent。
 - [什么是 Nexus-AI](/overview/what-is-nexus) — Nexus-AI 是一个基于 AWS 云端架构的 **AI Agent 自动化构建平台**。它采用独创的 **"Agent Build Agent"** 理念 —— 用 AI Agent 来构建 AI Agent。你只需用自然语言描述业务需求，平台内部的 8 个专业 AI Agent 就会自动协作，为你构建出一个完整的、可对话交互的 AI Agent。
+- [API 端点](/reference/api-endpoints) — Nexus-AI Platform API v2 的所有 HTTP 端点参考。本文以源码中的 FastAPI 路由为准，按路由文件分节列出。
+- [nexus-cli 命令](/reference/cli-commands) — `nexus-cli` 是 Nexus-AI 的 kubectl 风格命令行工具，用于管理项目、Agent、备份、服务和云环境。可执行文件位于仓库根目录的 `nexus-cli`，实际入口为 `nexus_utils/cli/main.py`。
+- [配置项](/reference/config-options) — 本篇列出 Nexus-AI 的**全部 YAML 配置项**。所有配置文件位于仓库根目录的 `config/` 下，运行时通过 `nexus_utils/config_loader.py` 的 `ConfigLoader` 加载。
+- [部署参数](/reference/deploy-params) — 本文档穷举 Nexus-AI 所有部署模式的参数。每个参数都标注：**类型 / 默认值 / 是否必填 / 影响的资源**。参数值来自 `infrastructure/cloudformation/nexus-ai-env.yaml`、`infrastructure/cloudformation/deploy.sh`、`infrastructure/sandbox/*`。
+- [环境变量](/reference/environment-variables) — 本文档列出 Nexus-AI 所有受支持的环境变量。用途、默认值、数据类型均来自源码（`api/v2/config.py`、`nexus_utils/config_loader.py`），不做任何推测。
+- [FAQ 与故障排查](/reference/faq) — 本章节汇总了安装、配置、运行、部署、Agent 构建、认证、MCP 等各环节最常见的问题，以及对应的解决步骤。所有条目均来自仓库中已有的脚本、配置、文档；如某项在源码中未定义，会明确标注 `—`。
+- [术语表](/reference/glossary) — 本表收录 Nexus-AI 文档中出现的所有关键术语、组件名、工作流名、配置键、AWS 服务和协议缩写。术语按主题分组，组内按字母顺序排列；"英文"列保持与源代码、CLI、YAML 键完全一致，不翻译；"说明"列给出精确、单一来源的定义。
+- [IAM 权限](/reference/iam-policies) — Nexus-AI 部署涉及两个独立的 IAM 身份，各自配备一份最小权限策略：
+- [参考](/reference/index) — 本章节是 Nexus-AI 的**查阅型文档**：命令、配置项、环境变量、API、部署参数、IAM 权限、模型目录、术语、FAQ。内容一律以仓库源码为准，不做推测。
+- [模型目录](/reference/model-catalog) — Nexus-AI 的 Bedrock 语言模型目录，定义 Agent 可调用的所有模型条目。所有条目均经过 Strands Agent 实际对话验证。
 - [Playbook Docs-Sync — 开发状态跟踪](/superpowers/STATUS) — > 本文件记录 Playbook 自动同步框架（docs-sync）的开发进展。 > 供项目协作者快速了解当前所处阶段与下一步动作。
 - [Playbook 文档自动同步机制 Implementation Plan](/superpowers/plans/2026-05-06-playbook-docs-sync) — > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`
 - [Playbook Docs-Sync v2 Implementation Plan](/superpowers/plans/2026-05-07-playbook-docs-sync-v2) — > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`

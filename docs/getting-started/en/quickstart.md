@@ -159,7 +159,7 @@ That is a Bedrock-side permission issue. Go to AWS Console → Bedrock → Model
 
 ### Q4: I want to skip the web console and play with Agents from the command line.
 
-`agents/system_agents/magician.py` exists for exactly this case. No arguments puts you into default-Agent interactive mode; `-a <agent_path>` picks an existing Agent; `-i "<question>"` sends a one-shot query.
+`agents/system_agents/magician.py` exists for exactly this case. No arguments puts you into default-Agent interactive mode; `-a &lt;agent_path&gt;` picks an existing Agent; `-i "&lt;question&gt;"` sends a one-shot query.
 
 ### Q5: How do I change the default login password?
 

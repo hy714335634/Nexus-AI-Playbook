@@ -200,7 +200,7 @@ curl https://<nexus-host>/api/v2/mcp/servers/<name-or-id>/tools
 | 现象 | 可能原因 | 建议操作 |
 |------|---------|---------|
 | 启动日志报 `Failed to import MCP client library` | 运行环境缺少 `mcp` Python 包 | 进入 `.venv` 重新 `pip install -r requirements.txt` |
-| 「测试连接」提示 `Connection timeout after 30 seconds` | stdio 服务器首次下载依赖慢；或 HTTP URL 不可达 | 主机先手动跑一次 `uvx <package>` 预热；或用 `curl` 先确认 URL 连通 |
+| 「测试连接」提示 `Connection timeout after 30 seconds` | stdio 服务器首次下载依赖慢；或 HTTP URL 不可达 | 主机先手动跑一次 `uvx &lt;package&gt;` 预热；或用 `curl` 先确认 URL 连通 |
 | `Invalid configuration for server 'X'` | stdio 缺 `command`，或 SSE/HTTP 缺 `url` | 按本页「传输字段表」补齐必填字段 |
 | 前端看不到刚加的 MCP | 建时选了 `private`，当前用户不是创建者；或没刷新页面 | 改成 `scope=shared` 或切换到创建者账号 |
 | Agent 运行时找不到某个已存在的 MCP | 该服务器 `disabled=true`；或名称拼错 | 在列表页启用，或对比 Agent 的 `mcp_dependencies` 配置 |

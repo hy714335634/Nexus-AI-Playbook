@@ -154,7 +154,7 @@ nexus-cli deploy list
 A: Usually a new dependency wasn't installed. Run `source .venv/bin/activate`, then `pip install -r requirements.txt` and `pip install -e .`, and finally `./nexus-cli service restart`.
 
 **Q2: Can I upgrade to a specific branch or tag?**
-A: Locally, `git checkout <branch|tag>` and repeat the upgrade steps. In the cloud, pass `--branch <branch>` to `nexus-cli deploy up` and redeploy.
+A: Locally, `git checkout &lt;branch|tag&gt;` and repeat the upgrade steps. In the cloud, pass `--branch &lt;branch&gt;` to `nexus-cli deploy up` and redeploy.
 
 **Q3: I ran `nexus-cli deploy down` but still see AWS charges. Why?**
 A: Without `--clean-data`, S3 buckets, DynamoDB tables, and SQS queues are retained and keep accruing storage/request cost. Check in the AWS console whether you still need them, or re-run the command with `--clean-data`.
@@ -166,4 +166,4 @@ A: Generated Agent code is saved locally under `agents/generated_agents/` by def
 A: A local upgrade only replaces platform code; Agent configuration, session history, and artifacts in your database and S3 are untouched. If a release changes data models, watch the release notes for manual migration requirements.
 
 **Q6: Can I roll back to an older version?**
-A: Locally, `git checkout <old-commit>` and re-run `pip install -e .` to roll code back. However, new fields written to databases/DynamoDB by the newer version are not cleaned up automatically, and the older code may choke on them. Validate any rollback in a separate environment before doing it in production.
+A: Locally, `git checkout &lt;old-commit&gt;` and re-run `pip install -e .` to roll code back. However, new fields written to databases/DynamoDB by the newer version are not cleaned up automatically, and the older code may choke on them. Validate any rollback in a separate environment before doing it in production.

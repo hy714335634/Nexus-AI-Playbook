@@ -31,8 +31,8 @@ sync:
 | ------------------------------------------------------------ | -------------------------------------------------------------------- |
 | 本地跑工作流，想看清楚每个 Agent、每次工具调用在做什么       | `enhanced_logging.enable_colors: true`（默认），终端直接读           |
 | 线上排查某次请求，只有一个 `trace_id`                        | Logs Insights 按 `trace_id` 过滤 JSON 日志                           |
-| 合规审计：上月谁改过配额、删过 Agent                         | 查 `/<slug>/audit` 日志组                                            |
-| 安全复盘：SSO 登录失败、暴力破解                             | 查 `/<slug>/security` 日志组                                         |
+| 合规审计：上月谁改过配额、删过 Agent                         | 查 `/&lt;slug&gt;/audit` 日志组                                            |
+| 安全复盘：SSO 登录失败、暴力破解                             | 查 `/&lt;slug&gt;/security` 日志组                                         |
 | 在定时任务或 Worker 里打带 `user_id` 的日志                  | 用 `context_scope(user_id=...)` 包一层                               |
 
 ## 如何使用
@@ -243,15 +243,15 @@ JSON 模式下字段值不强制截断，但**异常 traceback** 硬上限 4096 
 
 | 日志组                          | 保留   | 写入者                                        |
 | ------------------------------- | ------ | --------------------------------------------- |
-| `/<slug>/application/api`       | 30 天  | `service_name=nexus-ai-api` 的所有日志        |
-| `/<slug>/application/worker`    | 30 天  | Worker                                        |
-| `/<slug>/application/bridge`    | 30 天  | Bridge                                        |
-| `/<slug>/agent`                 | 30 天  | 沙箱 / 本地 Agent                             |
-| `/<slug>/build`                 | 30 天  | 构建流水线                                    |
-| `/<slug>/access`                | 90 天  | API 访问日志（合规）                          |
-| `/<slug>/audit`                 | 90 天  | `audit_log()` 写入，合规必备                  |
-| `/<slug>/security`              | 90 天  | `security_log()` 写入，合规必备               |
-| `/<slug>/debug`                 | 3 天   | 临时调试                                      |
+| `/&lt;slug&gt;/application/api`       | 30 天  | `service_name=nexus-ai-api` 的所有日志        |
+| `/&lt;slug&gt;/application/worker`    | 30 天  | Worker                                        |
+| `/&lt;slug&gt;/application/bridge`    | 30 天  | Bridge                                        |
+| `/&lt;slug&gt;/agent`                 | 30 天  | 沙箱 / 本地 Agent                             |
+| `/&lt;slug&gt;/build`                 | 30 天  | 构建流水线                                    |
+| `/&lt;slug&gt;/access`                | 90 天  | API 访问日志（合规）                          |
+| `/&lt;slug&gt;/audit`                 | 90 天  | `audit_log()` 写入，合规必备                  |
+| `/&lt;slug&gt;/security`              | 90 天  | `security_log()` 写入，合规必备               |
+| `/&lt;slug&gt;/debug`                 | 3 天   | 临时调试                                      |
 
 日志组按进程启动时传给 `configure_logging()` 的 `service_name` 路由，不同进程必须传不同值（`nexus-ai-api` / `nexus-ai-worker` / `nexus-ai-bridge` / `nexus-ai-agent-vm`），否则在 CloudWatch 里会混在一起。
 

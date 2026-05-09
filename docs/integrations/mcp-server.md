@@ -140,7 +140,7 @@ Server 启动时会调用 `list_agents(status="running", limit=100)` 拉取所�
 | 字段 | 处理方式 |
 |------|---------|
 | Tool 名 | 取 `agent_name` → 转小写 → 非 `a-z0-9` 字符替换为 `_` → 合并连续下划线 → 去掉首尾下划线 → 截断到 64 字符 |
-| Tool 描述 | 优先用 Agent 的 `description` 字段；缺失时回退为 `Invoke Nexus-AI agent: <name>` |
+| Tool 描述 | 优先用 Agent 的 `description` 字段；缺失时回退为 `Invoke Nexus-AI agent: &lt;name&gt;` |
 | 参数 | 固定一个 `query: str`，对应发给 Agent 的用户输入 |
 | 返回 | Agent 的文本响应；内部异常会以 `Error invoking agent: ...` 字符串形式返回，不中断客户端会话 |
 
@@ -190,7 +190,7 @@ curl -X POST http://localhost:9000/mcp \
 | 现象 | 可能原因 | 建议操作 |
 |------|---------|---------|
 | 启动后控制台没有打印 Token | 已设置 `NEXUS_MCP_TOKEN` | 属于正常行为，客户端应使用该环境变量的值 |
-| 客户端返回 `401 Missing or invalid Authorization header` | 客户端配置里 `Authorization` 字段缺失或未加 `Bearer ` 前缀 | 检查 `headers.Authorization` 应为 `Bearer <token>` |
+| 客户端返回 `401 Missing or invalid Authorization header` | 客户端配置里 `Authorization` 字段缺失或未加 `Bearer ` 前缀 | 检查 `headers.Authorization` 应为 `Bearer &lt;token&gt;` |
 | 客户端返回 `403 Invalid token` | 客户端配置的 Token 与 Server 当前使用的不一致；常见于自动生成 Token 后 Server 被重启 | 重新从控制台拷 Token；或改用固定的 `NEXUS_MCP_TOKEN` |
 | `tools/list` 只看到 `refresh_agents` | 当前没有 `status=running` 的 Agent；或平台侧 Agent 注册失败 | 先在「Agent 管理」确认有 running 实例，再让客户端调用 `refresh_agents` |
 | 平台上新建的 Agent 没有出现在 MCP 客户端 | Server 只在启动与 `refresh_agents` 时枚举 Agent | 在客户端调用一次 `refresh_agents`，无需重启 Server |

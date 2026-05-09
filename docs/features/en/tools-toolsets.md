@@ -48,8 +48,8 @@ A tool's path prefix tells you where it comes from:
 | Prefix | Meaning |
 |--------|---------|
 | `strands_tools/xxx` | Platform built-ins (file, time, calculator, HTTP, RSS, …) |
-| `template_tools/<domain>/<module>/<fn>` | Tools shipped with templates, e.g. `template_tools/data/visualization/chart_generator` |
-| `generated_tools/<agent_key>/<module>/<fn>` | Tools generated for a specific agent, e.g. `generated_tools/html2pptx/pptx_generator/add_slide` |
+| `template_tools/&lt;domain&gt;/&lt;module&gt;/&lt;fn&gt;` | Tools shipped with templates, e.g. `template_tools/data/visualization/chart_generator` |
+| `generated_tools/&lt;agent_key&gt;/&lt;module&gt;/&lt;fn&gt;` | Tools generated for a specific agent, e.g. `generated_tools/html2pptx/pptx_generator/add_slide` |
 
 ### 3. Attach tools to an agent
 

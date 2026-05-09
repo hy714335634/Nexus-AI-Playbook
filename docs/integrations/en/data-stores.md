@@ -116,7 +116,7 @@ dynamodb:
     session_template_bindings: session_template_bindings
 ```
 
-The effective table name is `<table_prefix><table_name>`, e.g. `nexus_tasks`. When deploying multiple environments in the same AWS account, use distinct prefixes (`nexus_prod_`, `nexus_dev_`) to isolate data.
+The effective table name is `&lt;table_prefix&gt;&lt;table_name&gt;`, e.g. `nexus_tasks`. When deploying multiple environments in the same AWS account, use distinct prefixes (`nexus_prod_`, `nexus_dev_`) to isolate data.
 
 ### Step 4: Configure SQS queues
 
@@ -226,12 +226,12 @@ The startup log should include:
 Valkey 缓存已连接 (endpoint=nexus-cache.serverless.use1.cache.amazonaws.com)
 ```
 
-Alternatively, create a project and open **System → Cache Monitor** — you should see keys such as `project:dashboard:<id>` being written.
+Alternatively, create a project and open **System → Cache Monitor** — you should see keys such as `project:dashboard:&lt;id&gt;` being written.
 
 ### 6. End-to-end verification
 
 1. Create a test agent in the console and submit a build task.
-2. The task must be written to `nexus-build-queue`; the log prints `Sent message to nexus-build-queue: <message-id>`.
+2. The task must be written to `nexus-build-queue`; the log prints `Sent message to nexus-build-queue: &lt;message-id&gt;`.
 3. After the worker processes the task, a new row appears in the Aurora `agents` table (visible on the **Agents** page).
 4. When the dashboard refreshes, the response is served from Valkey (latency < 50 ms).
 
@@ -243,7 +243,7 @@ Alternatively, create a project and open **System → Cache Monitor** — you sh
 | `ProfileNotFound: default` | `aws_profile_name: default` under an EC2 IAM Role | Set `aws_profile_name` to an empty string |
 | Aurora connection refused / timeout | Security group does not allow 5432, or subnets are not reachable | Check RDS security group and VPC routes; enable PrivateLink for cross-VPC deployments |
 | DynamoDB returns `ProvisionedThroughputExceededException` | Table is Provisioned with insufficient capacity | Switch to on-demand capacity or raise RCU/WCU; the client already retries with backoff |
-| `Queue <name> does not exist` | Queue was never created, or `queue_prefix` mismatches | Re-run the deploy script to provision the queues and make sure `queue_prefix + name` matches reality |
+| `Queue &lt;name&gt; does not exist` | Queue was never created, or `queue_prefix` mismatches | Re-run the deploy script to provision the queues and make sure `queue_prefix + name` matches reality |
 | SQS messages consumed twice | `build_visibility_timeout` shorter than worker processing time | Raise `build_visibility_timeout`, or call `change_message_visibility` periodically inside the worker |
 | Valkey startup log `缓存层禁用` | `endpoint` is empty or unreachable | Populate the endpoint; verify ElastiCache security groups and TLS settings |
 | Valkey occasional `Timeout` on streams | Default blocking socket_timeout is 5 s | The console ships a dedicated stream client with 60 s timeout — upgrade to the latest version |

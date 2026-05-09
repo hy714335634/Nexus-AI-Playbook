@@ -158,14 +158,14 @@ sync:
 
 | 日志组                          | 保留天数 | 用途                   |
 | ------------------------------- | -------- | ---------------------- |
-| `/<slug>/application/*`         | 30 天    | 各服务应用日志         |
-| `/<slug>/agent`                 | 30 天    | Agent 执行详情         |
-| `/<slug>/build`                 | 30 天    | 构建流水线             |
-| `/<slug>/access`                | **90 天**| API 访问日志（合规）   |
-| `/<slug>/audit`                 | **90 天**| 敏感操作审计（合规）   |
-| `/<slug>/security`              | **90 天**| 认证 / RBAC 拒绝       |
-| `/<slug>/metrics`               | 7 天     | EMF 指标落盘           |
-| `/<slug>/debug`                 | 3 天     | 临时调试               |
+| `/&lt;slug&gt;/application/*`         | 30 天    | 各服务应用日志         |
+| `/&lt;slug&gt;/agent`                 | 30 天    | Agent 执行详情         |
+| `/&lt;slug&gt;/build`                 | 30 天    | 构建流水线             |
+| `/&lt;slug&gt;/access`                | **90 天**| API 访问日志（合规）   |
+| `/&lt;slug&gt;/audit`                 | **90 天**| 敏感操作审计（合规）   |
+| `/&lt;slug&gt;/security`              | **90 天**| 认证 / RBAC 拒绝       |
+| `/&lt;slug&gt;/metrics`               | 7 天     | EMF 指标落盘           |
+| `/&lt;slug&gt;/debug`                 | 3 天     | 临时调试               |
 
 ### 权限
 

@@ -28,8 +28,8 @@ sync:
 | 线上 API 500 多，想知道是谁 / 哪个接口先挂   | CloudWatch → `<Prefix>-OpsOverview` 仪表板                           |
 | 某个用户反馈「Agent 特别慢」                 | CloudWatch → `<Prefix>-AgentRuntime` + X-Ray Service Map             |
 | 排查「构建卡在某个 Stage」                   | `<Prefix>-BuildPipeline` → 底部 Logs Insights 面板                   |
-| 合规审计：上个月谁改过配额 / 删过 Agent      | CloudWatch Logs → `/<slug>/audit` 日志组                             |
-| 安全事件复盘：爆破登录 / RBAC 拒绝           | CloudWatch Logs → `/<slug>/security` 日志组                          |
+| 合规审计：上个月谁改过配额 / 删过 Agent      | CloudWatch Logs → `/&lt;slug&gt;/audit` 日志组                             |
+| 安全事件复盘：爆破登录 / RBAC 拒绝           | CloudWatch Logs → `/&lt;slug&gt;/security` 日志组                          |
 | 本地开发想看彩色文本日志而非 JSON            | `observability.enabled: false`                                       |
 
 ## 如何使用
@@ -185,24 +185,24 @@ with context_scope(user_id=uid, project_id=pid, agent_id=aid):
 
 | `service_name`          | 对应进程                     | 自动写入的日志组路径                 |
 | ----------------------- | ---------------------------- | ------------------------------------ |
-| `nexus-ai-api`          | API 服务                     | `/<slug>/application/api`            |
-| `nexus-ai-worker`       | Worker 服务                  | `/<slug>/application/worker`         |
-| `nexus-ai-bridge`       | Bridge 服务                  | `/<slug>/application/bridge`         |
-| `nexus-ai-agent-vm`     | 沙箱 VM 内的 agent           | `/<slug>/agent`                      |
-| `nexus-ai`              | 其他本地 Agent 进程（默认）  | `/<slug>/application`                |
+| `nexus-ai-api`          | API 服务                     | `/&lt;slug&gt;/application/api`            |
+| `nexus-ai-worker`       | Worker 服务                  | `/&lt;slug&gt;/application/worker`         |
+| `nexus-ai-bridge`       | Bridge 服务                  | `/&lt;slug&gt;/application/bridge`         |
+| `nexus-ai-agent-vm`     | 沙箱 VM 内的 agent           | `/&lt;slug&gt;/agent`                      |
+| `nexus-ai`              | 其他本地 Agent 进程（默认）  | `/&lt;slug&gt;/application`                |
 
 ### 日志组保留策略
 
 | 日志组                        | 保留天数 | 定位                         |
 | ----------------------------- | -------- | ---------------------------- |
-| `/<slug>/application/*`       | 30 天    | API / Worker / Gateway 等    |
-| `/<slug>/agent`               | 30 天    | Agent 执行明细               |
-| `/<slug>/build`               | 30 天    | 构建流水线                   |
-| `/<slug>/access`              | **90 天**| API 访问日志（合规）         |
-| `/<slug>/audit`               | **90 天**| 敏感操作审计（合规）         |
-| `/<slug>/security`            | **90 天**| 登录失败 / RBAC 拒绝（合规） |
-| `/<slug>/metrics`             | 7 天     | EMF 指标                     |
-| `/<slug>/debug`               | 3 天     | 临时调试                     |
+| `/&lt;slug&gt;/application/*`       | 30 天    | API / Worker / Gateway 等    |
+| `/&lt;slug&gt;/agent`               | 30 天    | Agent 执行明细               |
+| `/&lt;slug&gt;/build`               | 30 天    | 构建流水线                   |
+| `/&lt;slug&gt;/access`              | **90 天**| API 访问日志（合规）         |
+| `/&lt;slug&gt;/audit`               | **90 天**| 敏感操作审计（合规）         |
+| `/&lt;slug&gt;/security`            | **90 天**| 登录失败 / RBAC 拒绝（合规） |
+| `/&lt;slug&gt;/metrics`             | 7 天     | EMF 指标                     |
+| `/&lt;slug&gt;/debug`               | 3 天     | 临时调试                     |
 
 ### 业务维度白名单
 

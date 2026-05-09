@@ -27,7 +27,7 @@ Before you begin, make sure you have:
   - `bedrock:InvokeModel`
   - `bedrock:InvokeModelWithResponseStream`
   - `bedrock:ListFoundationModels`
-- Outbound HTTPS reachability to `https://bedrock-runtime.<region>.amazonaws.com` from your host or container (corporate networks may need to allow-list it).
+- Outbound HTTPS reachability to `https://bedrock-runtime.&lt;region&gt;.amazonaws.com` from your host or container (corporate networks may need to allow-list it).
 
 ::: tip How credentials are refreshed
 On EC2 the platform uses the IAM Instance Profile — AWS rotates credentials automatically. Inside Sandbox VMs credentials are refreshed from environment variables periodically. In neither mode do you need to configure long-lived access keys.

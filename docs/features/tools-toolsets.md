@@ -48,8 +48,8 @@ sync:
 | 前缀 | 含义 |
 |------|------|
 | `strands_tools/xxx` | 平台内置通用工具（文件、时间、计算器、HTTP、RSS……） |
-| `template_tools/<domain>/<module>/<fn>` | 模板自带的领域工具，如 `template_tools/data/visualization/chart_generator` |
-| `generated_tools/<agent_key>/<module>/<fn>` | 某生成型 Agent 专用工具，如 `generated_tools/html2pptx/pptx_generator/add_slide` |
+| `template_tools/&lt;domain&gt;/&lt;module&gt;/&lt;fn&gt;` | 模板自带的领域工具，如 `template_tools/data/visualization/chart_generator` |
+| `generated_tools/&lt;agent_key&gt;/&lt;module&gt;/&lt;fn&gt;` | 某生成型 Agent 专用工具，如 `generated_tools/html2pptx/pptx_generator/add_slide` |
 
 ### 3. 在 Agent 中绑定工具
 

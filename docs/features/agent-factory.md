@@ -102,7 +102,7 @@ Agent Factory 是 Nexus-AI 把「提示词模板 + 模型 + 工具」组装成�
 | Prompt 缓存 | 仅对 Claude 3.5 / 4 / 4.5（Sonnet、Opus、Haiku）和 Amazon Nova（Pro、Lite、Micro）生效；其他模型族不启用 |
 | 缓存计费 | 首次写入按 1.25× 标准价计费，5 分钟内命中按 0.1× 计费（90% 折扣） |
 | 第三方提供商依赖 | 使用 Ollama / OpenAI / Anthropic / LiteLLM / LlamaAPI / Mistral / Gemini 需要在环境中安装对应扩展包，否则创建会报「缺少依赖」 |
-| 工具同步 | 仅当工具路径符合平台约定（如 `generated_tools/<dir>/<script>/<function>`）时，自动同步才会触发 |
+| 工具同步 | 仅当工具路径符合平台约定（如 `generated_tools/&lt;dir&gt;/&lt;script&gt;/&lt;function&gt;`）时，自动同步才会触发 |
 | 凭证刷新 | Bedrock 模型每次创建时会刷新一次凭证，确保在长会话后仍然可用 |
 | 功能自检失败处理 | 自检失败不会阻止 Agent 返回；仅在日志/健康面板中标记为警告 |
 

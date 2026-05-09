@@ -31,8 +31,8 @@ This page is about *how logs are produced and what they look like*. For the broa
 | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | Running a workflow locally, want to watch every agent / tool step          | `enhanced_logging.enable_colors: true` (default), read straight off the terminal |
 | Tracking down a production request given only a `trace_id`                 | Filter JSON logs by `trace_id` in Logs Insights                            |
-| Compliance: "who changed quotas / deleted agents last month?"              | Query the `/<slug>/audit` log group                                        |
-| Security review: SSO failures, brute-force attempts                        | Query the `/<slug>/security` log group                                     |
+| Compliance: "who changed quotas / deleted agents last month?"              | Query the `/&lt;slug&gt;/audit` log group                                        |
+| Security review: SSO failures, brute-force attempts                        | Query the `/&lt;slug&gt;/security` log group                                     |
 | A scheduled task or Worker that should log with `user_id`                  | Wrap the block in `context_scope(user_id=...)`                             |
 
 ## How to use it
@@ -243,15 +243,15 @@ Once `observability.enabled=true`, `nexus-cli init --observability-only` provisi
 
 | Log group                       | Retention | Writer                                          |
 | ------------------------------- | --------- | ----------------------------------------------- |
-| `/<slug>/application/api`       | 30 days   | Anything logged with `service_name=nexus-ai-api`|
-| `/<slug>/application/worker`    | 30 days   | Worker                                          |
-| `/<slug>/application/bridge`    | 30 days   | Bridge                                          |
-| `/<slug>/agent`                 | 30 days   | Sandbox / local agents                          |
-| `/<slug>/build`                 | 30 days   | Build pipeline                                  |
-| `/<slug>/access`                | 90 days   | API access logs (compliance)                    |
-| `/<slug>/audit`                 | 90 days   | `audit_log()` output — compliance grade         |
-| `/<slug>/security`              | 90 days   | `security_log()` output — compliance grade      |
-| `/<slug>/debug`                 | 3 days    | Throw-away debugging                            |
+| `/&lt;slug&gt;/application/api`       | 30 days   | Anything logged with `service_name=nexus-ai-api`|
+| `/&lt;slug&gt;/application/worker`    | 30 days   | Worker                                          |
+| `/&lt;slug&gt;/application/bridge`    | 30 days   | Bridge                                          |
+| `/&lt;slug&gt;/agent`                 | 30 days   | Sandbox / local agents                          |
+| `/&lt;slug&gt;/build`                 | 30 days   | Build pipeline                                  |
+| `/&lt;slug&gt;/access`                | 90 days   | API access logs (compliance)                    |
+| `/&lt;slug&gt;/audit`                 | 90 days   | `audit_log()` output — compliance grade         |
+| `/&lt;slug&gt;/security`              | 90 days   | `security_log()` output — compliance grade      |
+| `/&lt;slug&gt;/debug`                 | 3 days    | Throw-away debugging                            |
 
 Routing is keyed on the `service_name` you pass to `configure_logging()` at process startup. Different processes **must** pass different values (`nexus-ai-api` / `nexus-ai-worker` / `nexus-ai-bridge` / `nexus-ai-agent-vm`), otherwise the logs will pile up in one group.
 
