@@ -1,0 +1,457 @@
+# Nexus-AI 源码仓库路径（相对于 scripts/ 目录）
+source_repo:
+  path: "../../Nexus-AI"
+  default_branch: "main"
+
+# 文档生成模型偏好
+models:
+  default: "global.anthropic.claude-opus-4-7"               # 使用 Opus 4.7 — 质量优先
+  complex: "global.anthropic.claude-opus-4-7"               # 架构 / 大范围变更
+
+# 输出语言（顺序 = 输出顺序）
+languages:
+  - zh
+  - en
+
+# 源码变更 → 文档 映射（支持文件级 path 与模块级 glob）
+mappings:
+  - id: "mcp-feature"
+    description: "MCP Server 相关功能"
+    watches:
+      - "mcp_server/**"
+      - "config/mcp/**"
+      - "nexus_utils/mcp/**"
+    docs:
+      - path: "manual/mcp.md"
+        prompt: "feature-update.md"
+        model: "default"
+    screenshots:
+      - "mcp-config-page"
+
+  - id: "agent-creation"
+    description: "Agent 创建流程"
+    watches:
+      - "api/v2/routers/agents.py"
+      - "api/v2/services/agent_build_service.py"
+      - "agents/system_agents/agent_build_workflow/**"
+      - "web/app/create/**"
+    docs:
+      - path: "manual/create-agent.md"
+        prompt: "feature-update.md"
+        model: "default"
+    screenshots:
+      - "create-agent"
+      - "quick-create"
+      - "guided-create"
+
+  - id: "config-reference"
+    description: "主配置文件参考"
+    watches:
+      - "config/default_config.yaml"
+    docs:
+      - path: "admin/settings.md"
+        prompt: "config-reference.md"
+        model: "default"
+    screenshots: []
+
+# 章节定义（v3：Hermes 风格 7-category 侧栏结构）
+# 每个章节声明输出目录、默认 prompt、本章节包含的文档清单。
+# docs 内的顺序即 sidebar 顺序。
+chapters:
+  getting-started:
+    title_zh: "快速开始"
+    title_en: "Getting Started"
+    output_dir: "getting-started"
+    prompt_default: "feature-overview.md"
+    docs:
+      - slug: "quickstart"
+        title_zh: "5 分钟快速上手"
+        title_en: "Quickstart"
+        sources:
+          - "agents/system_agents/magician.py"
+          - "nexus-cli"
+          - "README.md"
+      - slug: "installation"
+        title_zh: "安装 Nexus-AI"
+        title_en: "Installation"
+        sources:
+          - "setup_env_alinux2023.sh"
+          - "pyproject.toml"
+          - "requirements.txt"
+          - "README.md"
+      - slug: "aws-setup"
+        title_zh: "AWS 环境准备"
+        title_en: "AWS Setup"
+        sources:
+          - "infrastructure/**"
+          - "config/default_config.yaml"
+          - "README.md"
+      - slug: "updating"
+        title_zh: "升级与卸载"
+        title_en: "Updating & Uninstalling"
+        sources:
+          - "nexus-cli"
+          - "pyproject.toml"
+          - "README.md"
+      - slug: "learning-path"
+        title_zh: "学习路径"
+        title_en: "Learning Path"
+        sources:
+          - "README.md"
+          - "CLAUDE.md"
+
+  using:
+    title_zh: "使用 Nexus-AI"
+    title_en: "Using Nexus-AI"
+    output_dir: "using"
+    prompt_default: "feature-update.md"
+    docs:
+      - slug: "dashboard"
+        title_zh: "工作台"
+        title_en: "Dashboard"
+        sources: ["web/src/app/(authed)/dashboard/**", "api/v2/routers/projects.py"]
+      - slug: "create-agent"
+        title_zh: "创建 Agent"
+        title_en: "Creating an Agent"
+        sources: ["web/src/app/(authed)/create/**", "api/v2/routers/agents.py"]
+      - slug: "build-progress"
+        title_zh: "构建进度"
+        title_en: "Build Progress"
+        sources: ["web/src/app/(authed)/projects/**", "worker/handlers/build_handler*.py"]
+      - slug: "chat"
+        title_zh: "对话"
+        title_en: "Chat & Sessions"
+        sources: ["web/src/app/(authed)/chat/**", "api/v2/routers/sessions.py", "nexus_utils/magician.py"]
+      - slug: "projects"
+        title_zh: "项目管理"
+        title_en: "Project Management"
+        sources: ["api/v2/routers/projects.py", "web/src/app/(authed)/projects/**"]
+      - slug: "manage-agents"
+        title_zh: "Agent 管理"
+        title_en: "Managing Agents"
+        sources: ["api/v2/routers/agents.py", "web/src/app/(authed)/agents/**"]
+      - slug: "tools"
+        title_zh: "工具库"
+        title_en: "Tools"
+        sources: ["api/v2/routers/agent_tools.py", "nexus_utils/skill/**"]
+      - slug: "mcp"
+        title_zh: "MCP 服务器"
+        title_en: "MCP Server"
+        sources: ["nexus_utils/mcp/**", "config/mcp/**"]
+
+  features:
+    title_zh: "功能特性"
+    title_en: "Features"
+    output_dir: "features"
+    prompt_default: "feature-overview.md"
+    docs:
+      - slug: "tools-toolsets"
+        title_zh: "工具与工具集"
+        title_en: "Tools & Toolsets"
+        sources: ["nexus_utils/skill/**", "agents/template_agents/**"]
+      - slug: "skills-system"
+        title_zh: "技能系统"
+        title_en: "Skills System"
+        sources: ["nexus_utils/skill/**"]
+      - slug: "agent-factory"
+        title_zh: "Agent Factory"
+        title_en: "Agent Factory"
+        sources: ["nexus_utils/agent_factory.py", "nexus_utils/safe_agent_factory.py"]
+      - slug: "prompt-templates"
+        title_zh: "提示词模板"
+        title_en: "Prompt Templates"
+        sources: ["prompts/template_prompts/**", "nexus_utils/prompts_manager.py"]
+      - slug: "sandbox"
+        title_zh: "Sandbox 沙箱"
+        title_en: "Sandbox Runtime"
+        sources: ["nexus_utils/sandbox/**"]
+      - slug: "workflow-engine"
+        title_zh: "工作流引擎"
+        title_en: "Workflow Engine"
+        sources: ["nexus_utils/workflow/**", "config/workflows.yaml"]
+      - slug: "multi-agent"
+        title_zh: "多 Agent 图/群"
+        title_en: "Multi-Agent Graph/Swarm"
+        sources: ["nexus_utils/agent_graph/**", "agents/system_agents/**"]
+      - slug: "stream-relay"
+        title_zh: "流式响应中继"
+        title_en: "Stream Relay"
+        sources: ["nexus_utils/runtime_workspace/**", "api/v2/routers/sessions.py"]
+      - slug: "event-scheduler"
+        title_zh: "事件调度"
+        title_en: "Event Scheduler"
+        sources: ["nexus_utils/event_scheduler/**", "config/eventschedule_config.yaml"]
+      - slug: "bridge"
+        title_zh: "Bridge 多连接"
+        title_en: "Bridge Multi-Connection"
+        sources: ["nexus_utils/bridge/**"]
+      - slug: "observability"
+        title_zh: "可观测性"
+        title_en: "Observability"
+        sources: ["nexus_utils/observability/**"]
+      - slug: "metrics-billing"
+        title_zh: "指标与计费"
+        title_en: "Metrics & Billing"
+        sources: ["nexus_utils/observability/**", "api/v2/routers/admin_billing.py"]
+      - slug: "logging"
+        title_zh: "日志"
+        title_en: "Logging"
+        sources: ["config/logging_config.yaml", "nexus_utils/observability/**"]
+
+  integrations:
+    title_zh: "集成"
+    title_en: "Integrations"
+    output_dir: "integrations"
+    prompt_default: "integration-guide.md"
+    docs:
+      - slug: "overview"
+        title_zh: "集成总览"
+        title_en: "Overview"
+        sources: ["config/default_config.yaml", "README.md"]
+      - slug: "aws-bedrock"
+        title_zh: "AWS Bedrock 模型接入"
+        title_en: "AWS Bedrock"
+        sources: ["nexus_utils/agent_factory.py", "config/model_catalog.yaml"]
+      - slug: "mcp-clients"
+        title_zh: "外部 MCP 服务器"
+        title_en: "MCP Clients"
+        sources: ["nexus_utils/mcp/mcp_client/**", "config/mcp/**"]
+      - slug: "mcp-server"
+        title_zh: "Agent as MCP Tool"
+        title_en: "MCP Server"
+        sources: ["nexus_utils/mcp/mcp_server/**"]
+      - slug: "sso-saml"
+        title_zh: "SSO (SAML 2.0)"
+        title_en: "SSO (SAML 2.0)"
+        sources: ["api/v2/auth/**"]
+      - slug: "data-stores"
+        title_zh: "数据存储"
+        title_en: "Data Stores"
+        sources: ["api/v2/database/**", "config/default_config.yaml"]
+
+  guides:
+    title_zh: "使用指南"
+    title_en: "Guides & Tutorials"
+    output_dir: "guides"
+    prompt_default: "tutorial.md"
+    docs:
+      - slug: "tips"
+        title_zh: "技巧与最佳实践"
+        title_en: "Tips & Best Practices"
+        sources: ["CLAUDE.md", "README.md"]
+      - slug: "build-hermes-analyst"
+        title_zh: "构建 Hermes 分析 Agent"
+        title_en: "Build a Hermes Analyst Agent"
+        sources:
+          - "agents/generated_agents/hermes_analyst_agent_2026a96a/**"
+          - "prompts/generated_agents_prompts/hermes_analyst_agent_2026a96a/**"
+      - slug: "build-tech-blog"
+        title_zh: "构建技术博客生成 Agent"
+        title_en: "Build a Tech Blog Generator"
+        sources:
+          - "agents/generated_agents/tech_blog_generator_05b957e9/**"
+          - "prompts/generated_agents_prompts/tech_blog_generator_05b957e9/**"
+      - slug: "use-mcp-with-nexus"
+        title_zh: "在 Nexus-AI 中使用 MCP"
+        title_en: "Use MCP with Nexus-AI"
+        sources: ["nexus_utils/mcp/**", "config/mcp/**", "README.md"]
+
+  developer:
+    title_zh: "开发者指南"
+    title_en: "Developer Guide"
+    output_dir: "developer"
+    prompt_default: "developer-guide.md"
+    docs:
+      - slug: "contributing"
+        title_zh: "贡献指南"
+        title_en: "Contributing"
+        sources:
+          - "CONTRIBUTING.md"
+          - "CLAUDE.md"
+          - "pyproject.toml"
+          - ".python-version"
+      - slug: "architecture-overview"
+        title_zh: "架构总览"
+        title_en: "Architecture Overview"
+        sources:
+          - "CLAUDE.md"
+          - "README.md"
+          - "architecture/**"
+          - "api/v2/main.py"
+          - "api/v2/config.py"
+          - "worker/main.py"
+          - "nexus_utils/agent_factory.py"
+          - "nexus_utils/magician.py"
+      - slug: "api-layer"
+        title_zh: "API 层架构"
+        title_en: "API Layer"
+        sources:
+          - "api/v2/main.py"
+          - "api/v2/config.py"
+          - "api/v2/core/**"
+          - "api/v2/auth/__init__.py"
+          - "api/v2/database/__init__.py"
+          - "api/v2/database/dynamodb.py"
+          - "api/v2/database/aurora.py"
+          - "api/v2/database/sqs.py"
+          - "api/v2/database/valkey.py"
+      - slug: "worker"
+        title_zh: "Worker 架构"
+        title_en: "Worker"
+        sources:
+          - "worker/**"
+          - "nexus_utils/workflow/**"
+          - "config/workflows.yaml"
+      - slug: "stage-engine"
+        title_zh: "Stage 引擎"
+        title_en: "Stage Engine"
+        sources:
+          - "nexus_utils/workflow/**"
+          - "config/workflows.yaml"
+          - "agents/system_agents/**"
+      - slug: "adding-agents"
+        title_zh: "添加 Agent"
+        title_en: "Adding Agents"
+        sources:
+          - "agents/template_agents/**"
+          - "nexus_utils/agent_factory.py"
+          - "nexus_utils/safe_agent_factory.py"
+          - "nexus_utils/agent_validation.py"
+          - "config/model_catalog.yaml"
+      - slug: "adding-tools"
+        title_zh: "添加工具"
+        title_en: "Adding Tools"
+        sources:
+          - "nexus_utils/skill/**"
+          - "tools/**"
+          - "nexus_utils/mcp/**"
+          - "api/v2/routers/agent_tools.py"
+      - slug: "adding-skills"
+        title_zh: "添加技能"
+        title_en: "Adding Skills"
+        sources:
+          - "nexus_utils/skill/**"
+          - "prompts/template_prompts/**"
+          - "prompts/system_agents_prompts/**"
+          - "nexus_utils/prompts_manager.py"
+      - slug: "session-storage"
+        title_zh: "会话存储"
+        title_en: "Session Storage"
+        sources:
+          - "nexus_utils/runtime_workspace/**"
+          - "api/v2/routers/sessions.py"
+          - "api/v2/services/agent_runtime_service.py"
+          - "api/v2/database/aurora.py"
+          - "api/v2/database/valkey.py"
+      - slug: "dynamic-prompt"
+        title_zh: "动态 Prompt 构建"
+        title_en: "Dynamic Prompt Build"
+        sources:
+          - "nexus_utils/prompts_manager.py"
+          - "prompts/dynamic_agents_prompts/**"
+          - "prompts/system_agents_prompts/**"
+          - "nexus_utils/runtime_injection/**"
+          - "nexus_utils/post_generation_processor.py"
+
+  reference:
+    title_zh: "参考"
+    title_en: "Reference"
+    output_dir: "reference"
+    prompt_default: "reference.md"
+    docs:
+      - slug: "cli-commands"
+        title_zh: "nexus-cli 命令"
+        title_en: "nexus-cli Commands"
+        sources:
+          - "nexus-cli"
+          - "nexus_utils/cli/**"
+      - slug: "config-options"
+        title_zh: "配置项"
+        title_en: "Configuration Options"
+        sources:
+          - "config/default_config.yaml"
+          - "config/logging_config.yaml"
+          - "config/app_manifest.yaml"
+          - "config/data_connector.yaml"
+          - "config/eventschedule_config.yaml"
+          - "config/model_catalog.yaml"
+          - "config/workflows.yaml"
+          - "config/nexus_ai_base_rule.yaml"
+          - "nexus_utils/config_loader.py"
+      - slug: "environment-variables"
+        title_zh: "环境变量"
+        title_en: "Environment Variables"
+        sources:
+          - "nexus_utils/config_loader.py"
+          - "nexus-cli"
+          - "api/v2/config.py"
+      - slug: "api-endpoints"
+        title_zh: "API 端点"
+        title_en: "API Endpoints"
+        sources:
+          - "api/v2/main.py"
+          - "api/v2/routers/__init__.py"
+          - "api/v2/routers/agents.py"
+          - "api/v2/routers/sessions.py"
+          - "api/v2/routers/projects.py"
+          - "api/v2/routers/agent_tools.py"
+          - "api/v2/routers/attachments.py"
+          - "api/v2/routers/admin_billing.py"
+          - "api/v2/routers/audit.py"
+          - "api/v2/auth/__init__.py"
+      - slug: "deploy-params"
+        title_zh: "部署参数"
+        title_en: "Deployment Parameters"
+        sources:
+          - "infrastructure/**"
+          - "nexus-cli"
+      - slug: "iam-policies"
+        title_zh: "IAM 权限"
+        title_en: "IAM Policies"
+        sources:
+          - "docs/infrastructure/IAM_POLICIES.md"
+          - "infrastructure/**"
+      - slug: "model-catalog"
+        title_zh: "模型目录"
+        title_en: "Model Catalog"
+        sources:
+          - "config/model_catalog.yaml"
+          - "nexus_utils/agent_factory.py"
+      - slug: "glossary"
+        title_zh: "术语表"
+        title_en: "Glossary"
+        sources:
+          - "CLAUDE.md"
+          - "README.md"
+          - "nexus_utils/agent_factory.py"
+          - "nexus_utils/magician.py"
+          - "nexus_utils/prompts_manager.py"
+      - slug: "faq"
+        title_zh: "FAQ 与故障排查"
+        title_en: "FAQ & Troubleshooting"
+        sources:
+          - "CLAUDE.md"
+          - "README.md"
+          - "CONTRIBUTING.md"
+
+# 运行策略
+run:
+  signatures_dir: "signatures"
+  runs_dir: "runs"
+  pricing:
+    # Both tiers use Opus 4.7 per user decision (quality priority)
+    default:
+      input_per_mtok: 15.0
+      output_per_mtok: 75.0
+    complex:
+      input_per_mtok: 15.0
+      output_per_mtok: 75.0
+
+# 截图配置
+screenshots:
+  enabled: "auto"                     # auto | always | never
+  base_url: "http://localhost:3000"
+  output_dir: "../docs/public/images" # 相对 scripts/ 路径
+  login:
+    user: "admin"
+    password: "nexus"

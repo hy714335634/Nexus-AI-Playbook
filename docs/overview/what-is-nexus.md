@@ -142,7 +142,7 @@ Nexus-AI 的核心创新在于 **"用 AI Agent 来构建 AI Agent"**。平台内
 8. **开发管理** — 代码审查和质量保证
 9. **部署上线** — 自动部署并使 Agent 可用
 
-每个阶段都有专业的 Builder Agent 负责，产出物自动传递给下一阶段。你可以在 [构建进度](/manual/build-progress) 页面实时查看每个阶段的执行状态。
+每个阶段都有专业的 Builder Agent 负责，产出物自动传递给下一阶段。你可以在 [构建进度](/using/build-progress) 页面实时查看每个阶段的执行状态。
 
 ### 多模态输入
 

@@ -4,3 +4,11 @@ docs/.vitepress/cache/
 *.log
 .DS_Store
 PDF/
+
+# Playbook docs-sync mechanism
+drafts/
+scripts/state/work/
+scripts/state/changes.json
+scripts/state/errors.log
+scripts/screenshots/node_modules/
+scripts/screenshots/package-lock.json

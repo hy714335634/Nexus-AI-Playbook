@@ -1,0 +1,22 @@
+# 每个目标 = 一次截图。name 对应 config.yaml 中 mappings.screenshots 列表的条目。
+# url 是相对 config.yaml 中的 screenshots.base_url。
+targets:
+  - name: "mcp-config-page"
+    url: "/admin/mcp"
+    output: "mcp-config-page.png"
+    wait_for_selector: "body"
+
+  - name: "create-agent"
+    url: "/create"
+    output: "create-agent.png"
+    wait_for_selector: "body"
+
+  - name: "quick-create"
+    url: "/create?mode=quick"
+    output: "quick-create.png"
+    wait_for_selector: "body"
+
+  - name: "guided-create"
+    url: "/create?mode=guided"
+    output: "guided-create.png"
+    wait_for_selector: "body"
