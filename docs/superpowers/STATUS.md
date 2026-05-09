@@ -5,20 +5,30 @@
 
 ## 当前阶段
 
-**阶段：** v3 Batches 1+2+3 已完成。只剩 Batch 4（Developer + Reference + Guides）。
+**阶段：** ✅ v3 所有 4 个 Batch 全部完成。Playbook 达到 Hermes 级信息架构。
 
 - ✅ Restructure: 7-category persistent Hermes-style sidebar (`5bed523`)
 - ✅ /manual/ → /using/ migration with HUMAN-EDIT preservation (`eeb69bb`)
-- ✅ Batch 1 (Getting Started, Opus 4.7): 5 zh + 5 en + index (`b867282`)
-- ✅ Batch 2 (Using, Opus 4.7): 8 zh + 8 en + index；每页 human_blocks=1（HUMAN-EDIT 保留成功）(`6521481`)
-- ✅ Batch 3a (Features, Opus 4.7): 13 zh + 13 en + index (`6521481`)
-- ✅ Batch 3b (Integrations, Opus 4.7): 6 zh + 6 en + index (`6521481`)
-- ⏳ Batch 4: Developer + Reference + Guides (~23 pages, ~$50-60) — 待指令
+- ✅ Batch 1 (Getting Started): 5 docs (`b867282`)
+- ✅ Batch 2 (Using): 8 docs, HUMAN-EDIT blocks preserved (`6521481`)
+- ✅ Batch 3a (Features): 13 docs (`6521481`)
+- ✅ Batch 3b (Integrations): 6 docs (`6521481`)
+- ✅ Batch 4 (Developer + Reference + Guides): 10 + 9 + 4 = 23 docs (`1113dc4`)
+- ✅ 额外工具：`scripts/lib/sanitize_md.py`（保护 VitePress 构建免受 `<uuid>` 等占位符影响）
 
-**产出汇总（截至当前）：**
-- 32 个中文文档 + 32 个英文文档 + 4 个章节 index + 2 个 llms.txt 聚合
-- `/getting-started/` (5) + `/using/` (8) + `/features/` (13) + `/integrations/` (6)
-- `docs/public/llms.txt` = 51 entries
+**产出汇总：**
+- **51 个中文文档 + 51 个英文文档 + 7 个章节 index = 109 个 .md 文件**
+- `/getting-started/` (5) + `/using/` (8) + `/features/` (13) + `/integrations/` (6) + `/guides/` (4) + `/developer/` (10) + `/reference/` (9)
+- `docs/public/llms.txt` = 77 entries (1.0 MB llms-full.txt)
+
+**模型：** `global.anthropic.claude-opus-4-7`（Opus 4.7）全程生成
+
+**Wiki/CMS 能力验证：**
+- ✅ 持久 sidebar 跨章节保留展开状态
+- ✅ HUMAN-EDIT 块保留（using 章节每篇 human_blocks=1）
+- ✅ signatures 内容哈希跳过机制可用
+- ✅ llms.txt / llms-full.txt 自动聚合
+- ✅ 每页 frontmatter 含 sync.source_commit / source_files / generated_at
 
 **Active versions:**
 - Spec v2: `docs/superpowers/specs/2026-05-07-playbook-docs-sync-v2-design.md`
