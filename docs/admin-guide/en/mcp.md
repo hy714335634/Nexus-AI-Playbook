@@ -23,7 +23,7 @@ MCP works in two directions on the platform:
 
 Sidebar「Capability Center」→ click「Enter management」on the「MCP Services」card, or go directly to `/ability/mcp`. The top navigation also switches to「Tools」and「Skills」, which belong to the same Capability Center.
 
-<!-- SCREENSHOT: ability-mcp -->
+![ability-mcp](/images/ability-mcp.png)
 
 ## Interface Overview
 
@@ -111,7 +111,6 @@ Rather than filling fields one by one, use the「Paste Config」tab or「Import 
 
 The dialog offers three example chips (Cursor JSON / npx·uvx command / SSE·HTTP URL); clicking one fills in the example. You can also choose a scope when importing. An `autoApprove` list in the JSON is imported as the list of auto-approved tools.
 
-<!-- SCREENSHOT: mcp-add-server-form -->
 
 ## Managing Existing Servers
 

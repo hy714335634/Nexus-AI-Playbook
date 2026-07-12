@@ -27,7 +27,7 @@ Sidebar **Settings → Config Management**, then click **Model Catalog** at the 
 
 Once inside, the **Back to Config Management** link in the top-left returns you to the config page.
 
-<!-- SCREENSHOT: settings-model-catalog -->
+![settings-model-catalog](/images/settings-model-catalog.png)
 
 ## Page layout
 
@@ -122,7 +122,7 @@ The catalog decides "which models are selectable"; "which one is the default" is
 
 The "Just say what you want to tune" box at the top of the config page supports natural-language parameter search (e.g. "reduce usage cost", "which changes require a restart"). If a search returns zero matches, try different keywords.
 
-<!-- SCREENSHOT: settings-config -->
+![settings-config](/images/settings-config.png)
 
 ## Viewing model usage
 
@@ -130,7 +130,7 @@ Actual model consumption is shown by model in the usage report:
 
 - Sidebar **Management → Usage Report** (or `/admin/billing`), see **Consumption by Model**, including call counts and input / output tokens.
 
-<!-- SCREENSHOT: admin-billing -->
+![admin-billing](/images/admin-billing.png)
 
 ## FAQ
 

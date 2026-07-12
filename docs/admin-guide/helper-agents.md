@@ -43,7 +43,7 @@ Nexus-AI 在多个管理页面内置了 AI 助手（界面上统称「Nexus 助�
 
 **入口**：侧边栏「管理」→「服务状态」→ 页面右下角「Nexus 助手」。
 
-<!-- SCREENSHOT: admin-service-status -->
+![admin-service-status](/images/admin-service-status.png)
 
 **能问什么**：助手覆盖四类运维诉求：
 
@@ -72,7 +72,7 @@ Nexus-AI 在多个管理页面内置了 AI 助手（界面上统称「Nexus 助�
 - 页面右下角「Nexus 助手」浮动面板；
 - 每个参数卡片上的「问 AI：作用与调整影响」按钮（针对单个参数提问）。
 
-<!-- SCREENSHOT: settings-config -->
+![settings-config](/images/settings-config.png)
 
 **能做什么**：
 
@@ -98,7 +98,7 @@ Nexus-AI 在多个管理页面内置了 AI 助手（界面上统称「Nexus 助�
 
 **入口**：侧边栏「设置」→「审计追踪」→ 页面右下角「Nexus 助手」。
 
-<!-- SCREENSHOT: settings-audit -->
+![settings-audit](/images/settings-audit.png)
 
 **能做什么**：
 

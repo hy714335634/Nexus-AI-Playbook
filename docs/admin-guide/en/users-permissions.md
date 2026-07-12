@@ -27,7 +27,7 @@ The page has two tabs:
 - **User List** — manage users, departments (groups), and assign roles and policies to users (opens by default)
 - **Policy Management** — view managed policies, and create and maintain custom permission policies
 
-<!-- SCREENSHOT: users -->
+![users](/images/users.png)
 
 ## Roles and the Permission Model
 
@@ -67,7 +67,6 @@ The User List tab organizes users into a tree by **department (group)**, with a 
    - **Role**: one of four cards — **Admin** (full management), **Editor** (create and edit resources), **User** (use Agents and view), **Viewer** (read-only view)
 3. Click 「Create」.
 
-<!-- SCREENSHOT: users-create -->
 
 ::: warning
 An already-registered email will be rejected. The basic edition caps total users; when the cap is reached, creation triggers an upgrade prompt with contact details, and you must upgrade to add more.
@@ -123,7 +122,7 @@ Groups organize users into a tree by org structure and can carry policies per gr
    - **Parent group** (dropdown: pick 「None (top-level group)」for a top-level group, or an existing group as the parent)
 3. Click 「Create」or 「Save」.
 
-<!-- SCREENSHOT: users-groups -->
+![users](/images/users.png)
 
 ### Group Policies
 
@@ -150,7 +149,7 @@ The Policy Management tab is where you view and maintain all permission policies
 
 Click any policy card to expand its permission matrix.
 
-<!-- SCREENSHOT: users-policies -->
+![users](/images/users.png)
 
 ### Create a Custom Policy
 
@@ -159,7 +158,6 @@ Click any policy card to expand its permission matrix.
 3. In the **permission matrix**, check the boxes: each row is a resource, each column an action; a check grants that resource + action. Gray cells mean the resource does not support that action. Each row has a "select all" toggle at the end.
 4. The selected permission count is shown live at the bottom. Click 「Create」to save.
 
-<!-- SCREENSHOT: users-policy-editor -->
 
 ### Edit / Delete a Custom Policy
 

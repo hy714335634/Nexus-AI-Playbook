@@ -21,7 +21,7 @@ sync:
 
 用户访问平台时首先看到登录页。启用 SSO 后，登录页会多出一个企业登录入口；点击后跳转到你的 IdP 完成认证，认证通过再跳回平台。本地账号则直接在登录页输入用户名和密码。
 
-<!-- SCREENSHOT: login -->
+![login](/images/login.png)
 
 ## 两种认证模式
 
@@ -50,7 +50,7 @@ sync:
 5. 重启服务使配置生效。
 6. 打开登录页确认出现 SSO 入口，点击后应能跳转到 IdP 并成功返回。
 
-<!-- SCREENSHOT: settings-config -->
+![settings-config](/images/settings-config.png)
 
 ### SSO 配置项
 

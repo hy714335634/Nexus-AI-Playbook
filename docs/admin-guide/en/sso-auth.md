@@ -21,7 +21,7 @@ Local-account mode works out of the box and suits first deployments and small te
 
 Users see the login page first. With SSO enabled, the login page adds an enterprise login entry; clicking it redirects to your IdP to authenticate and then returns to the platform. For local accounts, users just enter a username and password on the login page.
 
-<!-- SCREENSHOT: login -->
+![login](/images/login.png)
 
 ## The Two Authentication Modes
 
@@ -50,7 +50,7 @@ The platform acts as the service provider (SP) toward your IdP. Configuration is
 5. Restart the service to apply the config.
 6. Open the login page to confirm the SSO entry appears; clicking it should redirect to the IdP and return successfully.
 
-<!-- SCREENSHOT: settings-config -->
+![settings-config](/images/settings-config.png)
 
 ### SSO Config Keys
 

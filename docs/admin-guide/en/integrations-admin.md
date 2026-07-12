@@ -27,13 +27,13 @@ The page offers four sub-modules:
 
 Sidebar「Business Integration」→ go to `/integration`. The page presents the four sub-modules as cards at the top; click any card to enter its management page.
 
-<!-- SCREENSHOT: integration -->
+![integration-connectors](/images/integration-connectors.png)
 
 ## Data Connections
 
 「Data Connections」lets you register external data sources as **connectors**, bind access credentials, and make them available for agents to query at runtime. The platform ships safe defaults for every source type (read-only, row limits, dangerous-statement blocking, field masking), so you don't have to harden each connection by hand.
 
-<!-- SCREENSHOT: integration-connectors -->
+![integration-connectors](/images/integration-connectors.png)
 
 ### Supported Source Types
 
@@ -107,7 +107,7 @@ When a connector is created, ownership is forced to the current authenticated id
 
 「Key Management」centrally stores the sensitive credentials needed to reach external systems (API keys, database usernames and passwords, cloud credentials, etc.). Register a key once and it can be **referenced** by data connections and by tools that require credentials — no repeating plaintext in multiple places.
 
-<!-- SCREENSHOT: integration-keys -->
+![integration-keys](/images/integration-keys.png)
 
 The top-right has **New Key**, and each key card in the list shows its name, type, reference count, and a description snippet; the search box at the top (placeholder「Search keys...」) finds keys by name.
 
@@ -161,13 +161,13 @@ A key is an access credential. Always use Secrets Manager storage in production;
 
 「Asset Templates」centrally manages reusable template files (PPT / Word / Excel / HTML / PDF, images, etc.) for generation tasks to apply. The left side filters by ownership (All / Created by me / Shared with me) and category (PPT / Excel / Docs / HTML / Other); the center is a drag-and-drop upload area (**Choose Files** / **Choose Folder**); the top-right **✨ AI** button helps generate or organize templates with AI assistance.
 
-<!-- SCREENSHOT: integration-templates -->
+![integration-templates](/images/integration-templates.png)
 
 ## Business Directives
 
 「Business Directives」maintains global business directive nodes for agents. The top-right offers **New Node**, **Create Architecture from Natural Language**, **Import from Document**, and **Refresh**; the floating buttons in the bottom-right offer **Manual Create** and **AI Create** — describe your intent in natural language and let AI build the directive structure for you.
 
-<!-- SCREENSHOT: integration-directives -->
+![integration-directives](/images/integration-directives.png)
 
 ## MCP Services
 

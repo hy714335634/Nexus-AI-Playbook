@@ -28,7 +28,7 @@ sync:
 - **模型目录** — 编辑可选模型列表（测试后保存立即生效）
 - **浏览器扩展** — 管理 Chrome 扩展设备
 
-<!-- SCREENSHOT: settings-config -->
+![settings-config](/images/settings-config.png)
 
 ## 界面速览
 
@@ -72,7 +72,7 @@ sync:
 | **可观测与日志** | 追踪采样率、数据捕获粒度、日志级别、审计与运维告警 |
 | **其他** | 未归入上述大类的配置分组 |
 
-<!-- SCREENSHOT: settings-config-fields -->
+![settings-config](/images/settings-config.png)
 
 ## 修改与保存配置
 
@@ -110,7 +110,7 @@ sync:
 
 顶部「配置体检」按钮会扫描当前配置，列出潜在问题（如取值不合理、相互冲突或有更优推荐）。每条结果可「定位参数」直接跳到对应字段。体检结果会缓存，重开面板不会重复扫描，除非手动重扫。
 
-<!-- SCREENSHOT: config-doctor -->
+![settings-config](/images/settings-config.png)
 
 ## 导出与导入
 
@@ -150,7 +150,7 @@ sync:
 - prompt 缓存是干嘛的，建议开吗
 - 哪些参数改了需要重启服务
 
-<!-- SCREENSHOT: config-helper -->
+![settings-config](/images/settings-config.png)
 
 ::: warning
 助手只做解释、搜索和写入草稿建议，**不会替你保存或重启**。所有改动仍需你在主界面点「保存」并确认。

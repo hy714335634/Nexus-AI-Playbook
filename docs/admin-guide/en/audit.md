@@ -29,7 +29,7 @@ The top of the page has three tabs, with a floating「Nexus Assistant」button (
 | **Logs** | Multi-dimensional search over audit details, expand to see changes, export CSV / JSON |
 | **Subscriptions** | Subscribe email addresses to audit event notifications and compliance report delivery |
 
-<!-- SCREENSHOT: settings-audit -->
+![settings-audit](/images/settings-audit.png)
 
 ## Dashboard
 
@@ -57,7 +57,7 @@ Purpose: pinpoint a specific action by user, action, resource, outcome, time, or
 
 Entry:「Audit Trail」→「Logs」tab.
 
-<!-- SCREENSHOT: settings-audit -->
+![settings-audit](/images/settings-audit.png)
 
 ### Filters
 
@@ -129,7 +129,7 @@ Purpose: query the audit in natural language, summarize a period, and generate a
 
 Entry: the floating「Nexus Assistant」button in the top-right of the audit page. The panel toggles between "docked right" and "centered large window."
 
-<!-- SCREENSHOT: audit-helper -->
+![settings-audit](/images/settings-audit.png)
 
 ### Q&A
 

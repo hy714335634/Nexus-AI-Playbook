@@ -23,7 +23,7 @@ Sidebar「Management」→「Service Status」, or go directly to `/admin/servic
 
 The top of the page offers a quick link to Configuration Management, so you can jump straight to tuning parameters after diagnosing an issue.
 
-<!-- SCREENSHOT: admin-service-status -->
+![admin-service-status](/images/admin-service-status.png)
 
 ## Interface Overview
 
@@ -143,7 +143,7 @@ You can also type a symptom or question directly, e.g. "What's the current runni
 
 The helper streams its response and returns **structured results** based on your question. For example, asked "What's the current running status of each service?", it returns a service status table (Service / Status / PID / Port / CPU / Memory) that lists the live metrics for all 8 services at once.
 
-<!-- SCREENSHOT: ops-helper -->
+![admin-service-status](/images/admin-service-status.png)
 
 ::: warning
 The Ops Helper is **read-only diagnostics** — it checks status, reads logs, and suggests how to investigate. It will **not** restart or stop services for you; those actions still require you to click the buttons on the service cards and take responsibility for confirming them.

@@ -23,7 +23,7 @@ MCP 在平台里有两个方向：
 
 侧边栏「能力中心」→ 点击「MCP 服务」卡片的「进入管理」，或直接访问 `/ability/mcp`。页面顶部导航还可切换到同属能力中心的「工具」「技能」。
 
-<!-- SCREENSHOT: ability-mcp -->
+![ability-mcp](/images/ability-mcp.png)
 
 ## 界面速览
 
@@ -111,7 +111,6 @@ URL 里含 `/sse` 或以 `sse://` 开头会被识别为 SSE，其余按 HTTP 处
 
 对话框里提供三个示例药丸（Cursor JSON / npx·uvx 命令 / SSE·HTTP URL），点一下即可把示例填入。导入时同样可选择作用域。JSON 里的 `autoApprove` 会作为自动批准的工具列表一并导入。
 
-<!-- SCREENSHOT: mcp-add-server-form -->
 
 ## 管理已有服务器
 

@@ -29,7 +29,7 @@ sync:
 | **日志** | 多维筛选检索审计明细，展开看改动详情，导出 CSV / JSON |
 | **订阅通知** | 用邮箱订阅审计事件通知与合规报告投递 |
 
-<!-- SCREENSHOT: settings-audit -->
+![settings-audit](/images/settings-audit.png)
 
 ## 仪表盘
 
@@ -57,7 +57,7 @@ sync:
 
 入口：「审计追踪」→「日志」页签。
 
-<!-- SCREENSHOT: settings-audit -->
+![settings-audit](/images/settings-audit.png)
 
 ### 筛选条件
 
@@ -129,7 +129,7 @@ sync:
 
 入口：审计页右上角浮动的「Nexus 助手」按钮。面板可在「右侧停靠」与「居中大窗」两种形态间切换。
 
-<!-- SCREENSHOT: audit-helper -->
+![settings-audit](/images/settings-audit.png)
 
 ### 问答
 

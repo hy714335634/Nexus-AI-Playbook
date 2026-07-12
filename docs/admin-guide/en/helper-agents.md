@@ -43,7 +43,7 @@ Whichever assistant you use, the pattern is the same:
 
 **Entry**: sidebar "Management" → "Service Status" → the "Nexus Assistant" button in the bottom-right corner.
 
-<!-- SCREENSHOT: admin-service-status -->
+![admin-service-status](/images/admin-service-status.png)
 
 **What you can ask**: the assistant covers four kinds of ops needs:
 
@@ -72,7 +72,7 @@ Example suggested questions in the panel: "Why isn't the worker consuming messag
 - the floating "Nexus Assistant" panel in the bottom-right corner;
 - the "Ask AI: effect & impact" button on each parameter card (to ask about a single parameter).
 
-<!-- SCREENSHOT: settings-config -->
+![settings-config](/images/settings-config.png)
 
 **What it can do**:
 
@@ -98,7 +98,7 @@ Example suggested questions in the panel: "I want to cut usage cost", "Conversat
 
 **Entry**: sidebar "Settings" → "Audit Trail" → the "Nexus Assistant" button in the bottom-right corner.
 
-<!-- SCREENSHOT: settings-audit -->
+![settings-audit](/images/settings-audit.png)
 
 **What it can do**:
 

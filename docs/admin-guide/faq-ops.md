@@ -30,7 +30,7 @@ sync:
 | 备份、制品同步失败 | 部署机上 `nexus-cli` | 《配置管理》《部署与升级》 |
 | Logo / 品牌改了不生效 | 品牌配置 + 强刷浏览器 | 本章「品牌与 Logo」 |
 
-<!-- SCREENSHOT: admin-service-status -->
+![admin-service-status](/images/admin-service-status.png)
 
 ## 服务与运维
 
@@ -155,7 +155,7 @@ nexus-cli service start --web         # 启动指定服务
 | **配置助手** | 「配置管理」页 | 某个配置项作用、改哪个能生效、是否需要重启 | 涉及改动仍需你确认后执行 |
 | **审计助手** | 「审计日志」页 | 谁在什么时候做了什么、按人 / 时间 / 操作检索 | 只读检索，不改数据 |
 
-<!-- SCREENSHOT: ops -->
+![ops](/images/ops.png)
 
 ::: warning
 运维助手只做诊断——查状态、读日志、给排查思路。它**不会**替你重启或停止服务；这些有风险的操作仍需你在服务卡片上手动点按钮并二次确认。

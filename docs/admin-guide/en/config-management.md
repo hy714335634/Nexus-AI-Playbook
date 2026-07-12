@@ -28,7 +28,7 @@ The top of the page offers quick links to three related areas:
 - **Model Catalog** — edit the list of available models (saves take effect immediately after testing)
 - **Browser Extension** — manage Chrome extension devices
 
-<!-- SCREENSHOT: settings-config -->
+![settings-config](/images/settings-config.png)
 
 ## Interface Overview
 
@@ -72,7 +72,7 @@ The category tabs group the underlying sections into four major areas so you can
 | **Observability & Logs** | Trace sampling rate, data capture granularity, log level, audit & ops alerts |
 | **Others** | Config groups not placed in the categories above |
 
-<!-- SCREENSHOT: settings-config-fields -->
+![settings-config](/images/settings-config.png)
 
 ## Editing and Saving Configuration
 
@@ -110,7 +110,7 @@ Each parameter card has a「History」button to view that parameter's change log
 
 The「Config Doctor」button at the top scans the current configuration and lists potential issues (such as out-of-range values, conflicts, or better recommendations). Each finding has a「Locate parameter」action that jumps to the matching field. Results are cached, so reopening the panel won't re-scan unless you rescan manually.
 
-<!-- SCREENSHOT: config-doctor -->
+![settings-config](/images/settings-config.png)
 
 ## Export and Import
 
@@ -150,7 +150,7 @@ Click the floating「Nexus Assistant」button to open the panel, which can toggl
 - What is prompt caching, should I enable it
 - Which parameters require a service restart when changed
 
-<!-- SCREENSHOT: config-helper -->
+![settings-config](/images/settings-config.png)
 
 ::: warning
 The assistant only explains, searches, and suggests draft changes — it **does not save or restart for you**. All changes still require you to click「Save」and confirm in the main interface.

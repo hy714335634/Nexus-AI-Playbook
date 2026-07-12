@@ -17,7 +17,7 @@ sync:
 本页只展示**用量**（调用次数、Token 消耗、配额），不展示美元金额。底层模型价格经常变动，为避免误导，这里不做费用换算——你可以把 Token 消耗作为成本归因的基础数据，再按自己的合同价格核算。
 :::
 
-<!-- SCREENSHOT: admin-billing -->
+![admin-billing](/images/admin-billing.png)
 
 ## 打开用量报告
 
@@ -65,7 +65,7 @@ KPI 下方是**输入 / 输出占比**条，直观显示这个月的 Token 花�
   - 点击任意一行（或行尾的外链图标）进入该用户的**用量与配额详情页**。
 - **Top 项目消耗**：按项目汇总 Token 消耗，分页显示（每页 5 条）。
 
-<!-- SCREENSHOT: admin-billing-usage -->
+![admin-billing](/images/admin-billing.png)
 
 ## 查看单个用户的用量与配额
 

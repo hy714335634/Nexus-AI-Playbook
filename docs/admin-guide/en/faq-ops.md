@@ -30,7 +30,7 @@ When something goes wrong, these three steps are usually the fastest path:
 | Backup or artifact sync fails | `nexus-cli` on the deploy host | Configuration Management / Deployment & Upgrade |
 | Logo / branding change didn't take effect | Branding config + hard-refresh browser | "Branding & Logo" in this chapter |
 
-<!-- SCREENSHOT: admin-service-status -->
+![admin-service-status](/images/admin-service-status.png)
 
 ## Services & Operations
 
@@ -155,7 +155,7 @@ Every management page has an on-hand AI helper, so you can ask in natural langua
 | **Config Helper** | Configuration Management page | What a setting does, which one to change for an effect, whether a restart is needed | Any change still requires your confirmation to run |
 | **Audit Helper** | Audit Log page | Who did what and when, searchable by person / time / action | Read-only search — it doesn't modify data |
 
-<!-- SCREENSHOT: ops -->
+![ops](/images/ops.png)
 
 ::: warning
 The Ops Helper only diagnoses — checking status, reading logs, suggesting where to look. It **won't** restart or stop services for you; those risky actions still require you to click the button on the service card and confirm.

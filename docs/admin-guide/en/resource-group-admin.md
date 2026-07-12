@@ -29,7 +29,7 @@ The top of the page shows an overview bar (total folders, total resources, share
 
 Each card shows the folder name, resource count, and member count, plus a badge: **Shared** (has other members) or **Private** (creator only). A search box and sort control (Recent / Name / Resources / Members) sit at the top.
 
-<!-- SCREENSHOT: resource-groups -->
+![resource-groups](/images/resource-groups.png)
 
 ## Permissions and Resource Types
 
@@ -62,7 +62,6 @@ A folder can hold these resource types:
 
 You automatically become the **owner** of the folder you create.
 
-<!-- SCREENSHOT: resource-groups-create -->
 
 ## Manage Resources in a Folder
 
@@ -93,7 +92,6 @@ If a resource in a folder is deleted elsewhere, the platform automatically clear
 
 The grantee then sees the folder under their own "Shared with me". To revoke, click the remove button next to the member in the access list.
 
-<!-- SCREENSHOT: resource-groups-share -->
 
 ::: info
 The access list (who has permission) is **visible only to the folder's owner and administrators**. Regular users the folder is shared with see only the resources inside it, not who else has access — this is intentional privacy protection.

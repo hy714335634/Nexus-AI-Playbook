@@ -27,13 +27,13 @@ sync:
 
 侧边栏「业务集成」→ 进入 `/integration`。页面顶部以四张卡片呈现上述子模块，点击任一卡片进入对应的管理页。
 
-<!-- SCREENSHOT: integration -->
+![integration-connectors](/images/integration-connectors.png)
 
 ## 数据连接
 
 「数据连接」让你把外部数据源登记为**连接器**，绑定访问凭证后供 Agent 在运行时查询。平台对每类数据源都预置了安全默认值（只读、行数上限、危险语句拦截、字段脱敏），无需逐个连接手工加固。
 
-<!-- SCREENSHOT: integration-connectors -->
+![integration-connectors](/images/integration-connectors.png)
 
 ### 支持的数据源类型
 
@@ -107,7 +107,7 @@ sync:
 
 「密钥管理」集中保管接入外部系统所需的敏感凭证（API 密钥、数据库账号密码、云凭证等）。密钥登记一次，即可被数据连接和需要凭证的工具**引用**，无需在多处重复填写明文。
 
-<!-- SCREENSHOT: integration-keys -->
+![integration-keys](/images/integration-keys.png)
 
 页面右上角为**新建密钥**，列表中每张密钥卡片显示：名称、类型、被引用次数、描述片段；顶部**搜索密钥**框（占位符「搜索密钥...」）按名称检索。
 
@@ -161,13 +161,13 @@ sync:
 
 「资产模版」集中管理可复用的模板文件（PPT / Word / Excel / HTML / PDF、图片等），供生成类任务套用。左侧可按归属（全部 / 我创建的 / 共享给我）和类别（PPT / Excel / 文档 / HTML / 其他）过滤，中央为拖拽上传区（**选择文件** / **选择文件夹**），右上角**✨ AI** 按钮可借助 AI 辅助生成或整理模板。
 
-<!-- SCREENSHOT: integration-templates -->
+![integration-templates](/images/integration-templates.png)
 
 ## 业务指示
 
 「业务指示」维护面向 Agent 的全局业务指示节点。右上角提供**新建节点**、**自然语言创建架构**、**从文档导入**、**刷新**；右下角浮动按钮提供**手动创建**与**AI 智能创建**——用自然语言描述需求即可让 AI 帮你搭建指示结构。
 
-<!-- SCREENSHOT: integration-directives -->
+![integration-directives](/images/integration-directives.png)
 
 ## MCP 服务
 

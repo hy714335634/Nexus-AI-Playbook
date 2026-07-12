@@ -205,7 +205,7 @@ nexus-cli deploy list
 
 部署完成后，平台内也提供**服务状态**页面，可在侧边栏「服务状态」中查看各服务是否正常运行。
 
-<!-- SCREENSHOT: admin-service-status -->
+![admin-service-status](/images/admin-service-status.png)
 
 ## 服务管理
 
@@ -241,7 +241,7 @@ nexus-cli service start --mcp
 
 运维助手的完整能力见《内置 AI 助手（管理员）》与《服务状态监控》。
 
-<!-- SCREENSHOT: ops -->
+![ops](/images/ops.png)
 
 ## 升级到新版本
 

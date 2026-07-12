@@ -205,7 +205,7 @@ nexus-cli deploy list
 
 After deployment, the platform also provides a **Service Status** page — check whether each service is running under "Service Status" in the sidebar.
 
-<!-- SCREENSHOT: admin-service-status -->
+![admin-service-status](/images/admin-service-status.png)
 
 ## Service Management
 
@@ -241,7 +241,7 @@ The in-product **Service Status** page comes with an **Ops Assistant**. After de
 
 See **Built-in AI Assistants (Admin)** and **Service Status Monitoring** for the Ops Assistant's full capabilities.
 
-<!-- SCREENSHOT: ops -->
+![ops](/images/ops.png)
 
 ## Upgrading to a New Version
 

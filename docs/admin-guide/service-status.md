@@ -23,7 +23,7 @@ sync:
 
 页面顶部提供一个到「配置管理」的快捷链接，方便你在排查后直接去调参数。
 
-<!-- SCREENSHOT: admin-service-status -->
+![admin-service-status](/images/admin-service-status.png)
 
 ## 界面速览
 
@@ -143,7 +143,7 @@ sync:
 
 助手以流式方式作答，会根据问题给出**结构化结果**。例如问「当前各服务运行状态如何？」，它会返回一张服务状态表（服务 / 状态 / PID / 端口 / CPU / 内存），把 8 个服务的实时指标一次列清。
 
-<!-- SCREENSHOT: ops-helper -->
+![admin-service-status](/images/admin-service-status.png)
 
 ::: warning
 运维助手只做**只读诊断**——查状态、读日志、给排查思路。它**不会**替你重启或停止服务；这些操作仍需你在服务卡片上手动点按钮并承担确认责任。

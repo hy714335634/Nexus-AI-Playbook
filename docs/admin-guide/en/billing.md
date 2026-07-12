@@ -17,7 +17,7 @@ sync:
 This page shows **usage only** (invocations, token consumption, quotas) — not dollar amounts. Underlying model prices change often, so no cost conversion is done here to avoid being misleading. Treat token consumption as the base data for cost attribution, then apply your own contract rates.
 :::
 
-<!-- SCREENSHOT: admin-billing -->
+![admin-billing](/images/admin-billing.png)
 
 ## Open the usage report
 
@@ -65,7 +65,7 @@ Use it to spot which model is the main cost driver, then decide whether to move 
   - Click any row (or the external-link icon at the end) to open that user's **usage and quota detail page**.
 - **Top projects**: aggregates token consumption by project, paginated (5 per page).
 
-<!-- SCREENSHOT: admin-billing-usage -->
+![admin-billing](/images/admin-billing.png)
 
 ## View a single user's usage and quota
 

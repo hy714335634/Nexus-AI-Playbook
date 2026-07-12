@@ -27,7 +27,7 @@ sync:
 
 进入后左上角有「返回配置管理」链接可退回。
 
-<!-- SCREENSHOT: settings-model-catalog -->
+![settings-model-catalog](/images/settings-model-catalog.png)
 
 ## 页面构成
 
@@ -122,7 +122,7 @@ nexus-cli model reconcile
 
 配置管理页顶部的「想调什么，直接说」支持自然语言搜参数（如"降低使用成本""哪些改了要重启"）。若某次搜索零命中，换个关键词再试即可。
 
-<!-- SCREENSHOT: settings-config -->
+![settings-config](/images/settings-config.png)
 
 ## 查看模型用量
 
@@ -130,7 +130,7 @@ nexus-cli model reconcile
 
 - 侧边栏「管理」→「用量报告」（或 `/admin/billing`），查看「按模型消耗」，含调用次数与输入 / 输出 Token。
 
-<!-- SCREENSHOT: admin-billing -->
+![admin-billing](/images/admin-billing.png)
 
 ## 常见问题
 
