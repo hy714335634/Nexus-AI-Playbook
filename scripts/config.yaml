@@ -17,7 +17,7 @@ mappings:
   - web/app/(main)/apps/**
   - web/components/apps/**
   docs:
-  - path: using/app-center.md
+  - path: user-guide/app-center.md
     prompt: feature-update.md
     model: default
   screenshots:
@@ -33,10 +33,10 @@ mappings:
   - web/app/(main)/agents/**
   - web/components/agents/**
   docs:
-  - path: using/create-agent.md
+  - path: user-guide/create-agent.md
     prompt: feature-update.md
     model: default
-  - path: using/manage-agents.md
+  - path: user-guide/manage-agents.md
     prompt: feature-update.md
     model: default
   screenshots:
@@ -52,7 +52,7 @@ mappings:
   - web/app/(main)/chat/**
   - web/components/chat/**
   docs:
-  - path: using/chat.md
+  - path: user-guide/chat.md
     prompt: feature-update.md
     model: default
   screenshots:
@@ -68,11 +68,8 @@ mappings:
   - web/app/(main)/settings/**
   - web/components/config/**
   docs:
-  - path: admin/config-management.md
+  - path: admin-guide/config-management.md
     prompt: config-reference.md
-    model: default
-  - path: reference/config-options.md
-    prompt: reference.md
     model: default
   screenshots:
   - config-management
@@ -84,11 +81,8 @@ mappings:
   - web/app/(main)/ability/skills/**
   - web/components/skills/**
   docs:
-  - path: using/skills.md
+  - path: user-guide/skills.md
     prompt: feature-update.md
-    model: default
-  - path: features/skills-system.md
-    prompt: feature-overview.md
     model: default
   screenshots:
   - skills
@@ -100,11 +94,8 @@ mappings:
   - agents/system_agents/tool_build_workflow/**
   - web/app/(main)/ability/tools/**
   docs:
-  - path: using/tools.md
+  - path: user-guide/tools.md
     prompt: feature-update.md
-    model: default
-  - path: features/tools-toolsets.md
-    prompt: feature-overview.md
     model: default
   screenshots:
   - tools
@@ -116,10 +107,10 @@ mappings:
   - config/data_connector.yaml
   - web/app/(main)/integration/**
   docs:
-  - path: using/integration-center.md
+  - path: user-guide/integration-center.md
     prompt: feature-update.md
     model: default
-  - path: integrations/data-connectors.md
+  - path: admin-guide/integrations-admin.md
     prompt: integration-guide.md
     model: default
   screenshots:
@@ -131,11 +122,8 @@ mappings:
   - nexus_utils/browser/**
   - web/app/(main)/settings/browser-extension/**
   docs:
-  - path: using/browser-extension.md
+  - path: user-guide/browser-extension.md
     prompt: feature-update.md
-    model: default
-  - path: integrations/browser-extension-integration.md
-    prompt: integration-guide.md
     model: default
   screenshots:
   - browser-extension
@@ -148,7 +136,7 @@ mappings:
   - config/knowledge_graph.yaml
   - web/app/(main)/home/**
   docs:
-  - path: using/avatar-space.md
+  - path: user-guide/avatar-space.md
     prompt: feature-update.md
     model: default
   screenshots:
@@ -166,16 +154,16 @@ mappings:
   - web/app/(main)/admin/**
   - web/app/(main)/ops/**
   docs:
-  - path: admin/users-permissions.md
+  - path: admin-guide/users-permissions.md
     prompt: feature-update.md
     model: default
-  - path: admin/audit.md
+  - path: admin-guide/audit.md
     prompt: feature-update.md
     model: default
-  - path: admin/billing.md
+  - path: admin-guide/billing.md
     prompt: feature-update.md
     model: default
-  - path: admin/service-status.md
+  - path: admin-guide/service-status.md
     prompt: feature-update.md
     model: default
   screenshots:
@@ -184,12 +172,20 @@ mappings:
   - billing
   - service-status
 chapters:
-  getting-started:
-    title_zh: 快速开始
-    title_en: Getting Started
-    output_dir: getting-started
-    prompt_default: feature-overview.md
+  user-guide:
+    title_zh: 用户手册
+    title_en: User Guide
+    output_dir: user-guide
+    prompt_default: user-guide.md
     docs:
+    - slug: first-login
+      title_zh: 登录与界面导览
+      title_en: Sign In & UI Tour
+      sources:
+      - web/app/(auth)/login/**
+      - web/src/components/layout/sidebar.tsx
+      extra_context:
+      - scripts/state/explore/01-dashboard-home.md
     - slug: quickstart
       title_zh: 5 分钟快速上手
       title_en: Quickstart
@@ -197,41 +193,12 @@ chapters:
       - agents/system_agents/magician.py
       - nexus-cli
       - README.md
-    - slug: installation
-      title_zh: 安装 Nexus-AI
-      title_en: Installation
-      sources:
-      - setup_env_alinux2023.sh
-      - pyproject.toml
-      - requirements.txt
-      - README.md
-    - slug: aws-setup
-      title_zh: AWS 环境准备
-      title_en: AWS Setup
-      sources:
-      - infrastructure/cloudformation/**
-      - infrastructure/userdata/**
-      - config/default_config.yaml
-      - README.md
-    - slug: updating
-      title_zh: 升级与卸载
-      title_en: Updating & Uninstalling
-      sources:
-      - nexus-cli
-      - infrastructure/release/**
-      - README.md
     - slug: learning-path
       title_zh: 学习路径
       title_en: Learning Path
       sources:
       - README.md
       - CLAUDE.md
-  using:
-    title_zh: 使用 Nexus-AI
-    title_en: Using Nexus-AI
-    output_dir: using
-    prompt_default: feature-update.md
-    docs:
     - slug: dashboard
       title_zh: 工作台
       title_en: Dashboard
@@ -310,15 +277,6 @@ chapters:
       - web/app/(main)/ability/tools/**
       - tools/system_tools/agent_build_workflow/tool_template_provider.py
       - nexus_utils/tool_path.py
-      extra_context:
-      - scripts/state/explore/04-ability-integration.md
-    - slug: mcp
-      title_zh: MCP 服务器
-      title_en: MCP Server
-      sources:
-      - nexus_utils/mcp/**
-      - config/mcp/**
-      - web/app/(main)/ability/mcp/**
       extra_context:
       - scripts/state/explore/04-ability-integration.md
     - slug: skills
@@ -408,165 +366,6 @@ chapters:
       - web/app/(main)/troubleshoot/**
       extra_context:
       - scripts/state/explore/05-groups-events-evolution.md
-  features:
-    title_zh: 功能特性
-    title_en: Features
-    output_dir: features
-    prompt_default: feature-overview.md
-    docs:
-    - slug: tools-toolsets
-      title_zh: 工具与工具集
-      title_en: Tools & Toolsets
-      sources:
-      - tools/system_tools/agent_build_workflow/tool_template_provider.py
-      - nexus_utils/tool_path.py
-      - api/v2/routers/agent_tools.py
-      - docs/features/**
-    - slug: skills-system
-      title_zh: 技能系统
-      title_en: Skills System
-      sources:
-      - api/v2/routers/skills.py
-      - agents/system_agents/skill_build_workflow/**
-    - slug: agent-factory
-      title_zh: Agent Factory
-      title_en: Agent Factory
-      sources:
-      - nexus_utils/agent_factory.py
-      - nexus_utils/safe_agent_factory.py
-    - slug: prompt-templates
-      title_zh: 提示词模板
-      title_en: Prompt Templates
-      sources:
-      - nexus_utils/prompts_manager.py
-      - prompts/template_prompts/**
-      - prompts/system_agents_prompts/helper_agents/**
-    - slug: sandbox
-      title_zh: Sandbox 沙箱
-      title_en: Sandbox Runtime
-      sources:
-      - nexus_utils/sandbox/controller.py
-      - nexus_utils/sandbox/models.py
-      - nexus_utils/sandbox/config.py
-      - docs/features/**
-    - slug: workflow-engine
-      title_zh: 工作流引擎
-      title_en: Workflow Engine
-      sources:
-      - nexus_utils/workflow/engine_v2.py
-      - config/workflows.yaml
-      - nexus_utils/workflow_config.py
-    - slug: multi-agent
-      title_zh: 多 Agent 协作
-      title_en: Multi-Agent Collaboration
-      sources:
-      - agents/system_agents/**
-      - config/workflows.yaml
-    - slug: stream-relay
-      title_zh: 流式响应中继
-      title_en: Stream Relay
-      sources:
-      - api/v2/routers/sessions.py
-      - api/v2/services/agent_runtime_service.py
-      - api/v2/database/valkey.py
-    - slug: event-scheduler
-      title_zh: 事件调度器
-      title_en: Event Scheduler
-      sources:
-      - nexus_utils/event_scheduler/**
-      - config/eventschedule_config.yaml
-    - slug: bridge
-      title_zh: Bridge 多连接
-      title_en: Bridge Multi-Connection
-      sources:
-      - nexus_utils/bridge/main.py
-      - nexus_utils/bridge/client.py
-      - nexus_utils/bridge/connection_store.py
-      - docs/architecture/**
-    - slug: observability
-      title_zh: 可观测性
-      title_en: Observability
-      sources:
-      - nexus_utils/observability/**
-      - config/logging_config.yaml
-      - config/otel-collector-config.yaml
-    - slug: metrics-billing
-      title_zh: 指标与计费
-      title_en: Metrics & Billing
-      sources:
-      - api/v2/routers/admin_billing.py
-      - nexus_utils/observability/**
-    - slug: logging
-      title_zh: 日志系统
-      title_en: Logging
-      sources:
-      - config/logging_config.yaml
-      - nexus_utils/hooks/**
-    - slug: app-center-internals
-      title_zh: 应用中心内部机制
-      title_en: App Center Internals
-      sources:
-      - api/v2/routers/apps.py
-      - api/v2/services/app_service.py
-      - agents/system_agents/application_update_workflow/**
-  integrations:
-    title_zh: 集成
-    title_en: Integrations
-    output_dir: integrations
-    prompt_default: integration-guide.md
-    docs:
-    - slug: overview
-      title_zh: 集成总览
-      title_en: Overview
-      sources:
-      - config/default_config.yaml
-      - README.md
-    - slug: aws-bedrock
-      title_zh: AWS Bedrock 模型接入
-      title_en: AWS Bedrock
-      sources:
-      - nexus_utils/agent_factory.py
-      - config/model_catalog.yaml
-    - slug: mcp-clients
-      title_zh: 外部 MCP 服务器
-      title_en: MCP Clients
-      sources:
-      - nexus_utils/mcp/mcp_client/**
-      - config/mcp/**
-    - slug: mcp-server
-      title_zh: Agent as MCP Tool
-      title_en: MCP Server
-      sources:
-      - nexus_utils/mcp/mcp_server/**
-    - slug: sso-saml
-      title_zh: SSO (SAML 2.0)
-      title_en: SSO (SAML 2.0)
-      sources:
-      - api/v2/auth/**
-    - slug: data-stores
-      title_zh: 数据存储
-      title_en: Data Stores
-      sources:
-      - api/v2/database/**
-      - config/default_config.yaml
-    - slug: data-connectors
-      title_zh: 数据连接器
-      title_en: Data Connectors
-      sources:
-      - nexus_utils/data_connector/**
-      - config/data_connector.yaml
-    - slug: browser-extension-integration
-      title_zh: 浏览器扩展集成
-      title_en: Browser Extension Integration
-      sources:
-      - nexus_utils/browser/**
-      - api/v2/routers/browser.py
-  guides:
-    title_zh: 使用指南
-    title_en: Guides & Tutorials
-    output_dir: guides
-    prompt_default: tutorial.md
-    docs:
     - slug: tips
       title_zh: 技巧与最佳实践
       title_en: Tips & Best Practices
@@ -595,194 +394,35 @@ chapters:
       sources:
       - agents/generated_agents/**
       - prompts/generated_agents_prompts/**
-    - slug: use-mcp-with-nexus
-      title_zh: 在 Nexus-AI 中使用 MCP
-      title_en: Use MCP with Nexus-AI
-      sources:
-      - nexus_utils/mcp/**
-      - config/mcp/**
     - slug: team-collaboration
       title_zh: 团队协作
       title_en: Team Collaboration
       sources:
       - api/v2/routers/resource_groups.py
       - api/v2/routers/groups.py
-  developer:
-    title_zh: 开发者指南
-    title_en: Developer Guide
-    output_dir: developer
-    prompt_default: developer-guide.md
-    docs:
-    - slug: contributing
-      title_zh: 贡献指南
-      title_en: Contributing
-      sources:
-      - CONTRIBUTING.md
-      - CLAUDE.md
-      - pyproject.toml
-    - slug: architecture-overview
-      title_zh: 架构总览
-      title_en: Architecture Overview
-      sources:
-      - CLAUDE.md
-      - README.md
-      - docs/architecture/**
-      - api/v2/main.py
-      - worker/main.py
-    - slug: api-layer
-      title_zh: API 层架构
-      title_en: API Layer
-      sources:
-      - api/v2/main.py
-      - api/v2/config.py
-      - api/v2/database/aurora.py
-      - api/v2/database/valkey.py
-      - api/v2/database/dynamodb.py
-      - docs/api/**
-    - slug: worker
-      title_zh: Worker 架构
-      title_en: Worker
-      sources:
-      - worker/main.py
-      - worker/handlers/build_handler.py
-      - config/workflows.yaml
-    - slug: stage-engine
-      title_zh: Stage 引擎
-      title_en: Stage Engine
-      sources:
-      - nexus_utils/workflow/engine_v2.py
-      - config/workflows.yaml
-    - slug: adding-agents
-      title_zh: 添加 Agent
-      title_en: Adding Agents
-      sources:
-      - agents/template_agents/**
-      - nexus_utils/agent_factory.py
-    - slug: adding-tools
-      title_zh: 添加工具
-      title_en: Adding Tools
-      sources:
-      - tools/system_tools/agent_build_workflow/tool_template_provider.py
-      - nexus_utils/tool_path.py
-      - docs/development/**
-    - slug: adding-skills
-      title_zh: 添加技能
-      title_en: Adding Skills
-      sources:
-      - nexus_utils/skill/models.py
-      - nexus_utils/skill/manager.py
-      - docs/development/**
-    - slug: session-storage
-      title_zh: 会话存储
-      title_en: Session Storage
-      sources:
-      - api/v2/routers/sessions.py
-      - api/v2/services/agent_runtime_service.py
-      - api/v2/database/aurora.py
-      - api/v2/database/valkey.py
-    - slug: dynamic-prompt
-      title_zh: 动态 Prompt 构建
-      title_en: Dynamic Prompt Build
-      sources:
-      - nexus_utils/prompts_manager.py
-      - prompts/dynamic_agents_prompts/**
-  reference:
-    title_zh: 参考
-    title_en: Reference
-    output_dir: reference
-    prompt_default: reference.md
-    docs:
-    - slug: cli-commands
-      title_zh: nexus-cli 命令
-      title_en: nexus-cli Commands
-      sources:
-      - nexus-cli
-      - nexus_utils/cli/main.py
-      - nexus_utils/cli/managers/service_manager.py
-      - docs/operations/nexus-cli-usage.md
-    - slug: config-options
-      title_zh: 配置项
-      title_en: Configuration Options
-      sources:
-      - config/default_config.yaml
-      - config/service_config.yaml
-      - config/*.yaml
-      - nexus_utils/config_loader.py
-    - slug: environment-variables
-      title_zh: 环境变量
-      title_en: Environment Variables
-      sources:
-      - nexus_utils/config_loader.py
-      - api/v2/config.py
-    - slug: api-endpoints
-      title_zh: API 端点
-      title_en: API Endpoints
-      sources:
-      - api/v2/main.py
-      - api/v2/routers/__init__.py
-      - docs/api/**
-    - slug: deploy-params
-      title_zh: 部署参数
-      title_en: Deployment Parameters
-      sources:
-      - config/deploy.yaml.template
-      - infrastructure/release/README.md
-      - docs/deployment/**
-    - slug: iam-policies
-      title_zh: IAM 权限
-      title_en: IAM Policies
-      sources:
-      - docs/deployment/IAM_POLICIES.md
-      - infrastructure/cloudformation/**
-    - slug: model-catalog
-      title_zh: 模型目录
-      title_en: Model Catalog
-      sources:
-      - config/model_catalog.yaml
-      - nexus_utils/agent_factory.py
-      extra_context:
-      - scripts/state/explore/06-admin-settings-helpers.md
-    - slug: glossary
-      title_zh: 术语表
-      title_en: Glossary
-      sources:
-      - CLAUDE.md
-      - README.md
-    - slug: faq
-      title_zh: FAQ 与故障排查
-      title_en: FAQ & Troubleshooting
-      sources:
-      - CLAUDE.md
-      - README.md
-    - slug: version-history
-      title_zh: 版本历史
-      title_en: Version History
-      sources:
-      - CHANGELOG.md
-      - docs/deployment/release-delivery.md
-  admin:
-    title_zh: 管理员指南
-    title_en: Admin Guide
-    output_dir: admin
-    prompt_default: feature-update.md
+  admin-guide:
+    title_zh: 管理员手册
+    title_en: Administrator Guide
+    output_dir: admin-guide
+    prompt_default: admin-guide.md
     docs:
     - slug: deploy-upgrade
       title_zh: 部署与升级
-      title_en: Deploy & Upgrade
+      title_en: Deployment & Upgrade
       sources:
-      - infrastructure/**
       - nexus-cli
+      - config/deploy.yaml.template
+      - infrastructure/release/README.md
       - docs/deployment/**
-      extra_context:
-      - scripts/state/explore/06-admin-settings-helpers.md
+      prompt: admin-guide.md
     - slug: config-management
       title_zh: 配置管理
       title_en: Configuration Management
       sources:
-      - api/v2/routers/config.py
       - api/v2/config_registry.py
-      - web/app/(main)/settings/config/**
-      - web/components/config/**
+      - web/components/config/ConfigManager.tsx
+      - config/default_config.yaml
+      prompt: admin-guide.md
       extra_context:
       - scripts/state/explore/06-admin-settings-helpers.md
     - slug: users-permissions
@@ -791,55 +431,99 @@ chapters:
       sources:
       - api/v2/routers/users.py
       - api/v2/routers/policies.py
-      - api/v2/routers/groups.py
       - web/app/(main)/users/**
+      prompt: admin-guide.md
       extra_context:
       - scripts/state/explore/05-groups-events-evolution.md
     - slug: resource-group-admin
       title_zh: 资源组管理
-      title_en: Resource Group Admin
+      title_en: Resource Group Administration
       sources:
       - api/v2/routers/resource_groups.py
       - api/v2/routers/resource_shares.py
+      - web/app/(main)/resource-groups/**
+      prompt: admin-guide.md
+      extra_context:
+      - scripts/state/explore/05-groups-events-evolution.md
     - slug: audit
       title_zh: 审计追踪
       title_en: Audit Trail
       sources:
       - api/v2/routers/audit.py
       - web/app/(main)/settings/audit/**
+      prompt: admin-guide.md
       extra_context:
       - scripts/state/explore/06-admin-settings-helpers.md
     - slug: billing
       title_zh: 用量与计费
-      title_en: Billing
+      title_en: Usage & Billing
       sources:
       - api/v2/routers/admin_billing.py
       - web/app/(main)/admin/billing/**
+      prompt: admin-guide.md
       extra_context:
       - scripts/state/explore/06-admin-settings-helpers.md
     - slug: service-status
       title_zh: 服务状态监控
-      title_en: Service Status
+      title_en: Service Status Monitoring
       sources:
       - api/v2/routers/admin_services.py
-      - api/v2/routers/observability.py
       - web/app/(main)/admin/service-status/**
+      prompt: admin-guide.md
       extra_context:
       - scripts/state/explore/06-admin-settings-helpers.md
-    - slug: ops-assistant
-      title_zh: 运维助手
-      title_en: Ops Assistant
+    - slug: helper-agents
+      title_zh: 内置 AI 助手（管理员）
+      title_en: Built-in AI Assistants (Admin)
       sources:
-      - prompts/system_agents_prompts/helper_agents/ops_helper.yaml
-      - web/app/(main)/ops/**
+      - config/default_config.yaml
+      - prompts/system_agents_prompts/helper_agents/**
+      prompt: admin-guide.md
       extra_context:
       - scripts/state/explore/06-admin-settings-helpers.md
-    - slug: release-notes
-      title_zh: 发布说明
-      title_en: Release Notes
+    - slug: model-access
+      title_zh: 模型目录与接入
+      title_en: Model Catalog & Access
       sources:
-      - CHANGELOG.md
-      - docs/deployment/release-delivery.md
+      - config/model_catalog.yaml
+      - web/app/(main)/settings/model-catalog/**
+      prompt: admin-guide.md
+      extra_context:
+      - scripts/state/explore/06-admin-settings-helpers.md
+    - slug: mcp
+      title_zh: MCP 服务管理
+      title_en: MCP Service Management
+      sources:
+      - nexus_utils/mcp/**
+      - config/mcp/**
+      - web/app/(main)/ability/mcp/**
+      extra_context:
+      - scripts/state/explore/04-ability-integration.md
+      prompt: admin-guide.md
+    - slug: sso-auth
+      title_zh: 登录与 SSO
+      title_en: Login & SSO
+      sources:
+      - api/v2/auth/**
+      - config/app_manifest.yaml
+      prompt: admin-guide.md
+    - slug: integrations-admin
+      title_zh: 外部集成管理
+      title_en: External Integrations
+      sources:
+      - config/mcp/**
+      - config/data_connector.yaml
+      - api/v2/routers/connectors.py
+      prompt: admin-guide.md
+      extra_context:
+      - scripts/state/explore/04-ability-integration.md
+    - slug: faq-ops
+      title_zh: 常见问题与排障
+      title_en: FAQ & Troubleshooting
+      sources:
+      - docs/operations/**
+      - README.md
+      prompt: admin-guide.md
 run:
   signatures_dir: signatures
   runs_dir: runs

@@ -1,194 +1,157 @@
-# Screenshot targets rebuilt from Phase A batch walkthroughs (01-06)
-# All targets use stable direct URLs verified on d3sx15z6kvxyn3.cloudfront.net
-# EXCLUDED: /build/*, /demos/chat, /pfr/iterations (known broken), dialog-dependent shots
 targets:
-  # Batch 1: Login, Dashboard, My Home, Spotlight
-  - name: "login"
-    url: "/login"
-    output: "login.png"
-    wait_for_selector: "button:has-text('登录')"
-
-  - name: "dashboard"
-    url: "/"
-    output: "dashboard.png"
-    wait_for_selector: "h1:has-text('工作台')"
-
-  - name: "home-avatar"
-    url: "/home"
-    output: "home-avatar.png"
-    wait_for_selector: "body"
-
-  # Batch 2: Agents, Chat, Projects
-  - name: "agents-list"
-    url: "/agents"
-    output: "agents-list.png"
-    wait_for_selector: "h1:has-text('Agents')"
-
-  - name: "agents-new"
-    url: "/agents/new"
-    output: "agents-new.png"
-    wait_for_selector: "h1:has-text('创建 Agent')"
-
-  - name: "agents-network"
-    url: "/agents/network"
-    output: "agents-network.png"
-    wait_for_selector: "h1:has-text('交互网络')"
-
-  - name: "agents-dialog"
-    url: "/agents/dialog"
-    output: "agents-dialog.png"
-    wait_for_selector: "body"
-
-  - name: "chat"
-    url: "/chat"
-    output: "chat.png"
-    wait_for_selector: "h1:has-text('会话')"
-
-  # Batch 3: Projects, Apps
-  - name: "projects-list"
-    url: "/projects"
-    output: "projects-list.png"
-    wait_for_selector: "h1:has-text('工坊')"
-
-  - name: "apps-list"
-    url: "/apps"
-    output: "apps-list.png"
-    wait_for_selector: "h1:has-text('应用中心')"
-
-  # Batch 4: Ability center, Integration
-  - name: "ability-tools"
-    url: "/ability/tools"
-    output: "ability-tools.png"
-    wait_for_selector: "h1:has-text('能力工具')"
-
-  - name: "ability-mcp"
-    url: "/ability/mcp"
-    output: "ability-mcp.png"
-    wait_for_selector: "h1:has-text('MCP 服务器管理')"
-
-  - name: "ability-skills"
-    url: "/ability/skills"
-    output: "ability-skills.png"
-    wait_for_selector: "h1:has-text('Skills 管理')"
-
-  - name: "integration-templates"
-    url: "/integration"
-    output: "integration-templates.png"
-    wait_for_selector: "h2:has-text('业务集成')"
-
-  - name: "integration-connectors"
-    url: "/integration"
-    output: "integration-connectors.png"
-    wait_for_selector: "h2:has-text('业务集成')"
-
-  - name: "integration-keys"
-    url: "/integration"
-    output: "integration-keys.png"
-    wait_for_selector: "h2:has-text('业务集成')"
-
-  - name: "integration-directives"
-    url: "/integration"
-    output: "integration-directives.png"
-    wait_for_selector: "h2:has-text('业务集成')"
-
-  # Batch 5: Resource groups, Users, Events, Evolution
-  - name: "resource-groups"
-    url: "/resource-groups"
-    output: "resource-groups.png"
-    wait_for_selector: "h1:has-text('共享资源')"
-
-  - name: "users"
-    url: "/users"
-    output: "users.png"
-    wait_for_selector: "h1:has-text('用户管理')"
-
-  - name: "events"
-    url: "/events"
-    output: "events.png"
-    wait_for_selector: "h1:has-text('任务面板')"
-
-  - name: "evolution-submit"
-    url: "/evolution/submit"
-    output: "evolution-submit.png"
-    wait_for_selector: "body"
-
-  - name: "evolution-progress"
-    url: "/evolution/progress"
-    output: "evolution-progress.png"
-    wait_for_selector: "body"
-
-  - name: "evolution-agents"
-    url: "/evolution/agents"
-    output: "evolution-agents.png"
-    wait_for_selector: "body"
-
-  - name: "evolution-history"
-    url: "/evolution/history"
-    output: "evolution-history.png"
-    wait_for_selector: "body"
-
-  - name: "evolution-analytics"
-    url: "/evolution/analytics"
-    output: "evolution-analytics.png"
-    wait_for_selector: "body"
-
-  - name: "pfr-history"
-    url: "/pfr/history"
-    output: "pfr-history.png"
-    wait_for_selector: "body"
-
-  # Batch 6: Management, Ops, Admin, Settings
-  - name: "management"
-    url: "/management"
-    output: "management.png"
-    wait_for_selector: "h1:has-text('Agent 管理')"
-
-  - name: "ops"
-    url: "/ops"
-    output: "ops.png"
-    wait_for_selector: "h1:has-text('AgentOps 运维总览')"
-
-  - name: "analytics"
-    url: "/analytics"
-    output: "analytics.png"
-    wait_for_selector: "h1:has-text('业务洞察')"
-
-  - name: "admin-billing"
-    url: "/admin/billing"
-    output: "admin-billing.png"
-    wait_for_selector: "body"
-
-  - name: "admin-service-status"
-    url: "/admin/service-status"
-    output: "admin-service-status.png"
-    wait_for_selector: "h1:has-text('服务状态')"
-
-  - name: "settings-config"
-    url: "/settings/config"
-    output: "settings-config.png"
-    wait_for_selector: "h1:has-text('配置管理')"
-
-  - name: "settings-audit"
-    url: "/settings/audit"
-    output: "settings-audit.png"
-    wait_for_selector: "h1:has-text('审计追踪')"
-
-  - name: "settings-model-catalog"
-    url: "/settings/model-catalog"
-    output: "settings-model-catalog.png"
-    wait_for_selector: "h1:has-text('模型目录')"
-
-  - name: "settings-profile"
-    url: "/settings/profile"
-    output: "settings-profile.png"
-    wait_for_selector: "h2:has-text('admin')"
-
-  - name: "settings-browser-extension"
-    url: "/settings/browser-extension"
-    output: "settings-browser-extension.png"
-    wait_for_selector: "h1:has-text('浏览器扩展')"
-
-  - name: "settings-sharing"
-    url: "/settings/sharing"
-    output: "settings-sharing.png"
-    wait_for_selector: "h1:has-text('文件分享配置')"
+- name: login
+  url: /login
+  output: login.png
+  wait_for_selector: button:has-text('登录')
+- name: dashboard
+  url: /
+  output: dashboard.png
+  wait_for_selector: h1:has-text('工作台')
+- name: home-avatar
+  url: /home
+  output: home-avatar.png
+  wait_for_selector: body
+- name: agents-list
+  url: /agents
+  output: agents-list.png
+  wait_for_selector: h1:has-text('Agents')
+- name: agents-new
+  url: /agents/new
+  output: agents-new.png
+  wait_for_selector: h1:has-text('创建 Agent')
+- name: agents-network
+  url: /agents/network
+  output: agents-network.png
+  wait_for_selector: h1:has-text('交互网络')
+- name: agents-dialog
+  url: /agents/dialog
+  output: agents-dialog.png
+  wait_for_selector: body
+- name: chat
+  url: /chat
+  output: chat.png
+  wait_for_selector: h1:has-text('会话')
+- name: projects-list
+  url: /projects
+  output: projects-list.png
+  wait_for_selector: h1:has-text('工坊')
+- name: apps-list
+  url: /apps
+  output: apps-list.png
+  wait_for_selector: h1:has-text('应用中心')
+- name: ability-tools
+  url: /ability/tools
+  output: ability-tools.png
+  wait_for_selector: h1:has-text('能力工具')
+- name: ability-mcp
+  url: /ability/mcp
+  output: ability-mcp.png
+  wait_for_selector: h1:has-text('MCP 服务器管理')
+- name: ability-skills
+  url: /ability/skills
+  output: ability-skills.png
+  wait_for_selector: h1:has-text('Skills 管理')
+- name: integration-templates
+  url: /integration
+  output: integration-templates.png
+  wait_for_selector: h2:has-text('业务集成')
+- name: integration-connectors
+  url: /integration
+  output: integration-connectors.png
+  wait_for_selector: h2:has-text('业务集成')
+- name: integration-keys
+  url: /integration
+  output: integration-keys.png
+  wait_for_selector: h2:has-text('业务集成')
+- name: integration-directives
+  url: /integration
+  output: integration-directives.png
+  wait_for_selector: h2:has-text('业务集成')
+- name: resource-groups
+  url: /resource-groups
+  output: resource-groups.png
+  wait_for_selector: h1:has-text('共享资源')
+- name: users
+  url: /users
+  output: users.png
+  wait_for_selector: h1:has-text('用户管理')
+- name: events
+  url: /events
+  output: events.png
+  wait_for_selector: h1:has-text('任务面板')
+- name: evolution-submit
+  url: /evolution/submit
+  output: evolution-submit.png
+  wait_for_selector: body
+- name: evolution-progress
+  url: /evolution/progress
+  output: evolution-progress.png
+  wait_for_selector: body
+- name: evolution-agents
+  url: /evolution/agents
+  output: evolution-agents.png
+  wait_for_selector: body
+- name: evolution-history
+  url: /evolution/history
+  output: evolution-history.png
+  wait_for_selector: body
+- name: evolution-analytics
+  url: /evolution/analytics
+  output: evolution-analytics.png
+  wait_for_selector: body
+- name: pfr-history
+  url: /pfr/history
+  output: pfr-history.png
+  wait_for_selector: body
+- name: management
+  url: /management
+  output: management.png
+  wait_for_selector: h1:has-text('Agent 管理')
+- name: ops
+  url: /ops
+  output: ops.png
+  wait_for_selector: h1:has-text('AgentOps 运维总览')
+- name: analytics
+  url: /analytics
+  output: analytics.png
+  wait_for_selector: h1:has-text('业务洞察')
+- name: admin-billing
+  url: /admin/billing
+  output: admin-billing.png
+  wait_for_selector: body
+- name: admin-service-status
+  url: /admin/service-status
+  output: admin-service-status.png
+  wait_for_selector: h1:has-text('服务状态')
+- name: settings-config
+  url: /settings/config
+  output: settings-config.png
+  wait_for_selector: h1:has-text('配置管理')
+- name: settings-audit
+  url: /settings/audit
+  output: settings-audit.png
+  wait_for_selector: h1:has-text('审计追踪')
+- name: settings-model-catalog
+  url: /settings/model-catalog
+  output: settings-model-catalog.png
+  wait_for_selector: h1:has-text('模型目录')
+- name: settings-profile
+  url: /settings/profile
+  output: settings-profile.png
+  wait_for_selector: h2:has-text('admin')
+- name: settings-browser-extension
+  url: /settings/browser-extension
+  output: settings-browser-extension.png
+  wait_for_selector: h1:has-text('浏览器扩展')
+- name: settings-sharing
+  url: /settings/sharing
+  output: settings-sharing.png
+  wait_for_selector: h1:has-text('文件分享配置')
+- name: project-detail-stages
+  url: /projects/proj_3cfac66211ba
+  output: project-detail-stages.png
+  wait_for_selector: body
+- name: app-detail
+  url: /apps/app_f984663ed3a3
+  output: app-detail.png
+  wait_for_selector: body

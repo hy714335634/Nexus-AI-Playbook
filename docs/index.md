@@ -4,49 +4,49 @@ layout: home
 hero:
   name: "Nexus-AI"
   text: "产品使用手册"
-  tagline: 用自然语言构建 AI Agent — 8 个专业 AI 协作，从想法到可用 Agent，只需几分钟
+  tagline: 用自然语言构建 AI Agent — 从想法到可用的智能应用，只需几分钟
   image:
     src: /default_logo.png
     alt: Nexus-AI
   actions:
     - theme: brand
-      text: 🚀 快速开始
-      link: /getting-started/quickstart
+      text: 📖 用户手册
+      link: /user-guide/quickstart
     - theme: alt
-      text: 📖 Agent 使用手册
-      link: /using/dashboard
+      text: 🛡️ 管理员手册
+      link: /admin-guide/deploy-upgrade
 
 features:
   - icon: 🚀
-    title: 快速上手
-    details: 从登录系统到创建第一个 Agent，手把手带你入门。支持快速创建和引导创建两种模式
-    link: /guide/login
+    title: 5 分钟快速上手
+    details: 从登录到创建第一个 Agent，手把手带你入门。不需要任何技术背景
+    link: /user-guide/quickstart
     linkText: 开始使用 →
-  - icon: 📋
-    title: 工作台
-    details: 平台控制中心 — 快速构建入口、数据概览、项目跟踪、Agent 管理一站式操作
-    link: /using/dashboard
-    linkText: 查看详情 →
   - icon: 🤖
-    title: 创建 Agent
-    details: 快速创建（直接构建）和引导创建（AI 多轮提问完善需求），支持多模态附件输入
-    link: /using/create-agent
+    title: 创建你的 Agent
+    details: 用一句话描述需求，AI 自动完成构建。快速创建和引导创建两种模式
+    link: /user-guide/create-agent
     linkText: 了解更多 →
-  - icon: 📊
-    title: 构建进度
-    details: 实时查看 8 个 Builder Agent 在 9 个阶段的协作进展，了解每个阶段的具体产出
-    link: /using/build-progress
-    linkText: 查看流程 →
   - icon: 💬
-    title: 对话测试
-    details: 多轮对话交互，支持文件上传（PDF/Excel/CSV/图片），Agent 响应支持 Markdown 和图表
-    link: /using/chat
+    title: 对话与使用
+    details: 多轮对话交互，支持上传文件，回答支持图表与富文本
+    link: /user-guide/chat
     linkText: 开始对话 →
-  - icon: 🔧
-    title: 能力工具 & MCP
-    details: 5 种工具类型（内置/模板/生成/系统/MCP），通过 MCP 协议即插即用集成外部服务
-    link: /using/tools
+  - icon: 🌐
+    title: 发布为应用
+    details: 把 Agent 包装成网页应用，一条链接分享给全公司使用，还能用一句话持续改进
+    link: /user-guide/app-center
+    linkText: 查看详情 →
+  - icon: 🧰
+    title: 工具与技能扩展
+    details: 给 Agent 添加新能力：构建工具、挂载技能、连接业务数据
+    link: /user-guide/tools
     linkText: 浏览工具 →
+  - icon: 🛡️
+    title: 平台管理
+    details: 面向 IT 管理员：配置管理、用户权限、审计追踪、服务监控与内置 AI 助手
+    link: /admin-guide/config-management
+    linkText: 管理指南 →
 ---
 
 <style>

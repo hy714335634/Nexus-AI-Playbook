@@ -1,0 +1,78 @@
+{
+  "chapter": "admin",
+  "source_commit": "421be5f9dcbb690dff4a27ed44797304cc0f0a32",
+  "items": [
+    {
+      "slug": "deploy-upgrade",
+      "status": "to_generate",
+      "title_zh": "部署与升级",
+      "title_en": "Deploy & Upgrade",
+      "prompt": "feature-update.md",
+      "model": "default"
+    },
+    {
+      "slug": "config-management",
+      "status": "to_generate",
+      "title_zh": "配置管理",
+      "title_en": "Configuration Management",
+      "prompt": "feature-update.md",
+      "model": "default"
+    },
+    {
+      "slug": "users-permissions",
+      "status": "to_generate",
+      "title_zh": "用户与权限",
+      "title_en": "Users & Permissions",
+      "prompt": "feature-update.md",
+      "model": "default"
+    },
+    {
+      "slug": "resource-group-admin",
+      "status": "to_generate",
+      "title_zh": "资源组管理",
+      "title_en": "Resource Group Admin",
+      "prompt": "feature-update.md",
+      "model": "default"
+    },
+    {
+      "slug": "audit",
+      "status": "to_generate",
+      "title_zh": "审计追踪",
+      "title_en": "Audit Trail",
+      "prompt": "feature-update.md",
+      "model": "default"
+    },
+    {
+      "slug": "billing",
+      "status": "to_generate",
+      "title_zh": "用量与计费",
+      "title_en": "Billing",
+      "prompt": "feature-update.md",
+      "model": "default"
+    },
+    {
+      "slug": "service-status",
+      "status": "to_generate",
+      "title_zh": "服务状态监控",
+      "title_en": "Service Status",
+      "prompt": "feature-update.md",
+      "model": "default"
+    },
+    {
+      "slug": "ops-assistant",
+      "status": "to_generate",
+      "title_zh": "运维助手",
+      "title_en": "Ops Assistant",
+      "prompt": "feature-update.md",
+      "model": "default"
+    },
+    {
+      "slug": "release-notes",
+      "status": "to_generate",
+      "title_zh": "发布说明",
+      "title_en": "Release Notes",
+      "prompt": "feature-update.md",
+      "model": "default"
+    }
+  ]
+}
