@@ -450,7 +450,7 @@ run:
 # 截图配置
 screenshots:
   enabled: "auto"                     # auto | always | never
-  base_url: "http://localhost:3000"
+  base_url: "https://d3sx15z6kvxyn3.cloudfront.net"
   output_dir: "../docs/public/images" # 相对 scripts/ 路径
   login:
     user: "admin"

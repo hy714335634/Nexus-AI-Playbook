@@ -35,14 +35,15 @@ async function isServiceUp(baseUrl) {
 }
 
 async function login(page, baseUrl, user, password) {
-  await page.goto(baseUrl + '/login', { waitUntil: 'domcontentloaded' });
+  await page.goto(baseUrl + '/login', { waitUntil: 'networkidle', timeout: 30000 });
   // Best-effort: fill any visible username/password fields. If site uses SSO,
   // this no-ops and the caller falls through to taking screenshots of what's visible.
   try {
-    await page.fill('input[type="text"], input[name*="user" i], input[name*="email" i]', user, { timeout: 2000 });
+    await page.fill('input[type="text"]', user, { timeout: 2000 });
     await page.fill('input[type="password"]', password, { timeout: 2000 });
-    await page.click('button[type="submit"], button:has-text("登录"), button:has-text("Login")', { timeout: 2000 });
-    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
+    await page.click('button:has-text("登录")', { timeout: 2000 });
+    await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {});
+    await page.waitForTimeout(5000);  // Fixed wait for post-login hydration
   } catch {
     // Login form not present or shape differs — continue without blocking.
   }
@@ -87,12 +88,13 @@ async function main() {
     for (const t of targets) {
       const target = baseUrl.replace(/\/$/, '') + t.url;
       try {
-        await page.goto(target, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        await page.goto(target, { waitUntil: 'networkidle', timeout: 30000 });
+        await page.waitForTimeout(8000);  // Fixed wait for SPA hydration (proven necessary)
         if (t.wait_for_selector) {
           await page.waitForSelector(t.wait_for_selector, { timeout: 5000 }).catch(() => {});
         }
         const outPath = path.join(outputDir, t.output);
-        await page.screenshot({ path: outPath, fullPage: true });
+        await page.screenshot({ path: outPath, fullPage: false });  // Viewport-only (fullPage breaks virtualized lists)
         results.push({ name: t.name, status: 'ok', path: outPath });
       } catch (err) {
         results.push({ name: t.name, status: 'error', error: String(err) });
