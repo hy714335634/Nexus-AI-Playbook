@@ -58,6 +58,7 @@ for idx in $(seq 0 $((COUNT - 1))); do
   - current-doc-zh__${DOC_SLUG}.md
   - current-doc-en__${DOC_SLUG}.md
   - changed-files.md (所有变更文件)
+  - extra-context__${DOC_SLUG}.md (实测走查笔记，如存在 — UI 行为以此为准)
   - style-guide.md
 
 输出路径（绝对）：

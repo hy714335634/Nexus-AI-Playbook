@@ -17,7 +17,8 @@ PROMPTS_DIR="$SCRIPTS_DIR/prompts"
 
 export SCRIPTS_DIR REPO_ROOT CONFIG_FILE STATE_DIR WORK_DIR DRAFTS_DIR PROMPTS_DIR
 
-log() { printf '[%(%H:%M:%S)T] %s\n' -1 "$*" >&2; }
+# date-based timestamp: bash 3.2 (macOS default) lacks printf '%(...)T'
+log() { printf '[%s] %s\n' "$(date +%H:%M:%S)" "$*" >&2; }
 die() { log "ERROR: $*"; exit 1; }
 
 # yaml_get <jq-expression>  — query config.yaml via python→jq bridge

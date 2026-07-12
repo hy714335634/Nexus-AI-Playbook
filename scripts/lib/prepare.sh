@@ -69,8 +69,8 @@ for idx in $(seq 0 $((COUNT - 1))); do
             echo "(文档不存在，需全新创建)" > "$WORK/current-doc-zh__${DOC_SLUG}.md"
         fi
 
-        # Current en doc (path: manual/xxx.md → manual/en/xxx.md)
-        EN_PATH="$(echo "$DOC_PATH" | sed 's|^manual/|manual/en/|; s|^guide/|guide/en/|; s|^admin/|admin/en/|; s|^overview/|overview/en/|')"
+        # Current en doc: insert en/ after the first path segment (all v4 chapters)
+        EN_PATH="$(echo "$DOC_PATH" | sed 's|^\([^/]*\)/|\1/en/|')"
         if [ -f "$REPO_ROOT/docs/$EN_PATH" ]; then
             cp "$REPO_ROOT/docs/$EN_PATH" "$WORK/current-doc-en__${DOC_SLUG}.md"
         else
@@ -80,6 +80,21 @@ for idx in $(seq 0 $((COUNT - 1))); do
         # Copy prompt template
         [ -f "$PROMPTS_DIR/$PROMPT_NAME" ] || die "Prompt not found: $PROMPT_NAME"
         cp "$PROMPTS_DIR/$PROMPT_NAME" "$WORK/prompt__${DOC_SLUG}.md"
+
+        # Extra context (实测走查笔记) — chapter/slug derived from doc path
+        EC_CH="$(dirname "$DOC_PATH")"; EC_SLUG="$(basename "$DOC_PATH" .md)"
+        EC_OUT="$WORK/extra-context__${DOC_SLUG}.md"
+        : > "$EC_OUT"
+        while IFS= read -r ec; do
+            if [ -n "$ec" ] && [ -f "$REPO_ROOT/$ec" ]; then
+                {
+                    echo "# EXTRA CONTEXT (实测走查笔记 — 以此为准描述 UI 行为): $ec"
+                    cat "$REPO_ROOT/$ec"
+                    echo
+                } >> "$EC_OUT"
+            fi
+        done < <(doc_extra_context "$EC_CH" "$EC_SLUG" || true)
+        [ -s "$EC_OUT" ] || rm -f "$EC_OUT"
     done
 
     # Style guide
