@@ -1,6 +1,6 @@
 # Nexus-AI Feature Inventory (Code-Side Baseline)
 
-**覆盖情况**: 58/58 页面路由, 44/44 router 文件, 45/45 router 实例 (config.py 导出 2 个)
+**覆盖情况**: 59/59 页面路由, 44/44 router 文件, 45/45 router 实例 (config.py 导出 2 个)
 
 本表格为 v4 手册功能底账，基于代码侧提取（`web/app/*/page.tsx` + `api/v2/routers/*.py` + 侧边栏/Spotlight/助手组件），供后续走查任务（A3-A8）与章节配置（B1）使用。
 
@@ -92,16 +92,16 @@
 | 功能 | 挂载位置/组件 | API routers | v4 章节/slug | 走查任务 |
 |---|---|---|---|---|
 | Spotlight 命令面板 | `web/components/spotlight/SpotlightCommandPalette.tsx`<br/>在 `main-layout.tsx` 全局挂载 | agents, projects, sessions, favorites | using/spotlight | A7 |
-| 语言切换器 | `web/components/language-switcher.tsx`<br/>在 `sidebar.tsx` 底部渲染 | manifest, users | using/language-switch | A3 |
-| 版本门控（Edition Gating） | `web/lib/edition.ts` + `EditionGate` 组件<br/>basic/enterprise 毛玻璃遮罩 | manifest | admin/config-management | A8 |
+| 语言切换器 | `web/src/components/language-switcher.tsx`<br/>在 `sidebar.tsx` 底部渲染 | manifest, users | using/language-switch | A3 |
+| 版本门控（Edition Gating） | `web/src/lib/edition.ts` + `EditionGate` 组件<br/>basic/enterprise 毛玻璃遮罩 | manifest | admin/config-management | A8 |
 | **7 个内置助手（Helper Agents）** | | | | |
-| 配置助手 (helper_config) | 待确认挂载页面（`/settings/config` 推测） | config | admin/config-management | A8 |
-| 审计助手 (helper_audit) | `/settings/audit`<br/>`FloatingAssistantDot` in `page.tsx` | audit, users | admin/audit | A8 |
-| 运维助手 (helper_ops) | `/admin/service-status`<br/>`FloatingAssistantDot` in `page.tsx` | admin_services, observability, sandbox | admin/ops-assistant | A8 |
-| 工具审查助手 (helper_tool_review) | 待确认挂载页面（`/ability/tools` 推测） | agent_tools | using/tools | A6 |
-| Skill 锻造助手 (helper_skill_forge) | 待确认挂载页面（`/ability/skills` 推测） | skills | using/skills | A6 |
-| 应用构建助手 (helper_app_builder) | 待确认挂载页面（`/apps` 推测） | apps | using/app-center | A5 |
-| Mission 助手 (helper_mission) | 待确认挂载页面（`/evolution` 推测） | missions | using/evolution-pfr-troubleshoot | A7 |
+| 配置助手 (config) | 待确认挂载页面（`/settings/config` 推测） | config | admin/config-management | A8 |
+| 审计助手 (audit) | `/settings/audit`<br/>`FloatingAssistantDot` in `page.tsx` | audit, users | admin/audit | A8 |
+| 运维助手 (ops) | `/admin/service-status`<br/>`FloatingAssistantDot` in `page.tsx` | admin_services, observability, sandbox | admin/ops-assistant | A8 |
+| 工具审查助手 (tool_review) | 待确认挂载页面（`/ability/tools` 推测） | agent_tools | using/tools | A6 |
+| Skill 锻造助手 (skill_forge) | 待确认挂载页面（`/ability/skills` 推测） | skills | using/skills | A6 |
+| 应用构建助手 (app_builder) | 待确认挂载页面（`/apps` 推测） | apps | using/app-center | A5 |
+| Mission 助手 (mission) | 待确认挂载页面（`/evolution` 推测） | missions | using/evolution-pfr-troubleshoot | A7 |
 
 ---
 
@@ -140,7 +140,7 @@
 
 ## 数据来源与验证
 
-- **页面路由数**: 58 个（59 个 page.tsx 文件，其中 `web/app/(main)/page.tsx` 对应 "/" 仪表盘）
+- **页面路由数**: 59 个（对应 `web/app/*/page.tsx`）
 - **API router 文件数**: 44 个（`ls api/v2/routers/*.py | grep -v __init__ | wc -l`）
 - **API router 实例数**: 45 个（`config.py` 导出 `router` + `manage_router` 两个实例）
 - **侧边栏条目**: 16 个（与 A1 环境观测一致）
@@ -148,7 +148,7 @@
 - **内置助手提示词**: `prompts/system_agents_prompts/helper_agents/*.yaml` (7 个)
 - **浏览器扩展设置**: `/settings/browser-extension` 独立页
 - **语言切换**: `LanguageSwitcher` 组件在侧边栏底部
-- **版本门控**: `web/lib/edition.ts` + `EditionGate` 组件
+- **版本门控**: `web/src/lib/edition.ts` + `EditionGate` 组件
 
 ---
 
