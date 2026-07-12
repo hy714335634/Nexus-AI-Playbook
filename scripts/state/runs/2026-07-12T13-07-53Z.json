@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-07-12T13:07:53+00:00",
+  "mode": "full",
+  "chapter": "admin-guide",
+  "trigger": "cli",
+  "source_commit": "9d40a32f2bad2c7858b3ed0cfb4390e1bd603a30",
+  "docs": [],
+  "total_cost_usd": 0,
+  "total_elapsed_s": 0,
+  "exit_code": null
+}
