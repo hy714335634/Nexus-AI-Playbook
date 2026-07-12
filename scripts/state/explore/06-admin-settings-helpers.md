@@ -563,3 +563,38 @@
 5. Model catalog supports multi-provider, tier classification, vision capability flags, and test workflow
 6. Browser extension page has minimal guidance (single-sentence connection guide, no download link visible)
 7. Usage report (billing) page shows comprehensive multi-dimensional consumption tracking (model/user/app levels with token breakdowns)
+
+---
+
+## 补测：App Builder 助手 = 应用快速创建向导（2026-07-12 控制器实测）
+
+初判 "app_builder helper 未找到" 系搜索位置不对：它不是浮动圆点，而是**应用中心「新建应用」的快速创建向导本体**。全程实测一遍（并顺带补齐了 A5 缺的"新应用首次发布"记录）：
+
+### 入口
+/apps 右上 「新建应用」 按钮
+
+### 步骤（verbatim）
+1. 点击 「新建应用」 → 弹窗 "选择创建方式"：**快速创建**（"选 Agent + 描述场景,分步生成可发布页面,速度快"）/ **完整创建**（"进入工坊,通过 4 阶段工作流(需求分析→设计→前端→部署)自动构建完整应用"）→ 「下一步」
+2. 快速创建 **第 1 步 · 选择 Agent**：搜索框 "搜索 Agent…" + 全部可用 agent 列表（内置 4 个 + 环境内生成 agent），选 General Assistant → 「下一步」
+3. **第 2 步 · 应用信息与需求**：字段 "应用名称" + "场景与 UI 需求"（textarea placeholder："用自然语言描述:这个应用给谁用、解决什么问题、需要哪些输入项、期望的界面样式和交互。例如:一个客服知识问答页,顶部有搜索框,用户输入问题后展示 Agent 的流式回答,支持追问,配…"），另有 12 个图标（🧩🤖📊💬📝🔍🎨⚙️📈🗂️🧠✨）供选应用图标 → 「新建应用」
+4. 提交后跳转 `/apps/app_c2095f594c32`，进入三步态流程条：**1 需求 → 2 生成 → 3 就绪**，点 「开始设计」
+5. 生成阶段实时显示 **"正在自动生成应用 已生成 N 字"** 计数（185 → 3,974 → 22,277 字，全程约 4-6 分钟）。注：第一次点击后曾回退到 "开始设计"（生成中断，原因未明——单次样本，可能与会话过期相关），重试一次成功
+6. 完成后应用状态 "就绪"，版本 v1，出现 "实时预览" iframe + 顶部按钮 "编辑配置 / API / 版本与更新 v1 / 发布"
+7. **发布流程**：点 「发布」 → "发布应用" 弹窗：**有效期**（7 天 / 30 天 / 90 天 / 永久(无限期)，默认 7 天）× **访问鉴权**（公开 / API Key / 账号密码）→ 「发布」
+8. 发布成功：状态变 "已发布"，显示 "访问鉴权 公开 | 有效期 2026/07/19" + 公开 URL `https://d3sx15z6kvxyn3.cloudfront.net/a/app_c2095f594c32`；顶部出现 "复制链接 / 打开应用 / 下线"
+
+### 截图
+- `shots/06/06-15-new-app-mode-dialog.png` 创建方式选择
+- `shots/06/06-16-new-app-step2.png` 第1步选 Agent
+- `shots/06/06-17-new-app-step2-scene.png` 第2步应用信息
+- `shots/06/06-19-new-app-submitted.png` 提交后三步态
+- `shots/06/06-20-app-builder-designing.png` 生成中（字数计数）
+- `shots/06/06-22-app-builder-status.png` 就绪态
+- `shots/06/06-23-publish-dialog.png` 发布弹窗（有效期×鉴权）
+- `shots/06/06-24-published.png` 已发布（公开 URL）
+
+### 边界/发现
+- **helper 定位修正**：app_builder 不是浮动 dot，是快速创建向导的后端引擎；mission helper 同理大概率在任务面板的 NL 任务创建里（批次 5 已记录该弹窗）；tool_review / skill_forge 推测在工具构建/技能构建流程内部（构建产物 review 环节），不是独立 UI 入口
+- 发布默认有效期 7 天——手册要提醒长期应用选"永久"
+- 「开始设计」偶发一次生成中断回退（单样本），重试成功；如复现值得工程关注
+- probe 应用：app_c2095f594c32（每日站会纪要助手，已发布公开，可作 Demo 素材或后续清理）
