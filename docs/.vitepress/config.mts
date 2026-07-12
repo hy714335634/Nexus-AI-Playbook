@@ -120,6 +120,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '文档', link: '/user-guide/quickstart' },
+      { text: '🤖 手册助手', link: 'https://d3sx15z6kvxyn3.cloudfront.net/a/app_177cb4be76e8' },
       {
         text: '快速链接',
         items: [
