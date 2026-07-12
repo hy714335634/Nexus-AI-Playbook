@@ -42,17 +42,18 @@ def main():
     scenes = yaml.safe_load((d / "narration.yaml").read_text())["scenes"]
     seg = json.loads((d / "raw/segments.json").read_text())
 
+    # 段长与 compose.sh 保持一致：每段 = 旁白时长 + 0.6s 尾留白
     t = 0.0; idx = 1; lines = []
     for s in scenes:
         audio = dur(d / f"narration/{s['id']}.{lang}.mp3")
-        video = max(seg.get(s["id"], 0.0), audio)
+        seg_len = round(audio + 0.6, 2)
         chunks = split_text(s[lang])
         per = audio / len(chunks)
         ct = t
         for c in chunks:
             lines += [str(idx), f"{ts(ct)} --> {ts(min(ct + per, t + audio))}", c, ""]
             idx += 1; ct += per
-        t += video
+        t += seg_len
     (d / "subtitles").mkdir(exist_ok=True)
     out = d / f"subtitles/{lang}.srt"
     out.write_text("\n".join(lines), encoding="utf-8")
