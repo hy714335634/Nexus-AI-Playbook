@@ -17,6 +17,7 @@
 | F011 | 4 | 工具卡片点击后无 detail panel 显示 | `/ability/tools` 工具列表页 | 点击工具卡片（如 current_time）后页面无视觉变化，DOM 中未检测到 `[role="dialog"]` 或 drawer 元素；无法查看工具源码/密钥状态/绑定信息；WAIT 策略已严格执行（8s + networkidle） | ❌ 否 (工具列表可用，detail 功能缺失但非阻塞) |
 | F012 | 4 | ~~Tool build 入口无 form~~ **误判：入口可用** - 弹窗无 `role="dialog"` 导致探测漏判 | `/ability/tools` "构建工具"按钮 | 复核实测：点击 "构建工具" 弹出 "工具构建" 弹窗（需求描述 textarea + 可选工具名 + 开始构建），实测提交成功并跳转 `/projects/proj_edbf3425dc23` 走 tool_build 阶段时间轴。初次误判两因：弹窗容器缺 `role="dialog"` 语义（a11y 问题保留为产品建议）+ agent-browser 常规 click 偶发不触发 React 按钮（eval 直点可靠）。Demo② 不受影响 | ❌ 否 (功能可用；a11y 语义缺失留作产品建议) |
 | F013 | 4 | Skills 分组展开图标误触发删除对话框 | `/ability/skills` Skills 管理页 | 首次点击 Community Skills 分组的展开图标（▼）时，触发"确认删除"对话框（三按钮：仅删除分组 / 删除分组及全部 Skills / 返回），而非预期的展开行为；点击"返回"关闭后，再次点击分组标题才成功展开 Skill 列表；UI 交互逻辑可能有误：展开图标和删除操作的点击区域重叠 | ❌ 否 (workaround 可用，点分组标题即可展开) |
+| F014 | 5 | `/pfr/iterations` 路由 404 | PFR 迭代复盘功能 | 任务描述提及 `/pfr/iterations` 页面，但访问返回 Next.js 404 页面；可能为路径拼写错误或功能未实现；`/pfr/history` 页面正常 | ❌ 否 (非核心功能，手册可不收录该路由) |
 
 ---
 
