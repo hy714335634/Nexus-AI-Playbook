@@ -208,19 +208,30 @@ hydration_fix: networkidle + 8s wait required for all CloudFront SPA pages
    - "AGENT 配置" 标题
    - 系统 Prompt / 代码目录 / 工具目录 / 说明 / 标签（均显示 "请选择 Agent"）
 
+### 步骤（补测：完整对话链路，2026-07-12 复核实测）
+
+7. 点击快速启动卡片 "General Assistant" → 左栏出现该 agent 的 "会话列表"，主区提示 "选择或创建会话" + "创建新会话" 按钮
+8. 点击 "创建新会话" → 会话列表出现 "会话 2026/7/12 15:08:09 刚刚"（自动以时间命名），旁有 "删除会话" 按钮；主区变为对话界面，空态文案 "开始与 general assistant 对话吧"
+9. 对话界面顶部工具条按钮（文案原文）："Nexus Bridge"、"Lifecycle 任务"、"动态配置"、"文件管理"、"清空对话并重建 Agent"、"收藏"、"全屏沉浸模式"
+10. 底部输入区：textbox "输入消息..."、"Attach files (or paste screenshot)" 附件按钮、"技能蒸馏"（disabled）、"压缩上下文"、模型选择器（显示 "Sonnet 4.6"）、发送按钮 "Shift+Enter 发送"（空输入时 disabled）
+11. 填入 "你好，简单介绍一下你自己" → 发送按钮解除禁用。**注意：Enter 不发送（换行），必须 Shift+Enter 或点按钮**
+12. Shift+Enter 发送 → 用户消息立即上屏；发送按钮原位变为 **"停止生成"** 按钮（流式期间可中断）；回复以 SSE 流式渐进渲染（markdown 实时排版，含表格）
+13. 约 15-20s 回复完成："停止生成" 恢复为 "Shift+Enter 发送"（disabled）；回复含加粗、标题（"我能帮你做什么？"）、能力表格等富文本
+14. "文件管理" 面板：目录树 + "附件 0" / "工作空间 0" 两个分区（空态 "暂无" / "暂无文件"），提示 "选择文件进行预览 从右侧目录树中点击文件"
+
 ### 截图
 - `shots/02/02-22-chat-page-loaded.png` - /chat 页面水合后初始状态（未选 Agent）
+- `shots/02/02-27-chat-input-filled.png` - 选中 Agent + 新会话 + 输入消息后（发送前）
+- `shots/02/02-28-chat-streaming.png` - 流式响应进行中（"停止生成" 按钮可见）
+- `shots/02/02-29-chat-reply-done.png` - 回复完成（富文本渲染 + 发送按钮恢复）
 
 ### 边界/发现
 - ✅ **页面不再空白**：使用正确等待后，页面显示完整的三栏布局和 4 个快速启动 Agent
-- **未完成对话测试**：浏览器 click 命令未成功选择 Agent（选择器问题），未能发送消息验证流式响应
-- 预期功能（未验证）：
-  - Agent 选择后显示会话历史
-  - 消息输入框支持附件上传
-  - SSE 流式响应
-  - 停止生成按钮
-  - 工具调用/思考过程显示
-  - 会话新建/重命名/删除
+- ✅ **对话链路已实测**：选 Agent → 建会话 → 发消息 → SSE 流式 → 停止生成按钮 → 完成，全链路正常
+- **发送快捷键是 Shift+Enter**（按钮文案即提示），Enter 仅换行——与多数 IM 习惯相反，手册须明示
+- 会话自动以创建时间命名；删除会话按钮就在会话条目上（是否有二次确认待后续复核）
+- Agent/APP 双标签选择器：APP 标签用于与已发布应用对话（应用中心联动），A5 批次覆盖
+- 未验证项（留待需要时）：附件上传、压缩上下文、技能蒸馏、清空对话并重建、多会话切换保持
 
 ---
 
@@ -352,7 +363,12 @@ hydration_fix: networkidle + 8s wait required for all CloudFront SPA pages
 20. `02-20-agent-detail-files-tab.png` - Agent 详情文件 tab
 21. `02-21-project-detail-stages.png` - 项目详情页阶段时间轴
 22. `02-22-chat-page-loaded.png` - /chat 页面水合后初始状态
-23. `02-23-chat-streaming.png` - /chat 流式响应中（未成功触发）
-24. `02-24-chat-finished.png` - /chat 对话完成状态（未成功触发）
+23. `02-23-chat-streaming.png` - /chat 流式响应中（未成功触发，被 27-29 取代）
+24. `02-24-chat-finished.png` - /chat 对话完成状态（未成功触发，被 27-29 取代）
 25. `02-25-agents-dialog-hydrated.png` - /agents/dialog 水合后正常状态
 26. `02-26-probe-agent-detail.png` - 探测 Agent 详情页
+
+**补测截图（对话链路实测）**：
+27. `02-27-chat-input-filled.png` - 选中 Agent + 新会话 + 消息已输入（发送前）
+28. `02-28-chat-streaming.png` - SSE 流式响应中（"停止生成" 按钮可见）
+29. `02-29-chat-reply-done.png` - 回复完成（富文本渲染 + 发送按钮恢复 disabled）
