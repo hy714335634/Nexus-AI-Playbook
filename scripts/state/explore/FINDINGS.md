@@ -22,6 +22,7 @@
 | F016 | 6 | Browser Extension 连接引导单一步骤 | `/settings/browser-extension` | 页面仅展示 "在对话页 Nexus Bridge 面板中点 Browser 标签连接扩展" 一句话引导，无下载链接（扩展包可能内置或通过 Bridge 面板提供），单步引导简洁但可能不够详尽（首次用户需知：1. 去哪个对话页？2. Bridge 面板在哪？3. 连接后如何验证？）；Memory 记录显示 Browser 功能架构复杂（扩展 submodule、Bridge IPC、注入 gate），单句引导是否充分存疑 | ⚠️ 部分阻塞 (手册需补充详细步骤 + 截图，否则浏览器扩展章节不完整) |
 | F017 | 6 | Helper 覆盖度不全（7 中仅找到 3） | 全局内置助手盘点 | 预期 7 个内置助手（config/audit/ops/tool_review/skill_forge/app_builder/mission），实际仅找到 3 个：Ops Helper (service-status 页)、Config Helper (config 页 inline AI 搜索)、Audit Helper (audit 页)；未找到 4 个可能在其他页面（/workshop tool/skill 编辑页、/app-center 编辑页、/my-home mission 面板）或未在测试环境部署（feature flag / 企业版专属 / 开发中） | ⚠️ 部分阻塞 (如手册承诺 7 个助手但实际仅 3 个可用，需澄清范围或补充走查其他页面；建议：1. 确认 4 个未找到助手的预期部署位置；2. 补充走查 /workshop、/app-center 编辑页、/my-home；3. 手册注明"部分助手可能需特定场景触发或版本限制") |
 | F018 | 6 | `/admin/billing` 实际是用量报告页面 | `/admin/billing` | 导航到 /admin/billing 后页面标题和内容是"用量报告"（非传统意义的 billing/账单），展示用量统计（token 消耗、调用次数、用户用量、应用用量），无价格/账单/支付信息；"Billing" 在本系统语境下可能指"用量计费维度"而非"账单管理"，或者 billing 功能未开发完整（当前仅展示用量报告作为计费数据基础） | ❌ 否 (功能存在，只是命名 vs 内容有偏差；手册使用"用量报告"而非"账单"，或注明"当前版本账单功能以用量报告形式呈现") |
+| F019 | C | 公开应用页在 NL 更新切版后存在缓存延迟 | `/a/app_177cb4be76e8` | v2 已部署且版本面板标记"当前"，但匿名公开页短时间内仍 serve v1 HTML（点击提问仍整页刷新）。推测 CloudFront/缓存 TTL 所致，非链路故障；验证 NL 更新效果需等缓存过期或强制刷新 | ❌ 否 (缓存时效性，稍后自愈) |
 
 ---
 
