@@ -2,8 +2,8 @@ source_repo:
   path: ../../Nexus-AI
   default_branch: main
 models:
-  default: global.anthropic.claude-opus-4-7
-  complex: global.anthropic.claude-opus-4-7
+  default: claude-opus-4-8
+  complex: claude-opus-4-8
 languages:
 - zh
 - en
