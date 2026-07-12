@@ -22,10 +22,20 @@ const SIDEBAR = [
       { text: '创建 Agent', link: '/using/create-agent' },
       { text: '构建进度', link: '/using/build-progress' },
       { text: '对话', link: '/using/chat' },
-      { text: '项目管理', link: '/using/projects' },
+      { text: '工坊管理', link: '/using/projects' },
       { text: 'Agent 管理', link: '/using/manage-agents' },
+      { text: '应用中心', link: '/using/app-center' },
       { text: '工具库', link: '/using/tools' },
       { text: 'MCP 服务器', link: '/using/mcp' },
+      { text: '技能系统', link: '/using/skills' },
+      { text: '业务集成中心', link: '/using/integration-center' },
+      { text: '资源组与共享', link: '/using/resource-groups-sharing' },
+      { text: '事件任务', link: '/using/events' },
+      { text: '内置助手', link: '/using/assistants' },
+      { text: '浏览器扩展', link: '/using/browser-extension' },
+      { text: 'Avatar 空间', link: '/using/avatar-space' },
+      { text: 'Spotlight 命令面板', link: '/using/spotlight' },
+      { text: '进化/PFR/故障排查', link: '/using/evolution-pfr-troubleshoot' },
     ]
   },
   {
@@ -70,6 +80,7 @@ const SIDEBAR = [
           { text: '日志', link: '/features/logging' },
         ]
       },
+      { text: '应用中心内部机制', link: '/features/app-center-internals' },
     ]
   },
   {
@@ -82,6 +93,8 @@ const SIDEBAR = [
       { text: 'Agent as MCP Tool', link: '/integrations/mcp-server' },
       { text: 'SSO (SAML 2.0)', link: '/integrations/sso-saml' },
       { text: '数据存储', link: '/integrations/data-stores' },
+      { text: '数据连接器', link: '/integrations/data-connectors' },
+      { text: '浏览器扩展集成', link: '/integrations/browser-extension-integration' },
     ]
   },
   {
@@ -89,9 +102,11 @@ const SIDEBAR = [
     collapsed: true,
     items: [
       { text: '技巧与最佳实践', link: '/guides/tips' },
-      { text: '构建 Hermes 分析 Agent', link: '/guides/build-hermes-analyst' },
-      { text: '构建技术博客生成 Agent', link: '/guides/build-tech-blog' },
+      { text: '发布第一个应用', link: '/guides/publish-first-app' },
+      { text: '用工具扩展 Agent', link: '/guides/extend-agent-with-tools' },
+      { text: '构建知识问答 Agent', link: '/guides/build-knowledge-qa' },
       { text: '在 Nexus-AI 中使用 MCP', link: '/guides/use-mcp-with-nexus' },
+      { text: '团队协作', link: '/guides/team-collaboration' },
     ]
   },
   {
@@ -141,6 +156,22 @@ const SIDEBAR = [
       { text: '模型目录', link: '/reference/model-catalog' },
       { text: '术语表', link: '/reference/glossary' },
       { text: 'FAQ 与故障排查', link: '/reference/faq' },
+      { text: '版本历史', link: '/reference/version-history' },
+    ]
+  },
+  {
+    text: '🛡️ 管理员指南',
+    collapsed: true,
+    items: [
+      { text: '部署与升级', link: '/admin/deploy-upgrade' },
+      { text: '配置管理', link: '/admin/config-management' },
+      { text: '用户与权限', link: '/admin/users-permissions' },
+      { text: '资源组管理', link: '/admin/resource-group-admin' },
+      { text: '审计追踪', link: '/admin/audit' },
+      { text: '用量与计费', link: '/admin/billing' },
+      { text: '服务状态监控', link: '/admin/service-status' },
+      { text: '运维助手', link: '/admin/ops-assistant' },
+      { text: '发布说明', link: '/admin/release-notes' },
     ]
   },
 ]
@@ -183,9 +214,9 @@ export default defineConfig({
       {
         text: '快速链接',
         items: [
-          { text: '💡 平台概述', link: '/overview/what-is-nexus' },
-          { text: '🛡️ 管理员指南', link: '/admin/settings' },
-          { text: '🚀 引导教程', link: '/guide/login' },
+          { text: '🚀 5 分钟上手', link: '/getting-started/quickstart' },
+          { text: '🛡️ 管理员指南', link: '/admin/deploy-upgrade' },
+          { text: '❓ FAQ', link: '/reference/faq' },
         ]
       },
     ],
