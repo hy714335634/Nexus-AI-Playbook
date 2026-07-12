@@ -122,7 +122,6 @@ Groups organize users into a tree by org structure and can carry policies per gr
    - **Parent group** (dropdown: pick 「None (top-level group)」for a top-level group, or an existing group as the parent)
 3. Click 「Create」or 「Save」.
 
-![users](/images/users.png)
 
 ### Group Policies
 
@@ -149,7 +148,6 @@ The Policy Management tab is where you view and maintain all permission policies
 
 Click any policy card to expand its permission matrix.
 
-![users](/images/users.png)
 
 ### Create a Custom Policy
 

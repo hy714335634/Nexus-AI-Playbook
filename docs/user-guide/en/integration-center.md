@@ -31,7 +31,7 @@ Click **Integration** in the left sidebar. The top of the page shows four cards,
 | Keys | Keeps account credentials | Stores tokens for third-party services safely |
 | Directives | Defines how work should be done | Gives Agents a shared set of goals, limits, and steps |
 
-<!-- SCREENSHOT: integration -->
+![integration-connectors](/images/integration-connectors.png)
 
 ::: tip What the numbers mean
 The number on each card is a live count. If **Keys** shows 2, you can currently see 2 keys; a smaller line below shows their status (e.g. "2 bound").
@@ -119,7 +119,6 @@ Creating a connector requires some connection details (address, account, and so 
 4. Fill in the name, description, and the connection details required for that type.
 5. After saving, the connector appears in the list on the left.
 
-![integration-connectors](/images/integration-connectors.png)
 
 ### Test whether the connection works
 

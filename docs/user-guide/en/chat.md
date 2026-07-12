@@ -73,7 +73,7 @@ Unlike most chat apps: **pressing Enter only adds a new line — it does not sen
 3. Your message appears at the top of the conversation immediately.
 4. The Agent starts replying, with text appearing **piece by piece in real time** — that's normal, it means it's thinking and writing as it goes. Replies may include bold text, headings, and tables, which are formatted automatically into a clean layout.
 
-<!-- SCREENSHOT: chat-streaming -->
+![chat-streaming](/images/chat-streaming.png)
 
 ::: tip How long does a reply take?
 Simple questions usually finish in ten to twenty seconds. Complex tasks that require looking things up or using tools take longer; during that time the interface shows what it's currently doing (such as "Calling a tool…"), so you don't have to wonder whether it's stuck.

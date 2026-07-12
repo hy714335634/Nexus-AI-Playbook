@@ -24,7 +24,7 @@ Whenever you want to hand a related set of resources to someone else. For exampl
 1. Click **Shared Resources** in the left navigation bar.
 2. The page opens with the title **Shared Resources**.
 
-<!-- SCREENSHOT: resource-groups-list -->
+![resource-groups-list](/images/resource-groups-list.png)
 
 If you haven't created any folders yet, an empty state appears in the middle of the page with a **Create your first folder** button.
 
@@ -59,7 +59,6 @@ Each folder is shown as a card that indicates:
    - **Folder description** (optional — a short line on what the folder is for).
 3. Click **Create**. Once the dialog closes, the new folder appears immediately under **Created by me**.
 
-<!-- SCREENSHOT: resource-group-create -->
 
 ::: tip
 A folder is empty when first created. Next you'll add resources to it, then decide who to share it with.
@@ -81,7 +80,7 @@ You can only add resources **you created** to a folder. You can't add someone el
 
 Click any card in the folder list to open the folder's detail page.
 
-<!-- SCREENSHOT: resource-group-detail -->
+![resource-groups](/images/resource-groups.png)
 
 The top of the detail page shows the folder name, description, and resource count. Below that are the resources inside, split into a row of **tabs** by type (for example, one tab each for agents and skills). Click a tab to switch between types.
 
@@ -105,7 +104,7 @@ Only the folder's creator (or an administrator) can share it.
 3. Pick a permission level for them (Viewer / Editor / Owner).
 4. Once confirmed, the folder shows up in their own **Shared with me** list.
 
-<!-- SCREENSHOT: resource-group-share -->
+![settings-sharing](/images/settings-sharing.png)
 
 ### Permission levels
 

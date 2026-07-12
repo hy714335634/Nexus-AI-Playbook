@@ -33,7 +33,6 @@ sync:
 
 「数据连接」让你把外部数据源登记为**连接器**，绑定访问凭证后供 Agent 在运行时查询。平台对每类数据源都预置了安全默认值（只读、行数上限、危险语句拦截、字段脱敏），无需逐个连接手工加固。
 
-![integration-connectors](/images/integration-connectors.png)
 
 ### 支持的数据源类型
 

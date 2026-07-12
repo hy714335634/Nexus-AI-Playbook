@@ -158,7 +158,7 @@ Once the app is generated and its status is **Ready**, you can publish it for ot
 
 Click **Publish** when set. After publishing, use **Copy Link** at the top to grab the public address and share it, or click **Open App** to preview it yourself.
 
-<!-- SCREENSHOT: apps-publish -->
+![apps-publish](/images/apps-publish.png)
 
 ::: warning Need to stop public access right away?
 Click **Unpublish** — the app stops serving the public **immediately**, and links you've already shared will no longer open. To go public again, just run **Publish** once more.
@@ -172,7 +172,7 @@ Share the public link with a colleague, a customer, or anyone. They **don't need
 2. They fill in the form as prompted, or type input like a chat.
 3. They click the submit / generate button, and the app calls the Agent behind it and shows the result right on the page.
 
-<!-- SCREENSHOT: apps-public -->
+![apps-public](/images/apps-public.png)
 
 ::: tip Whose usage is a visitor's activity counted as?
 Visitors use the app without logging in, and all usage is counted under you (the app owner). To prevent abuse, the platform rate-limits anonymous access — normal use is unaffected.
@@ -191,7 +191,7 @@ At the top of the panel, you can **describe what you want to change in plain lan
 
 Type your change request in the box (e.g. "add an export button to the results area," "switch the theme to a dark color scheme"), then click **AI Update App**. The update runs in the background, and a new version appears when it's done.
 
-<!-- SCREENSHOT: apps-versions -->
+![apps-versions](/images/apps-versions.png)
 
 ### View and switch versions
 

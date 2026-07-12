@@ -56,7 +56,6 @@ In the **Grouped** view, Skills are sorted into folders, and each folder shows h
 
 Click a folder's row to **expand** it and see a card for each Skill inside — each card shows the Skill's **name**, **version**, and a **one-line description**. Click again to collapse.
 
-<!-- SCREENSHOT: skills-expanded -->
 
 ::: warning Don't hit the trash icon when expanding
 When you move your pointer over a group's row, a **trash icon** (delete this group) appears on the right. To expand a group, click the row with the folder name; only click the trash icon when you really mean to delete the whole group. If a "Confirm delete" window pops up by accident, just click **Back** to dismiss it — nothing changes.
@@ -76,7 +75,6 @@ Click any Skill card (for example, `skill-creator`) to open that Skill's detail 
 
 The page also shows the Skill's basics: source (System / Community / Generated), category, version, file count, size, and tags — enough to quickly tell whether it's the one you want.
 
-<!-- SCREENSHOT: skill-detail -->
 
 ::: tip The detail page alone tells you enough
 Reading the write-up on the "Skill Details" tab is usually all you need to understand what the Skill can do and whether it fits your case — no need to dig through each file.
@@ -92,7 +90,6 @@ When the ready-made Skills aren't enough, describe what you need in one sentence
 
 After you start the build, the page jumps to a project detail page where you can watch the build progress step by step.
 
-<!-- SCREENSHOT: skill-build-dialog -->
 
 ::: tip How long does a build take?
 Anywhere from a few minutes to a few tens of minutes, depending on how complex the Skill is. You don't have to watch it — go do something else and come back for the result; the progress is kept. Once it's done, the Skill shows up under the **Generated Skills** group.

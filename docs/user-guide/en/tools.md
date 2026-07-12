@@ -89,11 +89,11 @@ When the ready-made tools aren't enough, describe what you need in one sentence 
 3. **Tool name (optional)** — fill it in or leave it blank; if blank, the platform names it for you.
 4. When it looks right, click **Start Build** (click **Cancel** to back out).
 
-<!-- SCREENSHOT: tool-build-dialog -->
+![tool-build-dialog](/images/tool-build-dialog.png)
 
 After you click **Start Build**, the page **jumps straight** to a project detail page where you can watch the build progress step by step.
 
-<!-- SCREENSHOT: tool-project-detail -->
+![tool-project-detail](/images/tool-project-detail.png)
 
 ::: tip How long does a build take?
 Anywhere from a few minutes to a few tens of minutes, depending on how complex the tool is. You don't have to watch it — go do something else and come back for the result; the progress is kept. Once it's done, the tool shows up under **Generated** in the tools list.

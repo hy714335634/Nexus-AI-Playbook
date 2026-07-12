@@ -55,7 +55,7 @@ The simplest way—you can do it right from the home page card.
 4. Click the **Build** button on the right (or press Enter).
 5. The page jumps to the **build progress page**, where you can watch your Agent being built step by step (see [Watch your Agent get built](#watch-your-agent-get-built) below).
 
-<!-- SCREENSHOT: quick-create -->
+![quick-create](/images/quick-create.png)
 
 ::: tip Do I need to name the Agent?
 No. Quick create automatically pulls a name from your description (the example above becomes "Chinese–English translation assistant"). You can rename it later, once it's built.
@@ -82,7 +82,7 @@ If you haven't worked out the details yet, let the system help you fill them in.
 6. Once the questions are done, the system pulls your answers together into a **more complete request** for you to confirm.
 7. Confirm it looks right, then start building—this also takes you to the build progress page.
 
-<!-- SCREENSHOT: guided-create -->
+![guided-create](/images/guided-create.png)
 
 ::: tip How many rounds will it ask?
 Usually up to three. Each question is there to make the final Agent fit your needs more closely, so answering carefully pays off.

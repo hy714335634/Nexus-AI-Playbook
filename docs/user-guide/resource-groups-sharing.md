@@ -24,7 +24,7 @@ sync:
 1. 在左侧导航栏点击「共享资源」。
 2. 进入后页面标题为「共享资源」。
 
-<!-- SCREENSHOT: resource-groups-list -->
+![resource-groups-list](/images/resource-groups-list.png)
 
 如果你还没有创建过任何文件夹，页面中间会显示一个空状态，并提供「创建第一个文件夹」按钮。
 
@@ -59,7 +59,6 @@ sync:
    - **文件夹描述**（可选，一句话说明这个文件夹是做什么的）。
 3. 点击「创建」。窗口关闭后，新文件夹会立刻出现在「我创建的」一组里。
 
-<!-- SCREENSHOT: resource-group-create -->
 
 ::: tip
 文件夹刚创建时是空的。接下来你可以往里面添加资源，再决定分享给谁。
@@ -81,7 +80,7 @@ sync:
 
 在文件夹列表里点击任意一张卡片，进入文件夹详情页。
 
-<!-- SCREENSHOT: resource-group-detail -->
+![resource-groups](/images/resource-groups.png)
 
 详情页顶部显示文件夹名称、描述，以及资源数量。往下是文件夹里的资源，按类型分成一排「标签页」（例如智能体、技能各占一个标签），点击标签可切换查看不同类型。
 
@@ -105,7 +104,7 @@ sync:
 3. 为对方选择一个权限级别（查看者 / 编辑者 / 拥有者）。
 4. 确认后，对方就会在自己的「共享给我的」里看到这个文件夹。
 
-<!-- SCREENSHOT: resource-group-share -->
+![settings-sharing](/images/settings-sharing.png)
 
 ### 权限级别说明
 

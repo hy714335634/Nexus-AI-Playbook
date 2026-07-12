@@ -65,7 +65,6 @@ Use it to spot which model is the main cost driver, then decide whether to move 
   - Click any row (or the external-link icon at the end) to open that user's **usage and quota detail page**.
 - **Top projects**: aggregates token consumption by project, paginated (5 per page).
 
-![admin-billing](/images/admin-billing.png)
 
 ## View a single user's usage and quota
 

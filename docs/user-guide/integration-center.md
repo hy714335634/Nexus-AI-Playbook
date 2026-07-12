@@ -31,7 +31,7 @@ sync:
 | 密钥管理 | 保管账号口令 | 把访问第三方服务的口令安全地存起来 |
 | 业务指示 | 定义做事规矩 | 给 Agent 一套统一的目标、约束和流程 |
 
-<!-- SCREENSHOT: integration -->
+![integration-connectors](/images/integration-connectors.png)
 
 ::: tip 数字代表什么
 卡片上的数字是实时统计。比如「密钥管理」显示 2，就表示你目前能看到 2 个密钥；下面还有一行小字提示状态（如"2 个已绑定"）。
@@ -119,7 +119,6 @@ sync:
 4. 填写名称、描述，以及该类型需要的连接信息。
 5. 保存后，这个连接会出现在左侧列表里。
 
-![integration-connectors](/images/integration-connectors.png)
 
 ### 测试连接是否通
 

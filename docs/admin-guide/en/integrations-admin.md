@@ -33,7 +33,6 @@ Sidebar「Business Integration」→ go to `/integration`. The page presents the
 
 「Data Connections」lets you register external data sources as **connectors**, bind access credentials, and make them available for agents to query at runtime. The platform ships safe defaults for every source type (read-only, row limits, dangerous-statement blocking, field masking), so you don't have to harden each connection by hand.
 
-![integration-connectors](/images/integration-connectors.png)
 
 ### Supported Source Types
 

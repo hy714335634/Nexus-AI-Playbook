@@ -57,7 +57,6 @@ Purpose: pinpoint a specific action by user, action, resource, outcome, time, or
 
 Entry:「Audit Trail」→「Logs」tab.
 
-![settings-audit](/images/settings-audit.png)
 
 ### Filters
 
@@ -129,7 +128,6 @@ Purpose: query the audit in natural language, summarize a period, and generate a
 
 Entry: the floating「Nexus Assistant」button in the top-right of the audit page. The panel toggles between "docked right" and "centered large window."
 
-![settings-audit](/images/settings-audit.png)
 
 ### Q&A
 

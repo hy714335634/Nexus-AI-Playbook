@@ -89,11 +89,11 @@ sync:
 3. 「工具名称（可选）」可以填也可以留空，留空时平台会自动起名。
 4. 确认无误后点「开始构建」（想放弃就点「取消」）。
 
-<!-- SCREENSHOT: tool-build-dialog -->
+![tool-build-dialog](/images/tool-build-dialog.png)
 
 点了「开始构建」后，页面会**立即跳转**到一个项目详情页，你能在这里看到构建一步步推进的进度。
 
-<!-- SCREENSHOT: tool-project-detail -->
+![tool-project-detail](/images/tool-project-detail.png)
 
 ::: tip 构建要等多久？
 大约几分钟到几十分钟不等，取决于工具的复杂度。这段时间你不用一直盯着，可以先去忙别的，等会儿回来看结果——进度会一直保留。造好后，这个工具会出现在工具列表的**生成工具**里。
