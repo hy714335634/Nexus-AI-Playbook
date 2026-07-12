@@ -47,35 +47,33 @@ routes_covered:
 
 ## 功能: 工具构建入口
 
-### 入口
-- 从 **工具** 页面点击 **构建工具** 按钮
-- 或从侧边栏 **工坊** → `/projects` → 点击 **Tool 构建独立工具** 卡片
+（2026-07-12 复核实测：入口可用，初次走查未见弹窗系检测方式误判——见 F012 修订）
 
-### 步骤
-1. 点击 **构建工具** 按钮后未出现 dialog/modal(已验证 DOM 中无 `[role="dialog"]`)
-2. 尝试直接访问 `/workshop/build?type=tool` → 404
-3. 尝试直接访问 `/workshop` → 404 (但从侧边栏点击"工坊"实际跳转到 `/projects`)
-4. 从 `/projects` 页面点击 **Tool 构建独立工具** 卡片 → 同样未出现 dialog
-5. 尝试通过 ⌘K 搜索"构建工具" → 无结果
-6. 成功路径: 访问 `/projects` → 页面显示 **工坊** 标题，顶部有四个卡片:
-   - **Agent 构建智能 Agent**
-   - **Skill 构建可复用 Skill**
-   - **Tool 构建独立工具**
-   - **App 构建可发布应用**
-7. 点击 **Tool 构建独立工具** 卡片后仍未触发 form/dialog(已 wait 3s + networkidle)
-8. 查看已有 Tool 项目 **文生图集成工具** 的详情页(成功进入项目详情页，显示需求/stages/status)，确认 Tool build workflow 确实存在并能完成
+### 入口
+- **工具** 页面（/ability/tools）右上 **「构建工具」** 按钮 → 弹出 "工具构建" 弹窗（确认可用）
+- 侧边栏 **工坊** → `/projects` 顶部 **Tool 构建独立工具** 卡片（待复核，推测同弹窗）
+
+### 步骤（复核实测成功路径）
+1. /ability/tools 点击 **「构建工具」** → 弹出居中弹窗（容器是 `div.fixed.inset-0 z-[1000]`，**无 `role="dialog"` 属性**——初次走查用 `[role="dialog"]` 检测因此漏判）
+2. 弹窗结构（文案原文）：标题 "工具构建"；字段 "工具需求描述 *"（textarea，placeholder "例如：构建一个网页抓取工具，能从任意 URL 提取文本和链接，支持代理和限速..."）；"工具名称（可选）"（input，placeholder "e.g., web_scraper"）；按钮 "取消" / "开始构建"
+3. 实测提交：需求填 「创建一个获取当前 UTC 时间和指定时区当前时间的工具，输入时区名称（如 Asia/Shanghai），返回该时区的当前日期时间字符串」，名称留空 → 点 "开始构建"
+4. 提交后**立即跳转**到新建项目详情页 `/projects/proj_edbf3425dc23`，走 tool_build 工作流阶段时间轴（与 agent 构建同一 UI 体系）
+5. 历史样本佐证：已有 Tool 项目 **文生图集成工具**（5 stages, 8m, 250K tokens）完整跑完过该工作流
 
 ### 截图
-- `04-ability-tools-build-form.png` — 点击"构建工具"按钮后的页面(仍显示工具列表，无 form)
-- `04-projects-page.png` / `04-workshop-page.png` — `/workshop` 404 页面
-- `04-projects-workshop.png` — `/projects` 工坊页面，显示四个构建类型卡片
-- `04-tool-build-dialog.png` / `04-tool-build-scrolled.png` — 点击 Tool 卡片后页面(无 dialog 出现)
-- `04-tool-build-create-page.png` — 尝试访问 `/projects/create?type=tool` → "项目不存在"
-- `04-tool-project-detail.png` — 已有 Tool 项目 **文生图集成工具** 的详情页
-- `04-tasks-panel.png` / `04-new-task-dialog.png` — 任务面板的自然语言任务创建 dialog(NL描述 → 开始分析，非Tool build专用入口)
+- `04-21-tool-build-dialog.png` — "工具构建" 弹窗（空表单）
+- `04-22-tool-build-filled.png` — 需求已填写
+- `04-23-tool-build-submitted.png` — 提交后跳转项目详情页（proj_edbf3425dc23）
+- `04-ability-tools-build-form.png` — （初次走查存档：点击后截图时机过早，弹窗未捕捉到）
+- `04-projects-workshop.png` — `/projects` 工坊页四个构建类型卡片
+- `04-tool-project-detail.png` — 历史 Tool 项目 **文生图集成工具** 详情页
 
 ### 边界/发现
-- **F012**: Tool build 入口点击后未触发表单/对话框，无法在UI中直接提交工具构建需求。尝试了多种路径(构建工具按钮、Tool卡片、URL直达、cmdk搜索)均未成功打开Tool build form。但从已有项目 **文生图集成工具** 可确认 tool_build workflow 确实在后端运行且能完成(5 stages, 8m, 250K tokens)。推测: 要么Tool build入口尚未完整实现前端form，要么走的是其他非modal路径(如任务面板的自然语言创建，但任务面板偏向event scheduling，非专门的build workflow)。
+- ✅ **F012 修订：入口可用**。初次误判两个原因：a) 弹窗容器无 `role="dialog"`，DOM 探测选择器不匹配；b) agent-browser 常规 click 对该 React 按钮偶发不触发，`eval` 直点 DOM 可靠
+- 弹窗无遮罩点击关闭确认（未测 ESC）；"开始构建" 无需求文本时的禁用态未记录（下次补）
+- 提交即跳项目详情——工具构建复用 /projects 的统一项目管理与阶段时间轴
+- **可访问性问题（保留为产品建议）**：构建弹窗缺 `role="dialog"` 语义，屏幕阅读器/自动化不可发现
+- probe 工具构建项目：`proj_edbf3425dc23`（异步构建中，A9 收尾时回查最终状态；Demo② 素材可用）
 
 ---
 

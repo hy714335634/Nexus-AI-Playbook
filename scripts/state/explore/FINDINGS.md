@@ -15,7 +15,7 @@
 | F009 | 3 | 构建总览页面无法加载数据 | `/build`, `/build/graph`, `/build/modules` | 三个页面均显示红色错误提示「无法加载数据，请稍后重试」；左侧导航未见入口链接；功能可能未完成或路由配置错误 | ❌ 否 (非主流程，手册可不收录该页) |
 | F010 | 3 | ~~NL 更新入口不明显~~ **误判：入口存在** - 「版本与更新 vN」按钮 | `/apps/app_*` 应用详情页 | 复核实测：应用详情页顶部 **"版本与更新 v4"** 按钮展开版本面板，内含 NL 更新输入框（"在当前版本上修改"/"按新需求重做" 双模式）+ 版本历史（current 徽标 + "切换到此版本"）。实测提交一轮更新触发三阶段工作流（变更分析→更新开发→更新部署）。遗留小建议：按钮文案偏"版本"语义，首次用户可能不知 NL 更新藏在其中——手册明示即可 | ❌ 否 (功能完整，手册写清入口) |
 | F011 | 4 | 工具卡片点击后无 detail panel 显示 | `/ability/tools` 工具列表页 | 点击工具卡片（如 current_time）后页面无视觉变化，DOM 中未检测到 `[role="dialog"]` 或 drawer 元素；无法查看工具源码/密钥状态/绑定信息；WAIT 策略已严格执行（8s + networkidle） | ❌ 否 (工具列表可用，detail 功能缺失但非阻塞) |
-| F012 | 4 | Tool build 入口点击后无 form/dialog 触发 | `/ability/tools` "构建工具"按钮 / `/projects` "Tool 构建独立工具"卡片 | 点击多种 Tool build 入口（构建工具按钮、Tool 卡片、URL 直达 `/projects/create?type=tool`、cmdk 搜索"构建工具"）均未打开 form/dialog；但已有 Tool 项目（**文生图集成工具**，5 stages, 8m, 250K tokens）证实后端 tool_build workflow 可正常运行；推测前端 form 入口未实现或走其他路径（任务面板？） | ⚠️ 可能 (Demo② 工具/技能扩展若需实际演示 tool build，需找到或修复入口) |
+| F012 | 4 | ~~Tool build 入口无 form~~ **误判：入口可用** - 弹窗无 `role="dialog"` 导致探测漏判 | `/ability/tools` "构建工具"按钮 | 复核实测：点击 "构建工具" 弹出 "工具构建" 弹窗（需求描述 textarea + 可选工具名 + 开始构建），实测提交成功并跳转 `/projects/proj_edbf3425dc23` 走 tool_build 阶段时间轴。初次误判两因：弹窗容器缺 `role="dialog"` 语义（a11y 问题保留为产品建议）+ agent-browser 常规 click 偶发不触发 React 按钮（eval 直点可靠）。Demo② 不受影响 | ❌ 否 (功能可用；a11y 语义缺失留作产品建议) |
 | F013 | 4 | Skills 分组展开图标误触发删除对话框 | `/ability/skills` Skills 管理页 | 首次点击 Community Skills 分组的展开图标（▼）时，触发"确认删除"对话框（三按钮：仅删除分组 / 删除分组及全部 Skills / 返回），而非预期的展开行为；点击"返回"关闭后，再次点击分组标题才成功展开 Skill 列表；UI 交互逻辑可能有误：展开图标和删除操作的点击区域重叠 | ❌ 否 (workaround 可用，点分组标题即可展开) |
 
 ---
