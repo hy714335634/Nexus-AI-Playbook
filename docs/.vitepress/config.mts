@@ -54,6 +54,8 @@ const SIDEBAR = [
         text: '实战教程',
         collapsed: true,
         items: [
+          { text: '从目标到方案：能力编排配方', link: '/user-guide/orchestration-recipes' },
+          { text: '连接服务器执行任务', link: '/user-guide/bridge-server' },
           { text: '技巧与最佳实践', link: '/user-guide/tips' },
           { text: '发布第一个应用', link: '/user-guide/publish-first-app' },
           { text: '用工具扩展 Agent', link: '/user-guide/extend-agent-with-tools' },

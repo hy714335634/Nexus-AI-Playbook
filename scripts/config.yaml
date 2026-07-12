@@ -362,6 +362,21 @@ chapters:
       - web/app/(main)/troubleshoot/page.tsx
       extra_context:
       - scripts/state/explore/05-groups-events-evolution.md
+    - slug: orchestration-recipes
+      title_zh: 从目标到方案：能力编排配方
+      title_en: 'From Goal to Plan: Orchestration Recipes'
+      sources:
+      - README.md
+      - CLAUDE.md
+    - slug: bridge-server
+      title_zh: 连接服务器执行任务
+      title_en: Connecting a Server to Run Tasks
+      sources:
+      - nexus_utils/bridge/command_validator.py
+      - nexus_utils/bridge/router.py
+      - web/app/(main)/chat/**
+      extra_context:
+      - scripts/state/explore/04-ability-integration.md
     - slug: tips
       title_zh: 技巧与最佳实践
       title_en: Tips & Best Practices
