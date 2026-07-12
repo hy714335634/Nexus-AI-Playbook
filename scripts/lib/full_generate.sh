@@ -60,6 +60,20 @@ for idx in $(seq 0 $(($(jq '.items | length' "$PLAN_FILE") - 1))); do
         echo "commit: \`$COMMIT\`"
         echo
         doc_sources "$CHAPTER" "$SLUG" | python3 "$SCRIPTS_DIR/lib/_format_sources.py" "$SRC"
+
+        # Inject extra_context if present
+        while IFS= read -r extra_path; do
+            [ -z "$extra_path" ] && continue
+            FULL_PATH="$REPO_ROOT/$extra_path"
+            if [ -f "$FULL_PATH" ]; then
+                echo
+                echo "---"
+                echo
+                echo "# EXTRA CONTEXT (实测走查笔记 — 以此为准描述 UI 行为)"
+                echo
+                cat "$FULL_PATH"
+            fi
+        done < <(doc_extra_context "$CHAPTER" "$SLUG")
     } > "$WORK/sources.md"
 
     # Copy existing docs (if present)

@@ -89,3 +89,9 @@ chapter_prompt_default() {
     local ch="$1"
     yaml_get ".chapters.\"$ch\".prompt_default" | tr -d '"'
 }
+
+# doc_extra_context <chapter-id> <slug> — prints each extra_context path on its own line (empty if field absent)
+doc_extra_context() {
+    local ch="$1" slug="$2"
+    yaml_get ".chapters.\"$ch\".docs[] | select(.slug==\"$slug\") | .extra_context[]? // empty" 2>/dev/null | tr -d '"' || true
+}
