@@ -12,3 +12,11 @@ scripts/state/changes.json
 scripts/state/errors.log
 scripts/screenshots/node_modules/
 scripts/screenshots/package-lock.json
+.superpowers/
+
+# v4 exploration artifacts
+.agent-browser-auth.json
+scripts/state/explore/shots/
+demos/*/raw/
+demos/*/narration/*.mp3
+demos/*/output/
