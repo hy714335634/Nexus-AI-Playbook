@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-07-12T14:35:48+00:00",
+  "mode": "full",
+  "chapter": "user-guide",
+  "trigger": "cli",
+  "source_commit": "460f1a3f6eaf3f2c86b695c2043a5d944b0ce733",
+  "docs": [],
+  "total_cost_usd": 0,
+  "total_elapsed_s": 0,
+  "exit_code": null
+}

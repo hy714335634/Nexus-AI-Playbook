@@ -342,28 +342,24 @@ chapters:
       title_en: Avatar Space
       sources:
       - api/v2/routers/avatar.py
-      - nexus_utils/avatar/config/**
-      - nexus_utils/avatar/service/routes/**
       - config/avatar.yaml
-      - config/knowledge_graph.yaml
-      - web/app/(main)/home/**
+      - web/app/(main)/home/page.tsx
       extra_context:
       - scripts/state/explore/01-dashboard-home.md
     - slug: spotlight
       title_zh: Spotlight 命令面板
       title_en: Spotlight Command Palette
       sources:
-      - web/components/spotlight/**
+      - web/components/spotlight/SpotlightCommandPalette.tsx
       extra_context:
       - scripts/state/explore/01-dashboard-home.md
     - slug: evolution-pfr-troubleshoot
       title_zh: 进化/PFR/故障排查
       title_en: Evolution/PFR/Troubleshoot
       sources:
-      - api/v2/routers/missions.py
-      - web/app/(main)/evolution/**
-      - web/app/(main)/pfr/**
-      - web/app/(main)/troubleshoot/**
+      - web/app/(main)/evolution/page.tsx
+      - web/app/(main)/pfr/page.tsx
+      - web/app/(main)/troubleshoot/page.tsx
       extra_context:
       - scripts/state/explore/05-groups-events-evolution.md
     - slug: tips

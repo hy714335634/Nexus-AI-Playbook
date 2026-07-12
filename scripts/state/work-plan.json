@@ -1,13 +1,13 @@
 {
-  "chapter": "admin-guide",
-  "source_commit": "9d40a32f2bad2c7858b3ed0cfb4390e1bd603a30",
+  "chapter": "user-guide",
+  "source_commit": "460f1a3f6eaf3f2c86b695c2043a5d944b0ce733",
   "items": [
     {
-      "slug": "faq-ops",
+      "slug": "evolution-pfr-troubleshoot",
       "status": "to_generate",
-      "title_zh": "常见问题与排障",
-      "title_en": "FAQ & Troubleshooting",
-      "prompt": "admin-guide.md",
+      "title_zh": "进化/PFR/故障排查",
+      "title_en": "Evolution/PFR/Troubleshoot",
+      "prompt": "user-guide.md",
       "model": "default"
     }
   ]
