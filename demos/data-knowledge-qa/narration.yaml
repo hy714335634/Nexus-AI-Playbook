@@ -1,0 +1,51 @@
+scenes:
+  - id: s0-intro
+    title: "开场标题卡"
+    zh: "让 AI 读懂你的资料。把文档、数据、业务系统接进来，Agent 就能基于它们回答问题。"
+    en: "Let AI understand your data. Connect documents and systems, and your Agent answers from them."
+    max_sec: 6
+  - id: s1-problem
+    title: "痛点"
+    zh: "每家公司都有一堆资料：产品手册、规章制度、业务数据。可它们躺在文件夹里，没人看，问题还是一遍遍问。"
+    en: "Every company has piles of docs and data — sitting in folders, unread, while the same questions keep coming."
+    max_sec: 17
+  - id: s2-integration
+    title: "业务集成中心"
+    zh: "Nexus-AI 的业务集成中心，就是让 AI 接入这些资料的地方：资产模板、数据连接、密钥管理、业务指示，一站式管理。"
+    en: "The Integration hub is where AI connects to your data — asset templates, data connections, keys, and directives, all in one place."
+    max_sec: 18
+  - id: s3-dataconn
+    title: "数据连接"
+    zh: "数据连接让 Agent 直接查询你的业务系统：数据库、HTTP 接口、知识库。平台默认强制只读，安全接入。"
+    en: "Data connections let Agents query your systems — databases, APIs, knowledge bases — read-only by default, safely."
+    max_sec: 17
+  - id: s4-keys
+    title: "密钥安全"
+    zh: "接入外部系统需要凭证？密钥管理集中保管，加密存储，工具和连接器安全引用，绝不明文暴露。"
+    en: "Need credentials? Key management stores them encrypted, referenced safely by tools — never exposed in plain text."
+    max_sec: 16
+  - id: s5-kb-story
+    title: "知识问答案例"
+    zh: "一个真实案例：把整套产品手册接入知识库，做成一个问答助手。同事有问题，直接问它，不用再翻文档。"
+    en: "A real case — connect the whole product manual to a knowledge base, as a Q&A assistant. Ask it instead of digging through docs."
+    max_sec: 18
+  - id: s6-ask
+    title: "真实提问"
+    zh: "打开这个助手，问一个真实问题：怎么给已有的 Agent 添加新工具？点击提问。"
+    en: "Open the assistant and ask a real question: how do I add a new tool to an existing Agent? Click Ask."
+    max_sec: 14
+  - id: s7-answer
+    title: "基于资料的回答"
+    zh: "答案基于手册原文：分步操作指引，每一步告诉你在哪个菜单、点哪个按钮，末尾还附上手册出处，准确可核对。"
+    en: "The answer comes straight from the manual — step-by-step guidance with menu paths and citations, accurate and verifiable."
+    max_sec: 18
+  - id: s8-value
+    title: "价值"
+    zh: "资料一次接入，全员随时自助。知识不再沉睡在文件夹里，而是变成随问随答的能力。"
+    en: "Connect once, and everyone self-serves. Knowledge stops sleeping in folders and becomes answers on demand."
+    max_sec: 16
+  - id: s9-outro
+    title: "结尾标题卡"
+    zh: "接入资料、建成助手、随问随答。这就是 Nexus-AI，让你的知识，开口说话。"
+    en: "Connect data, build an assistant, answer on demand. That's how Nexus-AI makes your knowledge speak."
+    max_sec: 14
