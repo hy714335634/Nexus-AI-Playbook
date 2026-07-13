@@ -1,64 +1,98 @@
 #!/usr/bin/env python3
-"""Generate SRT subtitles from narration.yaml + measured mp3 durations.
+"""Generate SRT subtitles for demo videos.
 
-Usage: gen_srt.py <demo-dir> <lang>     (writes <demo-dir>/subtitles/<lang>.srt)
+Two modes:
 
-Scene N's subtitle shows from that scene's start until its narration audio
-ends. Scene start = cumulative max(video_seg, audio) of prior scenes, matching
-compose.sh which pads each video segment to at least its narration length.
-Long narration lines are split into <=42-char cues proportionally.
+  # Per-scene (used by compose.sh): print ONE scene's SRT starting at 0 to stdout.
+  gen_srt.py --scene <scene-id> <narration_seconds> <lang>
+     reads narration.yaml in CWD, finds the scene, splits its <lang> text into
+     subtitle-sized cues sharing the narration duration.
+
+  # Whole-video (legacy/manual): write <demo-dir>/subtitles/<lang>.srt
+  gen_srt.py <demo-dir> <lang>
+     concatenated timeline = sum of (narration + 0.8s) per scene.
+
+Per-scene mode is sync-safe: each scene's subtitle is burned into that scene at
+its own zero, so concatenation cannot drift.
 """
-import sys, json, subprocess, pathlib
+import sys
+import pathlib
 import yaml
-
-
-def dur(p):
-    out = subprocess.run(["ffprobe", "-v", "quiet", "-show_entries", "format=duration",
-                          "-of", "json", str(p)], capture_output=True, text=True)
-    return float(json.loads(out.stdout)["format"]["duration"])
 
 
 def ts(sec):
     h = int(sec // 3600); m = int(sec % 3600 // 60); s = sec % 60
-    return f"{h:02d}:{m:02d}:{int(s):02d},{int(s % 1 * 1000):03d}"
+    return f"{h:02d}:{m:02d}:{int(s):02d},{int(round(s % 1 * 1000)):03d}"
 
 
-def split_text(text, limit=42):
-    """split narration into subtitle-sized lines on punctuation/space"""
+def split_text(text, limit=24):
+    """Split narration into subtitle-sized lines on punctuation, then length."""
+    text = text.strip()
     if len(text) <= limit:
         return [text]
     parts, cur = [], ""
     for ch in text:
         cur += ch
-        if len(cur) >= limit and ch in "，。；！？, .;!?":
-            parts.append(cur.strip()); cur = ""
+        if len(cur) >= limit and ch in "，。；！？,.;!?、":
+            parts.append(cur.strip().strip("，。；、")); cur = ""
     if cur.strip():
-        parts.append(cur.strip())
-    return parts or [text]
+        parts.append(cur.strip().strip("，。；、"))
+    # merge stray very-short tails
+    merged = []
+    for p in parts:
+        if merged and len(p) < 6:
+            merged[-1] = merged[-1] + p
+        else:
+            merged.append(p)
+    return merged or [text]
 
 
-def main():
-    d = pathlib.Path(sys.argv[1]); lang = sys.argv[2]
+def cues_for(text, dur, start=0.0):
+    chunks = split_text(text)
+    # weight each cue by its char length so long lines linger longer
+    weights = [max(1, len(c)) for c in chunks]
+    total_w = sum(weights)
+    lines, t, idx = [], start, 1
+    for c, w in zip(chunks, weights):
+        seg = dur * w / total_w
+        lines += [str(idx), f"{ts(t)} --> {ts(t + seg)}", c, ""]
+        idx += 1; t += seg
+    return lines
+
+
+def scene_mode(scene_id, narration_sec, lang):
+    scenes = yaml.safe_load(open("narration.yaml"))["scenes"]
+    s = next(x for x in scenes if x["id"] == scene_id)
+    sys.stdout.write("\n".join(cues_for(s[lang], float(narration_sec))))
+
+
+def whole_mode(demo_dir, lang):
+    import subprocess, json
+    d = pathlib.Path(demo_dir)
     scenes = yaml.safe_load((d / "narration.yaml").read_text())["scenes"]
-    seg = json.loads((d / "raw/segments.json").read_text())
 
-    # 段长与 compose.sh 保持一致：每段 = 旁白时长 + 0.6s 尾留白
-    t = 0.0; idx = 1; lines = []
+    def dur(p):
+        o = subprocess.run(["ffprobe", "-v", "quiet", "-show_entries",
+                            "format=duration", "-of", "json", str(p)],
+                           capture_output=True, text=True)
+        return float(json.loads(o.stdout)["format"]["duration"])
+
+    t, lines, idx = 0.0, [], 1
     for s in scenes:
-        audio = dur(d / f"narration/{s['id']}.{lang}.mp3")
-        seg_len = round(audio + 0.6, 2)
-        chunks = split_text(s[lang])
-        per = audio / len(chunks)
-        ct = t
-        for c in chunks:
-            lines += [str(idx), f"{ts(ct)} --> {ts(min(ct + per, t + audio))}", c, ""]
-            idx += 1; ct += per
-        t += seg_len
+        a = dur(d / f"narration/{s['id']}.{lang}.mp3")
+        block = cues_for(s[lang], a, start=t)
+        # renumber
+        for i in range(0, len(block), 4):
+            block[i] = str(idx); idx += 1
+        lines += block
+        t += a + 0.8
     (d / "subtitles").mkdir(exist_ok=True)
-    out = d / f"subtitles/{lang}.srt"
-    out.write_text("\n".join(lines), encoding="utf-8")
-    print(f"wrote {out} ({idx - 1} cues, total {t:.1f}s)")
+    (d / f"subtitles/{lang}.srt").write_text("\n".join(lines), encoding="utf-8")
+    print(f"wrote subtitles/{lang}.srt")
 
 
 if __name__ == "__main__":
-    main()
+    if sys.argv[1] == "--scene":
+        scene_mode(sys.argv[2], sys.argv[3], sys.argv[4])
+    else:
+        whole_mode(sys.argv[1], sys.argv[2])

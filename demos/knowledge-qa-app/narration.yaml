@@ -1,0 +1,61 @@
+scenes:
+  - id: s0-intro
+    title: "开场标题卡"
+    zh: "Nexus-AI 应用中心。把一个 AI 助手，变成全公司都能用的网页应用。"
+    en: "The Nexus-AI App Center — turn an AI assistant into a web app your whole team can use."
+    max_sec: 6
+  - id: s1-problem
+    title: "痛点"
+    zh: "支持团队的小李，每天被同事的各种使用问题淹没：怎么创建 Agent、怎么发布应用、报错怎么办。今天他要做一个能自动回答这些问题的助手。"
+    en: "Li on the support team is flooded daily with how-to questions. Today he builds an assistant that answers them automatically."
+    max_sec: 18
+  - id: s2-open-app
+    title: "打开应用中心"
+    zh: "打开应用中心，这里能把 AI 助手包装成网页应用。他要发布的，是一个基于官方手册的问答助手。"
+    en: "He opens the App Center, where AI assistants become web apps. He's publishing a manual-based Q&A assistant."
+    max_sec: 14
+  - id: s3-app-detail
+    title: "应用详情"
+    zh: "这就是他做好的帮助中心应用：绑定了一个会检索官方手册的 AI 助手，随时可以发布给全公司。"
+    en: "Here's his Help Center app — bound to an assistant that searches the official manual, ready to publish company-wide."
+    max_sec: 15
+  - id: s4-publish
+    title: "发布"
+    zh: "关键一步，发布。选择有效期和访问方式：公开、密码、或 API 调用。点击发布，平台立刻生成一条专属链接。"
+    en: "The key step — publish. Choose validity and access. Click publish, and the platform generates a dedicated link."
+    max_sec: 17
+  - id: s5-link
+    title: "拿到公开链接"
+    zh: "发布成功。这就是公开链接，任何人打开它，不用登录、不用安装，直接就能用。他把链接发到团队群里。"
+    en: "Published. This is the public link — no login, no install, anyone can use it. He shares it in the team chat."
+    max_sec: 14
+  - id: s6-anon-open
+    title: "同事打开"
+    zh: "换个全新的浏览器窗口，模拟同事的视角打开链接。界面干净清爽，一个输入框，几个常见问题的快捷入口。"
+    en: "In a fresh browser window, as a colleague, he opens the link. Clean and simple — an input box and a few quick questions."
+    max_sec: 15
+  - id: s7-anon-ask
+    title: "真实提问"
+    zh: "同事问了一个真实问题：怎么把 Agent 发布成全公司能用的网页应用？点击提问。"
+    en: "The colleague asks a real question: how do I publish an Agent as a company-wide web app? And clicks Ask."
+    max_sec: 14
+  - id: s8-anon-answer
+    title: "秒级得到答案"
+    zh: "几秒钟，答案就出来了：分步操作指引，每一步告诉你点哪里，末尾还附上了官方手册的出处。同事不用再等人回复。"
+    en: "Seconds later, the answer appears — step-by-step guidance with manual citations. No more waiting for a human reply."
+    max_sec: 18
+  - id: s9-deep
+    title: "深层问题也能答"
+    zh: "更难的问题也不在话下。问它我想构建一个做授权渗透测试的 Agent 怎么做，它会给出完整的能力编排路径：先建什么、再连什么、怎么出报告。"
+    en: "Even hard questions work. Ask how to build an authorized pentest Agent, and it lays out the full orchestration path."
+    max_sec: 19
+  - id: s10-iterate
+    title: "一句话迭代"
+    zh: "收到反馈想改进？回到应用，在版本与更新里用一句话描述，AI 自动更新并产出新版本，旧版本随时能一键回退。"
+    en: "Want improvements? Back in the app, describe them in one sentence. The AI updates and versions it, with one-click rollback."
+    max_sec: 16
+  - id: s11-outro
+    title: "结尾标题卡"
+    zh: "构建、发布、迭代，全程一句话。这就是 Nexus-AI 应用中心，让每个人都能把想法变成全公司的生产力。"
+    en: "Build, publish, iterate — all in plain language. That's the Nexus-AI App Center."
+    max_sec: 14
