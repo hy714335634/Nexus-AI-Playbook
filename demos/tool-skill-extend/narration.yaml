@@ -1,0 +1,51 @@
+scenes:
+  - id: s0-intro
+    title: "开场标题卡"
+    zh: "给你的 AI Agent，添加新能力。工具和技能，让 Agent 从会聊天，变成能干活。"
+    en: "Give your AI Agent new abilities. Tools and skills turn a chatbot into a doer."
+    max_sec: 6
+  - id: s1-problem
+    title: "痛点"
+    zh: "数据分析师小李的 Agent 很会聊，但一到查实时汇率、调外部接口就不会了。它缺的，是干活的工具。"
+    en: "Analyst Li's Agent talks well, but can't fetch live rates or call APIs. What it lacks are tools."
+    max_sec: 16
+  - id: s2-toolhub
+    title: "能力中心总览"
+    zh: "打开能力中心的工具库。这里已经有一百多个现成工具：文件处理、网络搜索、图像生成、数据查询，覆盖各种场景。"
+    en: "Open the Tool Library. Over a hundred ready-made tools already — files, search, image generation, data queries."
+    max_sec: 16
+  - id: s3-categories
+    title: "工具分类"
+    zh: "工具按来源分类：内置、系统、模板，还有 AI 为你生成的工具。找不到合适的？那就造一个。"
+    en: "Tools are grouped by source — built-in, system, template, and AI-generated. Can't find one? Build it."
+    max_sec: 15
+  - id: s4-build-entry
+    title: "构建工具入口"
+    zh: "点击构建工具。不用写代码——用一句话描述你要的工具，比如一个查询实时汇率的工具，AI 就会帮你把它造出来。"
+    en: "Click Build Tool. No code — describe what you want in a sentence, like a live exchange-rate tool, and AI builds it."
+    max_sec: 17
+  - id: s5-generated
+    title: "真实的生成工具"
+    zh: "这些就是 AI 生成的工具：文生图、日志分析、图像预处理，每一个都是一句话需求变出来的，可以直接给 Agent 用。"
+    en: "These are AI-generated tools — image generation, log analysis, and more. Each built from a sentence, ready for any Agent."
+    max_sec: 17
+  - id: s6-attach
+    title: "挂载到 Agent"
+    zh: "造好的工具，在创建或更新 Agent 时勾选就能挂上。Agent 立刻获得这项能力，对话时就能调用它。"
+    en: "Attach a tool by ticking it when creating or updating an Agent. It instantly gains that ability in conversation."
+    max_sec: 16
+  - id: s7-skills
+    title: "技能库"
+    zh: "比工具更进一步的是技能。技能库里有社区技能、系统技能，还有你自己沉淀的技能，都能一键复用。"
+    en: "Beyond tools are skills. The Skills Library has community, system, and your own saved skills — all reusable in one click."
+    max_sec: 16
+  - id: s8-reuse
+    title: "沉淀复用"
+    zh: "把一套好用的能力存成技能，下次做新 Agent 直接复用，不用重新造。团队的能力，越攒越厚。"
+    en: "Save a capability as a skill, and reuse it in the next Agent — no rebuilding. Your team's abilities compound."
+    max_sec: 16
+  - id: s9-outro
+    title: "结尾标题卡"
+    zh: "一句话造工具，勾选即挂载，存成技能反复用。这就是 Nexus-AI，让你的 Agent 能力，不断生长。"
+    en: "Build tools in a sentence, attach with a tick, save as skills. That's how your Agents keep growing on Nexus-AI."
+    max_sec: 14
