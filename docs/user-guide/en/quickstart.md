@@ -18,6 +18,15 @@ This walks you through the one path that matters most: **describe the AI assista
 All you need is an account you can sign in with. If you don't have one yet, ask your administrator for the **URL** and your **username and password**. To get familiar with the interface first, see [Sign In & UI Tour](./first-login.md).
 :::
 
+::: tip What have others built with it?
+A few real examples to help you picture what you could create:
+- **Security code auditor** — scans an entire code repository, finds security risks, and produces a report you can hand off;
+- **Research figure assistant** — turns experiment data into charts that meet journal submission standards;
+- **Cloud cost optimizer** — reads an AWS bill and gives savings recommendations with before/after comparison.
+
+What they share: each needs **domain expertise + specific data + a fixed deliverable** — not something a casual chat can produce. That's exactly where an Agent earns its keep.
+:::
+
 ## The three things you'll do
 
 | Step | What you do | Roughly how long |
@@ -54,9 +63,13 @@ A good request usually covers three things: **who it's for, what it should do, a
 
 | Too vague | Better |
 |-----------|--------|
-| Help me with documents | Create an assistant that reads PDF contracts, extracts key clauses, and lists them out |
-| Analyze data | Create an assistant that analyzes the monthly sales spreadsheet, spots gains and drops, and writes a short summary |
-| Make a support bot | Create an assistant that answers common customer questions based on our product guide |
+| Help me analyze stuff | Create a cloud cost optimizer: paste an AWS monthly bill, analyze the cost breakdown, give savings recommendations, and compare before/after |
+| Make a monitoring thing | Create a competitor-intelligence assistant that tracks a given competitor's site and news daily, and summarizes it into a tiered briefing |
+| Help me make charts | Create a research figure assistant that turns my experiment data into journal-ready charts, exported as PNG and SVG |
+
+::: tip Which needs are worth handing to an Agent?
+The platform shines at packaging **domain expertise + specific data/tools + a fixed deliverable** into an assistant you can summon anytime. Things like "read live data," "produce a report to an industry standard," or "operate your business systems" — where a general chat tool falls short — are exactly where Agents fit. Conversely, if a plain chat already gives you a satisfying answer, there's no need to build an Agent for it.
+:::
 
 ::: tip Not sure how to phrase it?
 Just tweak one of the examples above. If you're not happy with the result, you can always ask it to adjust later — it doesn't have to be perfect on the first try. See [Creating an Agent](./create-agent.md) for full tips.

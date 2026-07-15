@@ -139,6 +139,31 @@ When every stage turns ✅, your Agent is ready. Now you can:
 - **Chat** with it directly to try it out.
 - If it's not quite right, describe your improvements in a sentence and let the system update it for you.
 
+## Worked example: building a "Cloud Cost Optimizer"
+
+Steps alone can feel abstract. Here's a real scenario end to end — one that needs **domain expertise (cloud billing) + specific input (a bill) + a fixed deliverable (an optimization report)**, exactly the kind of need worth handing to an Agent.
+
+**Context**: Every month the ops team wades through AWS bills to find overspend and savings — slow and easy to miss things.
+
+**Step 1 — write the request** (Quick create; cover who it's for / what it does / what result you want):
+
+> Create a cloud cost optimizer: I'll paste or describe an AWS monthly bill, and you analyze the cost structure (by service and by purpose), find items to optimize with concrete recommendations (like downsizing instances, reserved instances, cleaning up idle resources), and compare projected cost before and after. Answer in English, conclusions first.
+
+**Step 2 — why this phrasing works**:
+
+| This phrase in the request | What it does |
+|----------------------------|--------------|
+| "analyze the cost structure (by service and by purpose)" | Tells it **how to break things down**, not just "look at the bill" |
+| "concrete recommendations (like downsizing…)" | Gives **direction and examples**, so output is actionable |
+| "compare projected cost before and after" | Fixes the **deliverable shape** — a quantified result every time |
+| "conclusions first" | Sets the **layout** so you see the key point at a glance |
+
+**Step 3 — put it to work**: once built, paste bill details into the chat and it produces the analysis in your chosen format. Not enough? Follow up with "expand on the reserved-instance part" and it refines in place.
+
+::: tip Apply the pattern elsewhere
+Swap "AWS bill / cost optimization" for your own domain and the recipe holds: **state what goes in, how to process it, and what format comes out**. For example: "paste a server error log, identify likely causes and give troubleshooting steps," or "upload a contract and check it clause by clause against our review checklist."
+:::
+
 ## FAQ
 
 ::: tip What if I want to change my request mid-build?
