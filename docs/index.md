@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "Nexus-AI"
   text: "产品使用手册"
-  tagline: 用自然语言构建 AI Agent — 从想法到可用的智能应用，只需几分钟
+  tagline: 适用于 Nexus-AI v0.3.12
   image:
     src: /default_logo.png
     alt: Nexus-AI
@@ -14,7 +14,7 @@ hero:
       link: /user-guide/quickstart
     - theme: alt
       text: 🛡️ 管理员手册
-      link: /admin-guide/deploy-upgrade
+      link: /admin-guide/config-management
 
 features:
   - icon: 🚀
@@ -50,54 +50,7 @@ features:
 ---
 
 <style>
-/* Home page specific enhancements */
-.VPHome {
-  position: relative;
-}
-
-/* Animated gradient orbs behind hero */
-.VPHero::after {
-  content: '';
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
-  top: -200px;
-  right: -200px;
-  animation: orbFloat 15s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes orbFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-30px, 20px) scale(1.05); }
-  66% { transform: translate(20px, -15px) scale(0.95); }
-}
-
-/* Stats bar between hero and features */
-.VPHome .VPFeatures {
-  position: relative;
-}
-
-.VPHome .VPFeatures::before {
-  content: '✨ 平均构建时间 35 分钟  ·  🎯 质量评分 9.3/10  ·  ✅ 成功率 100%  ·  💰 平均成本 $3.41';
-  display: block;
-  text-align: center;
-  padding: 16px 24px;
-  margin: 0 auto 40px;
-  max-width: 800px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--vp-c-text-2);
-  background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(139,92,246,0.04) 100%);
-  border: 1px solid rgba(99,102,241,0.1);
-  border-radius: 12px;
-  letter-spacing: 0.01em;
-}
-
-.dark .VPHome .VPFeatures::before {
-  background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(139,92,246,0.06) 100%);
-  border-color: rgba(129,140,248,0.15);
-}
+.VPHome { position: relative; }
+/* Smaller feature icons */
+.VPHome .VPFeature .icon { font-size: 1.6rem; }
 </style>
