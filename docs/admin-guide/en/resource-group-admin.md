@@ -123,3 +123,8 @@ As an administrator, you have platform-wide authority over resource groups:
 - The access list is visible only to owners and administrators; grantees cannot see other members.
 - Owner permission cannot be removed via the revoke button.
 - Deleting a folder or removing a resource only breaks the association, not the resource itself; deleting a folder cannot be undone.
+
+## See Also
+
+- [Users & Permissions](./users-permissions.md) — user roles and permission policies that determine who can create and manage resource groups
+- [Audit Trail](./audit.md) — audit records for resource group sharing and permission changes

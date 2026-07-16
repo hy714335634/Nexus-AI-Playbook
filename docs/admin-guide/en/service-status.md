@@ -21,7 +21,7 @@ Every action on this page requires the matching permission: viewing status needs
 
 Sidebar「Management」→「Service Status」, or go directly to `/admin/service-status`.
 
-The top of the page offers a quick link to Configuration Management, so you can jump straight to tuning parameters after diagnosing an issue.
+The top of the page offers a quick link to [Configuration Management](./config-management.md), so you can jump straight to tuning parameters after diagnosing an issue.
 
 ![admin-service-status](/images/admin-service-status.png)
 
@@ -173,3 +173,9 @@ For routine checks, prefer the web「Overview」— one screen shows health scor
 - Stopping a service interrupts related features immediately and is recorded as a critical alert — don't leave one stopped for long unless necessary.
 - The Ops Helper only diagnoses; it does not perform risky actions like restart / stop for you.
 - When「Infrastructure Connections」shows `error`, the problem is likely in an underlying dependency (database / cache / storage) rather than a platform service itself.
+
+## See Also
+
+- [Built-in AI Helpers](./helper-agents.md) — full capabilities and usage of the Ops Helper
+- [Config Management](./config-management.md) — where to go when a config change requires a restart
+- [Deployment & Upgrade](./deploy-upgrade.md) — post-upgrade service restarts and nexus-cli service commands

@@ -932,3 +932,95 @@ body {
 .VPHero .VPImage.image-src {
   border-radius: 20px !important;
 }
+
+
+/* ---------- Screenshot Click-to-Zoom ---------- */
+/* Content screenshots: bordered, subtle shadow, zoom cursor + hover cue */
+.vp-doc img:not(.no-zoom) {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  cursor: zoom-in;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.vp-doc img:not(.no-zoom):hover {
+  box-shadow: 0 8px 28px rgba(99, 102, 241, 0.22);
+  transform: translateY(-2px);
+}
+
+.dark .vp-doc img:not(.no-zoom) {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* medium-zoom overlay + zoomed image — must sit above the sidebar (VPSidebar
+   uses z-index ~50). Force full-viewport overlay and top-most stacking so the
+   zoomed screenshot is never clipped by page chrome. */
+.medium-zoom-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 2147483646 !important;
+}
+.medium-zoom-image--opened {
+  z-index: 2147483647 !important;
+  border-radius: 8px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+/* keep the site sidebar/nav below the zoom layer while zooming */
+body:has(.medium-zoom-image--opened) .VPSidebar,
+body:has(.medium-zoom-image--opened) .VPNav {
+  z-index: 1 !important;
+}
+
+
+/* ---------- Collapsible Sidebar ---------- */
+/* Floating toggle button, fixed near the top-left, always reachable */
+/* --- Sidebar collapse toggle (icon-only, inside nav bar) --- */
+.nx-sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+  color: var(--vp-c-text-3);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.nx-sidebar-toggle:hover {
+  color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+}
+.nx-sidebar-toggle.is-collapsed {
+  color: var(--vp-c-text-2);
+}
+.nx-sidebar-toggle svg {
+  flex-shrink: 0;
+}
+
+/* When collapsed: hide the sidebar and let content span full width */
+html.nx-sidebar-collapsed .VPSidebar {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+html.nx-sidebar-collapsed .VPContent.has-sidebar {
+  padding-left: 0 !important;
+}
+html.nx-sidebar-collapsed .VPDoc {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+@media (max-width: 959px) {
+  /* on mobile VitePress already has its own drawer; hide our toggle */
+  .nx-sidebar-toggle { display: none; }
+}

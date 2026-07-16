@@ -170,7 +170,7 @@ A key is an access credential. Always use Secrets Manager storage in production;
 
 ## MCP Services
 
-Consuming and managing external tool servers (MCP) is a separate capability, reached via sidebar「Capability Center」→「MCP Services」; see *MCP Service Management*. It is also an external integration, but registering, enabling, and testing connections all happen in the Capability Center, not on this page.
+Consuming and managing external tool servers (MCP) is a separate capability, reached via sidebar「Capability Center」→「MCP Services」; see [MCP Service Management](./mcp.md). It is also an external integration, but registering, enabling, and testing connections all happen in the Capability Center, not on this page.
 
 ## Notes
 
@@ -179,3 +179,8 @@ Consuming and managing external tool servers (MCP) is a separate capability, rea
 - A key's plaintext is never shown after save, and deletion is irreversible; check the "reference count" before deleting to confirm nothing uses it.
 - Data-connection audit logs are retained for 90 days by default, useful for tracing who queried which source and when.
 - Test a new connection before enabling it, so you don't expose unreachable sources or bad credentials only at agent runtime.
+
+## See Also
+
+- [Config Management](./config-management.md) — adjust global default parameters for data connections
+- [Model Catalog & Access](./model-access.md) — manage model access that agents depend on at runtime

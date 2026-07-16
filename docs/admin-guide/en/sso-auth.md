@@ -27,11 +27,11 @@ Users see the login page first. With SSO enabled, the login page adds an enterpr
 
 | Mode | Best for | Account source | Password management |
 |------|----------|----------------|---------------------|
-| **Local account** | First deployment, small teams, intranet | Created in the platform (see "Users & Permissions") | Set and reset in the platform |
+| **Local account** | First deployment, small teams, intranet | Created in the platform (see [Users & Permissions](./users-permissions.md)) | Set and reset in the platform |
 | **SSO (SAML 2.0)** | Existing corporate identity, unified login and central control | Provisioned automatically on first login | Managed by the IdP; not changeable on the platform |
 
 ::: warning
-Login-related settings are driven by config files; changes take effect only **after a service restart**. Where to edit and how to restart are covered in "Config Management" and "Service Status".
+Login-related settings are driven by config files; changes take effect only **after a service restart**. Where to edit and how to restart are covered in [Config Management](./config-management.md) and [Service Status](./service-status.md).
 :::
 
 ## Configuring SSO (SAML 2.0)
@@ -81,11 +81,11 @@ When deployed behind a reverse proxy such as CloudFront / ALB, SSL terminates at
 
 ### Roles for SSO Users
 
-Users who log in via SSO for the first time are provisioned automatically. Their role and permissions can be adjusted on the "Users & Permissions" page, following the same rules as local accounts — permissions are driven by policies. See "Users & Permissions" for details.
+Users who log in via SSO for the first time are provisioned automatically. Their role and permissions can be adjusted on the [Users & Permissions](./users-permissions.md) page, following the same rules as local accounts — permissions are driven by policies.
 
 ## Local-Account Mode
 
-Without SSO, users log in with a username and password held in the platform. A default admin account ships built in (username `admin`, password `nexus`) — **change it immediately after the first deployment**. Day-to-day account creation, password changes, and disabling are all done on the "Users & Permissions" page.
+Without SSO, users log in with a username and password held in the platform. A default admin account ships built in (username `admin`, password `nexus`) — **change it immediately after the first deployment**. Day-to-day account creation, password changes, and disabling are all done on the [Users & Permissions](./users-permissions.md) page.
 
 | Key | Purpose | How it applies |
 |-----|---------|----------------|
@@ -104,7 +104,7 @@ After a successful login, the platform issues a time-limited session token that 
 
 - **Logout**: signing out of the platform ends the current session.
 - **Single logout**: with `sso.idp_logout_url` configured, an SSO user's logout also ends the session on the IdP side.
-- **Disabled accounts**: once an account is disabled on the "Users & Permissions" page, it can no longer access the platform even with an unexpired token, and receives an "account is disabled" message.
+- **Disabled accounts**: once an account is disabled on the [Users & Permissions](./users-permissions.md) page, it can no longer access the platform even with an unexpired token, and receives an "account is disabled" message.
 
 ## Customizing the Login Page
 
@@ -121,7 +121,7 @@ The login page's appearance comes from the app manifest; you can adjust branding
 
 ## Companion AI Assistant
 
-Every login and SSO switch lives in the config. On the "Config Management" page you can open the **Config Assistant** to help you locate the `sso` and `auth` groups and explain what each field does and whether it needs a restart. After editing the config, restart following the guidance in "Service Status" to apply the changes.
+Every login and SSO switch lives in the config. On the [Config Management](./config-management.md) page you can open the **Config Assistant** to help you locate the `sso` and `auth` groups and explain what each field does and whether it needs a restart. After editing the config, restart following the guidance in [Service Status](./service-status.md) to apply the changes.
 
 ## Notes
 
@@ -132,3 +132,8 @@ Every login and SSO switch lives in the config. On the "Config Management" page 
 - `sp_acs_url` must be the external HTTPS address users actually reach — especially important behind a reverse proxy.
 - The IdP must sign assertions, or login will be rejected.
 - Never disable `enforce_auth` in production.
+
+## See Also
+
+- [Users & Permissions](./users-permissions.md) — account creation, role assignment, disabling, and permission policies
+- [Audit Trail](./audit.md) — audit records for login events and authentication actions

@@ -5,7 +5,9 @@ sync:
   generated_by: playbook v4 (orchestration layer)
 ---
 
-# 连接服务器执行任务（Nexus Bridge）
+# 连接服务器执行任务（Nexus Bridge · 远程服务器模式）
+
+**Nexus Bridge** 面板提供两种连接模式：**远程服务器**（本篇）和 **Browser**（见[浏览器扩展](./browser-extension.md)）。本篇介绍「远程服务器」标签——让 Agent 到你的服务器上干活。
 
 有些任务光在对话里回答不够，需要 AI **真的到你的服务器上去操作**——跑一套检查、收集日志、装个环境、执行一段流程。**Nexus Bridge** 就是干这个的：它在你和目标服务器之间架一座桥，让对话里的 Agent 能在你授权的服务器上执行命令、读写文件、生成结果。
 

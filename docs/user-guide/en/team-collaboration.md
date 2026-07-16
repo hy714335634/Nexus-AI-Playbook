@@ -36,7 +36,7 @@ Team membership is managed by your administrator. If you're unsure which team yo
 The most common way to collaborate is to put a set of resources into a "folder" and then share that folder with a **whole team**, instead of forwarding it to each person one by one.
 
 ::: tip Prepare the folder first
-Before sharing, you need a folder with resources in it. To learn how to create a folder and add resources, see the **Resource Groups & Sharing** page. Here we only cover the "share with a team" step.
+Before sharing, you need a folder with resources in it. To learn how to create a folder and add resources, see [Resource Groups & Sharing](./resource-groups-sharing.md). Here we only cover the "share with a team" step.
 :::
 
 Steps:
@@ -110,5 +110,11 @@ Adding, removing, and reshuffling teams is all done by the administrator. When a
 :::
 
 ::: tip Can I share an "app" with a team?
-No. Apps can't be placed in shared folders, so they can't be shared with a team through a folder. Every other type — agents, skills, projects, connectors, keys, directives, tools, servers, templates, and so on — can.
+No. Apps can't be placed in shared folders, so they can't be shared with a team through a folder. Every other type — agents, skills, projects, connectors, keys, directives, tools, servers, templates, and so on — can. If you want colleagues to use your agent, you can [publish it as an app](./publish-first-app.md) — once published it appears in the [App Center](./app-center.md) where everyone can find it.
 :::
+
+## Related pages
+
+- [Resource Groups & Sharing](./resource-groups-sharing.md) — Create folders, add resources, and share with people or teams
+- [Publish Your First App](./publish-first-app.md) — Turn an agent into an app everyone can use
+- [App Center](./app-center.md) — Browse and install all apps your team has published

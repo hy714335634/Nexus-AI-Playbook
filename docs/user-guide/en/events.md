@@ -20,6 +20,25 @@ Common uses:
 - Check pending items every Monday morning and send a reminder
 - Let an agent keep working toward a goal, step by step, until it's done
 
+## Real scenario: automated weekly cloud cost report
+
+Imagine this: every Monday at 9 AM, your agent logs into your cloud cost dashboard, pulls this week's and last week's spending data, compares the changes, and drops a concise cost analysis report in your workspace. You set it up once; it runs forever.
+
+This scenario ties three things together — scheduled execution + remote server connection + report generation — a combination only this platform provides.
+
+**How to set it up:**
+
+1. First, [create an agent that can analyze cost data](./create-agent.md) — just describe its capabilities in plain language.
+2. If the agent needs to log into a remote server to pull data, set up the connection in [Server Connections](./bridge-server.md) first.
+3. [Chat](./chat.md) with the agent once to confirm it can correctly analyze data and output the report format you want.
+4. Once everything checks out, come back to this page, click **New Job**, and type something like "Every Monday at 9 AM, connect to the cost dashboard, compare this week vs last week's spending, and generate a cost change report."
+
+Done. From now on, every Monday you open your workspace and the report is already there.
+
+::: tip More combination patterns
+This pattern (scheduled + server connection + report generation) is covered in detail in [Orchestration Recipes](./orchestration-recipes.md), Recipe 3.
+:::
+
 ## Three types of jobs
 
 | Type | When it runs | Good for |
@@ -123,3 +142,10 @@ By default you only see the jobs you created. If someone shares a job with you t
 ::: warning Deleting a job can't be undone
 Deleting a job also clears all of its run records, and they can't be recovered. If you just don't need it for now, use "Pause" instead of "Delete."
 :::
+
+## Related guides
+
+- [Create an Agent](./create-agent.md) — build the agent that will do the scheduled work
+- [Server Connections](./bridge-server.md) — if your scheduled job needs access to a remote server
+- [Chat](./chat.md) — test your agent manually before scheduling it
+- [Orchestration Recipes](./orchestration-recipes.md) — Recipe 3 covers the "scheduled + server + report" pattern in detail

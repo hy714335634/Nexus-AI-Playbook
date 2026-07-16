@@ -40,7 +40,7 @@ Prepare the following before you start:
 | Model access | In the Bedrock console of the **deployment region** → *Model access*, enable the models the platform needs (the Claude family). IAM cannot substitute for this step; new accounts must request it manually the first time |
 
 ::: warning Model access must be enabled manually first
-If the first agent build or conversation after deployment returns `AccessDeniedException` (mentioning `aws-marketplace:ViewSubscriptions/Subscribe`), the target model is not yet enabled in your account. Request it on the *Model access* page of the Bedrock console in the deployment region, then retry. See **Model Catalog & Access** for details.
+If the first agent build or conversation after deployment returns `AccessDeniedException` (mentioning `aws-marketplace:ViewSubscriptions/Subscribe`), the target model is not yet enabled in your account. Request it on the *Model access* page of the Bedrock console in the deployment region, then retry. See **[Model Catalog & Access](./model-access.md)** for details.
 :::
 
 ## First-time Deployment
@@ -135,7 +135,7 @@ The following are the configuration items supported by `deploy.yaml`. **These ar
 | `auth_user` | Login username in password mode | `admin` |
 | `auth_password` | Login password in password mode (**sensitive**) | — |
 
-> When SSO is enabled, the password-mode credentials are still kept as a fallback config admin. See **Login & SSO** for SSO details.
+> When SSO is enabled, the password-mode credentials are still kept as a fallback config admin. See **[Login & SSO](./sso-auth.md)** for SSO details.
 
 **Database and cache**
 
@@ -189,7 +189,7 @@ nexus-cli deploy up nexus-ai-prod \
   --allowed-email-domains subsidiary.co
 ```
 
-Enabling SSO requires IAM Identity Center to be turned on in your account and the deploy role to have the corresponding permissions. See **Login & SSO** for the full login configuration and user group assignment.
+Enabling SSO requires IAM Identity Center to be turned on in your account and the deploy role to have the corresponding permissions. See **[Login & SSO](./sso-auth.md)** for the full login configuration and user group assignment.
 
 ## Checking Deployment Status
 
@@ -203,7 +203,7 @@ nexus-cli deploy status nexus-ai-prod
 nexus-cli deploy list
 ```
 
-After deployment, the platform also provides a **Service Status** page — check whether each service is running under "Service Status" in the sidebar.
+After deployment, the platform also provides a **[Service Status](./service-status.md)** page — check whether each service is running under "Service Status" in the sidebar.
 
 ![admin-service-status](/images/admin-service-status.png)
 
@@ -227,7 +227,7 @@ nexus-cli service start --mcp
 ```
 
 ::: tip
-Run `nexus-cli service` commands on the application node. For routine checks you can also use the in-product **Service Status** page without logging in to the node. Starting/stopping the MCP service and managing its token are covered in **MCP Service Management**.
+Run `nexus-cli service` commands on the application node. For routine checks you can also use the in-product **[Service Status](./service-status.md)** page without logging in to the node. Starting/stopping the MCP service and managing its token are covered in **[MCP Service Management](./mcp.md)**.
 :::
 
 ### Companion: Ops Assistant
@@ -239,7 +239,7 @@ The in-product **Service Status** page comes with an **Ops Assistant**. After de
 - **What it returns**: service status as a table, plus a confirm-gated button when an action is needed.
 - **Guardrails**: impactful actions such as restart and stop **always require a second confirmation** before they run.
 
-See **Built-in AI Assistants (Admin)** and **Service Status Monitoring** for the Ops Assistant's full capabilities.
+See **[Built-in AI Helpers](./helper-agents.md)** and **[Service Status Monitoring](./service-status.md)** for the Ops Assistant's full capabilities.
 
 ![ops](/images/ops.png)
 
@@ -290,4 +290,9 @@ Adding `--clean-data` deletes your data along with the stack and **cannot be und
 | Can't find an environment's status | Confirm the env-prefix with `nexus-cli deploy list`, then check it with `deploy status &lt;prefix&gt;` |
 | A service is unhealthy | Check with `nexus-cli service status` or the in-product "Service Status" page, and `service restart` if needed |
 
-See **FAQ & Troubleshooting** for more.
+See **[FAQ & Troubleshooting](./faq-ops.md)** for more.
+
+## See Also
+
+- [Service Status Monitoring](./service-status.md) — check service health, restart, and view logs after deployment
+- [Config Management](./config-management.md) — adjust runtime parameters after deployment

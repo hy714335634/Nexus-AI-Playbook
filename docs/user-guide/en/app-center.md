@@ -16,6 +16,8 @@ sync:
 
 App Center turns one (or several) of your Agents into a **shareable web app**: other people don't need to log in or understand any tech — they just open a link, fill in a form or type a couple of messages, and use your Agent directly. This page walks you through building an app from scratch, publishing it, and managing its versions.
 
+> If you'd like a guided end-to-end walkthrough first, see [Publish Your First App](./publish-first-app.md) — it's a quick hands-on tutorial.
+
 ::: tip Before you start
 You need at least one usable Agent. If you don't have any yet, see [Creating an Agent](./create-agent.md) to build one; to try things quickly, just use one of the ready-made general assistants like **General Assistant** on screen.
 :::
@@ -64,6 +66,8 @@ The second step is choosing the Agent behind your app — the one that actually 
 2. Use the search box at the top to find one by name.
 3. Click a card to select it; you can pick **up to 5**. Click again to deselect.
 4. Quick Create requires at least 1; for Full Create you can skip this step (the system will choose for you).
+
+> Don't have your own Agent yet? Head to [Creating an Agent](./create-agent.md) to build one. If your app mainly answers domain-specific knowledge questions, check out [Build a Knowledge Q&A](./build-knowledge-qa.md) for how to prepare the Agent.
 
 Click **Next** when done.
 
@@ -166,7 +170,9 @@ Click **Unpublish** — the app stops serving the public **immediately**, and li
 
 ## How others use your app
 
-Share the public link with a colleague, a customer, or anyone. They **don't need to log in or sign up** — they just open it in a browser:
+Share the public link with a colleague, a customer, or anyone. They **don't need to log in or sign up** — they just open it in a browser. Want only specific people on your team to see this app? See [Resource Groups & Sharing](./resource-groups-sharing.md) to set access scope.
+
+Here's how it works for visitors:
 
 1. The app's icon and name are at the top; bilingual apps have an **EN / 中** toggle in the top right.
 2. They fill in the form as prompted, or type input like a chat.
@@ -190,6 +196,16 @@ At the top of the panel, you can **describe what you want to change in plain lan
 - **Rebuild from new requirements**: Redo the app from your new description — use this for bigger changes.
 
 Type your change request in the box (e.g. "add an export button to the results area," "switch the theme to a dark color scheme"), then click **AI Update App**. The update runs in the background, and a new version appears when it's done.
+
+::: details Real scenario: fix a knowledge Q&A app in seconds
+Say you built an HR leave-policy Q&A app and your colleagues have been happily using it. Then the company releases a new leave policy, someone asks a question about it, and the app gets it wrong.
+
+You don't need to rebuild. Just type one sentence in the update box:
+
+> Add the latest leave policy: annual leave is now 15 days instead of 10, sick leave no longer requires manager approval, and there's a new 1-day monthly mental-health day.
+
+Click **AI Update App**, and seconds later the new version goes live — users asking the same question now get the right answer. The traditional approach would mean filing a ticket, updating a database, and redeploying; here you just type a few words.
+:::
 
 ![apps-versions](/images/apps-versions.png)
 

@@ -21,7 +21,7 @@ sync:
 
 侧边栏「管理」→「服务状态」，或直接访问 `/admin/service-status`。
 
-页面顶部提供一个到「配置管理」的快捷链接，方便你在排查后直接去调参数。
+页面顶部提供一个到[配置管理](./config-management.md)的快捷链接，方便你在排查后直接去调参数。
 
 ![admin-service-status](/images/admin-service-status.png)
 
@@ -173,3 +173,9 @@ nexus-cli logs <service>      # 查看指定服务日志
 - 停止服务会立即中断相关功能，且记为 critical 级告警——非必要不要长时间停用。
 - 运维助手只做诊断，不代替你执行重启 / 停止等有风险的操作。
 - 「基础设施连接」显示 `error` 时，说明问题可能出在数据库 / 缓存 / 存储等底层依赖，而非平台服务本身。
+
+## 相关章节
+
+- [内置 AI 助手](./helper-agents.md) — 运维助手的完整能力与使用方式
+- [配置管理](./config-management.md) — 修改配置后需重启时的操作入口
+- [部署与升级](./deploy-upgrade.md) — 升级后的服务重启、nexus-cli 服务管理命令

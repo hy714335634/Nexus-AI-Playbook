@@ -23,7 +23,7 @@ This is your first step with Nexus AI. This page shows you how to sign in and th
 
 ![login](/images/login.png)
 
-Once you sign in successfully, the page jumps to the dashboard home automatically, and you're ready to start.
+Once you sign in successfully, the page jumps to the [dashboard home](./dashboard.md) automatically, and you're ready to start.
 
 ::: tip No need to sign in every time
 After you sign in, refreshing the page or closing and reopening your browser usually keeps you signed in, so you don't have to type your account and password every time.
@@ -108,3 +108,9 @@ Nexus AI supports both Chinese and English, and you can switch anytime.
 ::: tip Your language choice is remembered
 Once you switch, the system remembers your choice and keeps that language the next time you sign in. Note: content you created yourself, such as Agent names and project names, isn't translated and keeps its original text.
 :::
+
+## What to do next
+
+- [Dashboard](./dashboard.md) — learn about your home page and quick-access shortcuts
+- [Quickstart](./quickstart.md) — create your first Agent in five minutes
+- [Create an Agent](./create-agent.md) — a full guide to describing your needs and starting a build

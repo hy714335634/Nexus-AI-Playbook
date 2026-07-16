@@ -89,6 +89,14 @@ When the ready-made tools aren't enough, describe what you need in one sentence 
 3. **Tool name (optional)** — fill it in or leave it blank; if blank, the platform names it for you.
 4. When it looks right, click **Start Build** (click **Cancel** to back out).
 
+::: info Real scenario: build a certificate-expiry checker in one sentence
+Say you manage your company's website and need your Agent to watch whether any domain certificates are about to expire. All you write in the **Tool requirement** box is:
+
+> Build a tool: given a list of domain names, check the SSL certificate expiry date for each one, and output the list of domains expiring within 30 days
+
+Click **Start Build**, wait a few minutes, and the platform produces a fully working tool — no coding, no technical know-how required. Assign this tool to your Agent and from then on it can check certificates for you automatically.
+:::
+
 ![tool-build-dialog](/images/tool-build-dialog.png)
 
 After you click **Start Build**, the page **jumps straight** to a project detail page where you can watch the build progress step by step.
@@ -112,8 +120,15 @@ Importing a tool requires a ready-made tool file, usually prepared by a technica
 :::
 
 ::: warning Some tools need a "key" to work
-Some imported tools need a **key** bound to them (think of it as a key that unlocks access to an outside service) before they'll work. If a tool says it "requires a key," go to Key Management under **Integrations** and bind the matching key.
+Some imported tools need a **key** bound to them (think of it as a key that unlocks access to an outside service) before they'll work. If a tool says it "requires a key," go to Key Management under [Integration Center](./integration-center.md) and bind the matching key.
 :::
+
+## Related pages
+
+- [Skills](./skills.md) — what is the difference between skills and tools? A tool is a single action (like "check a certificate"), while a skill is an end-to-end workflow (like "produce a full competitor analysis report").
+- [Extend an Agent with Tools](./extend-agent-with-tools.md) — how to assign tools you have built to an Agent.
+- [Create an Agent](./create-agent.md) — when you create an Agent, the platform automatically designs and assigns appropriate tools based on your description.
+- [Integration Center](./integration-center.md) — some tools need access credentials for external services (keys) bound to them; manage those here.
 
 ## FAQ
 
@@ -127,4 +142,4 @@ No. A finished tool stays under **Generated**, is still there next time you sign
 Check the project detail page to see which step it stalled at; if it really failed, start the build again or describe your requirement more clearly. If it still won't work, contact your administrator.
 
 **How do I actually use these tools?**
-A tool doesn't run on its own — you assign it to an Agent, which then calls it automatically while getting work done. All you do is pick the tools you want when you create or edit an Agent, and leave the rest to the Agent.
+A tool doesn't run on its own — you assign it to an Agent, which then calls it automatically while getting work done. All you do is pick the tools you want when you create or edit an Agent, and leave the rest to the Agent. See [Extend an Agent with Tools](./extend-agent-with-tools.md) for the step-by-step.

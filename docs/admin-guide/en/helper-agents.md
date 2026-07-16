@@ -43,6 +43,8 @@ Whichever assistant you use, the pattern is the same:
 
 **Entry**: sidebar "Management" → "Service Status" → the "Nexus Assistant" button in the bottom-right corner.
 
+> **Scenario**: Monday morning, users report that "builds are stuck." You open the Service Status page, click "Nexus Assistant," and type "Why isn't the worker consuming messages?" The assistant aggregates recent Worker error logs and tells you: "The Worker process was OOM-killed 15 minutes ago. Recommend restarting." It generates a "Restart Worker" confirmation button — you click confirm, the Worker recovers, and the queue starts draining. No SSH required.
+
 ![admin-service-status](/images/admin-service-status.png)
 
 **What you can ask**: the assistant covers four kinds of ops needs:
@@ -67,6 +69,8 @@ Example suggested questions in the panel: "Why isn't the worker consuming messag
 **Purpose**: on the Config Management page, find parameters in plain language, understand them, get change suggestions, and run a health check over the whole configuration.
 
 **Entry**: sidebar "Settings" → "Config Management". This assistant has three entry points:
+
+> **Scenario**: You want to reduce AI call costs but aren't sure which parameters to adjust. In the "Just tell me what to tune" search box on the Config Management page, type "lower usage cost" and click "AI Search." The assistant semantically matches 3 relevant parameters (prompt caching toggle, lite model selection, conversation management strategy), explains each one's cost impact, and offers suggested values. You click the "Fill in" button on the suggestion card, the value is populated into the parameter box, then click "Save" to apply. Far faster than hunting through documentation for parameter names and valid ranges.
 
 - the "Just tell me what to tune" search box at the top of the page;
 - the floating "Nexus Assistant" panel in the bottom-right corner;
@@ -97,6 +101,8 @@ Example suggested questions in the panel: "I want to cut usage cost", "Conversat
 **Purpose**: on the Audit Trail page, answer audit questions, summarize a time range, and generate compliance-oriented audit reports.
 
 **Entry**: sidebar "Settings" → "Audit Trail" → the "Nexus Assistant" button in the bottom-right corner.
+
+> **Scenario**: The security team asks "Were there any privilege-escalation attempts last week?" You open the Audit Trail page, set the time range to "Last 7 days," click "Nexus Assistant," and type "any privilege escalation attempts or failed logins." The assistant extracts 2 failed login records and 1 insufficient-permission API call from the audit data, tells you the exact time, user, and IP for each, and attaches a "View related records" button that jumps to the pre-filtered log list. No manual log scrolling, no writing queries.
 
 ![settings-audit](/images/settings-audit.png)
 
@@ -149,3 +155,9 @@ Toggling and configuring all built-in assistants is done centrally on the Config
 - Assistants default to a **pro-tier** model (higher answer quality). Switching to the lite tier saves cost, but complex troubleshooting, compliance reports, and similar scenarios may suffer — weigh it against your usage and budget.
 - Which models each assistant can use depends on the models enabled in the model catalog (sidebar "Settings" → "Model Catalog").
 :::
+
+## Related Pages
+
+- [Configuration Management](./config-management.md) — Config Advisor usage context and full details on hot-reload vs. restart parameters
+- [Audit Trail](./audit.md) — Audit Trail page operations and log filtering details
+- [Service Status](./service-status.md) — the Service Status page where the Ops Assistant lives, including manual restart operations

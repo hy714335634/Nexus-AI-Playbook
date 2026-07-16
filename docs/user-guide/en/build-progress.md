@@ -15,7 +15,7 @@ sync:
 
 # Build Progress
 
-After you submit a request to create something, the system builds it step by step in the background. The build progress page is where you watch that happen—you can see which step the project has reached, how long each step took, and whether the build finished successfully.
+After you [submit a request to create something](./create-agent.md), the system builds it step by step in the background. The build progress page is where you watch that happen—you can see which step the project has reached, how long each step took, and whether the build finished successfully. If you haven't created an Agent yet, start with [Quick Start](./quickstart.md) to learn the overall flow.
 
 ![project-detail-stages](/images/project-detail-stages.png)
 
@@ -115,4 +115,4 @@ Yes. The build runs automatically in the background—closing the page or signin
 The system does one step at a time, and later steps wait in the queue. They start automatically once the steps before them are done.
 
 **Where do I find the result after a build completes?**
-Once every step turns "Completed" and the project status shows "Completed," you can find and use what you just built on its list page (such as the Agents list).
+Once every step turns "Completed" and the project status shows "Completed," you can find and use what you just built on its list page (such as the Agents list). For details on working with your built Agents, see [Manage Agents](./manage-agents.md).

@@ -118,3 +118,17 @@ The action bar at the very top of the page also gives you a few handy buttons:
 ::: tip
 "Create Agent" appears in several places on the page (the top action bar, the quick build area, and the quick actions area). They all do the same thing—click whichever is closest so you can create one on the spot.
 :::
+
+## Avatar Insight Cards
+
+If your admin has enabled Avatar (your digital self), you'll also see insight Cards on the Dashboard — proactive suggestions, reminders, or to-dos based on your usage patterns. You don't need to set anything up; the Cards appear automatically. If you don't see any Cards, the feature simply hasn't been turned on — this is normal.
+
+To learn more about Avatar, see [Avatar Space](./avatar-space.md).
+
+## What to do next
+
+- [Quickstart](./quickstart.md) — create your first Agent in five minutes
+- [Create an Agent](./create-agent.md) — a full guide to describing your needs and starting a build
+- [Chat](./chat.md) — start a conversation with an Agent you've already built
+- [Avatar Space](./avatar-space.md) — learn about your digital self and insight Cards
+- [Events](./events.md) — set up Agents to run on a schedule automatically

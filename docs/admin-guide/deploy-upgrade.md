@@ -40,7 +40,7 @@ sync:
 | 模型访问 | 在**部署区域**的 Bedrock 控制台 → *Model access* 中启用平台所需模型（Claude 系列）。这一步 IAM 无法代替，新账号首次必须手动申请 |
 
 ::: warning 模型访问必须先手动开通
-如果部署后首次构建或对话报 `AccessDeniedException`（提示 `aws-marketplace:ViewSubscriptions/Subscribe`），说明目标模型尚未在账号中启用。到部署区域的 Bedrock 控制台的 *Model access* 页面申请开通对应模型，启用后重试即可。详见《模型目录与接入》。
+如果部署后首次构建或对话报 `AccessDeniedException`（提示 `aws-marketplace:ViewSubscriptions/Subscribe`），说明目标模型尚未在账号中启用。到部署区域的 Bedrock 控制台的 *Model access* 页面申请开通对应模型，启用后重试即可。详见[模型目录与接入](./model-access.md)。
 :::
 
 ## 首次部署
@@ -135,7 +135,7 @@ nexus-cli --lang zh deploy up nexus-ai-test --github-token ghp_xxx
 | `auth_user` | 密码模式登录用户名 | `admin` |
 | `auth_password` | 密码模式登录密码（**敏感**） | — |
 
-> 启用 SSO 后，密码模式凭证仍会作为后备的配置管理员保留。SSO 详见《登录与 SSO》。
+> 启用 SSO 后，密码模式凭证仍会作为后备的配置管理员保留。SSO 详见[登录与 SSO](./sso-auth.md)。
 
 **数据库与缓存**
 
@@ -189,7 +189,7 @@ nexus-cli deploy up nexus-ai-prod \
   --allowed-email-domains subsidiary.co
 ```
 
-启用 SSO 需要账号已开通 IAM Identity Center，且部署角色具备相应权限。完整的登录方式配置、用户组分配等内容见《登录与 SSO》。
+启用 SSO 需要账号已开通 IAM Identity Center，且部署角色具备相应权限。完整的登录方式配置、用户组分配等内容见[登录与 SSO](./sso-auth.md)。
 
 ## 查看部署状态
 
@@ -203,7 +203,7 @@ nexus-cli deploy status nexus-ai-prod
 nexus-cli deploy list
 ```
 
-部署完成后，平台内也提供**服务状态**页面，可在侧边栏「服务状态」中查看各服务是否正常运行。
+部署完成后，平台内也提供**[服务状态](./service-status.md)**页面，可在侧边栏「服务状态」中查看各服务是否正常运行。
 
 ![admin-service-status](/images/admin-service-status.png)
 
@@ -227,7 +227,7 @@ nexus-cli service start --mcp
 ```
 
 ::: tip
-`nexus-cli service` 命令要在应用节点上执行。日常巡检也可以直接看平台内的**服务状态**页面，无需登录节点。MCP 服务的启停与令牌管理详见《MCP 服务管理》。
+`nexus-cli service` 命令要在应用节点上执行。日常巡检也可以直接看平台内的**[服务状态](./service-status.md)**页面，无需登录节点。MCP 服务的启停与令牌管理详见[MCP 服务管理](./mcp.md)。
 :::
 
 ### 配套：运维助手
@@ -239,7 +239,7 @@ nexus-cli service start --mcp
 - **会给什么**：以表格列出服务状态，需要操作时给出带确认的按钮。
 - **护栏**：重启、停止等有影响的操作**必须二次确认**后才执行。
 
-运维助手的完整能力见《内置 AI 助手（管理员）》与《服务状态监控》。
+运维助手的完整能力见[内置 AI 助手](./helper-agents.md)与[服务状态监控](./service-status.md)。
 
 ![ops](/images/ops.png)
 
@@ -290,4 +290,9 @@ nexus-cli deploy down nexus-ai-test --clean-data -y
 | 找不到某个环境的状态 | 用 `nexus-cli deploy list` 确认环境前缀，再用 `deploy status <前缀>` 查看 |
 | 某个服务异常 | 用 `nexus-cli service status` 或平台「服务状态」页面查看，必要时 `service restart` |
 
-更多排障内容见《常见问题与排障》。
+更多排障内容见[常见问题与排障](./faq-ops.md)。
+
+## 相关章节
+
+- [服务状态监控](./service-status.md) — 部署完成后查看各服务健康度、重启与日志
+- [配置管理](./config-management.md) — 部署后调整运行时参数

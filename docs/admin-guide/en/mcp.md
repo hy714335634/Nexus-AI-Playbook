@@ -167,3 +167,8 @@ Only agents in the "running" state are exposed as tools. If an agent does not ap
 - Shared-scope servers are visible and usable platform-wide; keep sensitive or experimental servers private.
 - Deletion also clears share records and is irreversible — disable first if unsure.
 - The outbound MCP server's token is an access credential; keep it safe. In production, set `NEXUS_MCP_TOKEN` explicitly rather than relying on auto-generation.
+
+## See Also
+
+- [External Integrations](./integrations-admin.md) — the central hub for data connections, key management, and other integrations
+- [Config Management](./config-management.md) — adjust runtime parameters such as the MCP port

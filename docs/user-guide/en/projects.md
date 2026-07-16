@@ -33,11 +33,11 @@ At the top of the page are four colored cards, one for each kind of thing you ca
 How to do it:
 
 1. Decide what you want to make, then click the matching card.
-2. Clicking "Agent" takes you to a dedicated creation page; clicking "Skill," "Tool," or "App" opens a window where you fill in your request as prompted.
+2. Clicking **Agent** takes you to a dedicated creation page (see [Creating an Agent](./create-agent.md) for the full walkthrough); clicking **Skill**, **Tool**, or **App** opens a window where you fill in your request as prompted.
 3. Once you've written your request and confirmed, the system starts building in the background, step by step, and adds the project to the list below.
 
 ::: tip How long does a build take?
-A full build usually takes about 20–40 minutes. You don't have to wait around—feel free to do something else and come back later to check the result. To follow each step in detail, see the "Build Progress" page.
+A full build usually takes about 20–40 minutes. You don't have to wait around—feel free to do something else and come back later to check the result. To follow each step in detail, see [Build Progress](./build-progress.md).
 :::
 
 ::: warning Does clicking "App" show an upgrade prompt?
@@ -91,7 +91,7 @@ If the same result has been updated many times, the Workshop keeps only the most
 
 ## Opening a project to view progress
 
-Click any project card to open that project's build progress page, where you can see the detailed progress of each step, pause or resume the build, and delete the project. For the full walkthrough, see the "Build Progress" page.
+Click any project card to open that project's build progress page, where you can see the detailed progress of each step, pause or resume the build, and delete the project. For the full walkthrough, see [Build Progress](./build-progress.md).
 
 ## Common questions
 
@@ -102,4 +102,4 @@ Yes. The build runs automatically in the background—closing the page or signin
 They're just temporarily hidden by the filter. Switch the status or type back to "All" and clear the search box to see all projects again.
 
 **Where do I use what I've built?**
-Once a project's status turns "Completed," you can find and use what you just built on its matching list page (such as the Agents list or the App Center).
+Once a project's status turns "Completed," you can find and use what you just built on its matching list page. For example, a finished Agent appears on the [Agents list](./manage-agents.md).

@@ -5,7 +5,9 @@ sync:
   generated_by: playbook v4 (orchestration layer)
 ---
 
-# Connecting a Server to Run Tasks (Nexus Bridge)
+# Connecting a Server to Run Tasks (Nexus Bridge · Remote Server Mode)
+
+The **Nexus Bridge** panel offers two connection modes: **Remote Server** (this page) and **Browser** (see [Browser Extension](./browser-extension.md)). This page covers the "Remote Server" tab — letting an Agent work on your server.
 
 Some tasks can't be handled by chat alone — you need the AI to **actually operate on your server**: run a check, collect logs, set up an environment, execute a process. That's what **Nexus Bridge** is for. It builds a bridge between you and a target server, letting the Agent in your conversation run commands, read and write files, and produce results on a server you've authorized.
 

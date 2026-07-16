@@ -75,6 +75,22 @@ A tool doesn't run on its own — it's **assigned to an Agent, which then calls 
 Usually not. The easiest approach is to clearly state "what I want it to do" and let the platform pair up the tools. You only need to care about the result, not which tools it uses.
 :::
 
+## Worked Example: Give a Support Agent "Check Inventory"
+
+Imagine you already have a product support Agent that handles questions about specs, pricing, and returns. Lately, though, customers keep asking "Is this still in stock?" or "How many are left in blue?" — and the Agent can't answer because it has no inventory-checking ability.
+
+Here's what you do:
+
+1. Open **Capability Center** in the left menu and click the **Tools** tab at the top.
+2. Search for "inventory" in the tool library — if your team already prepared an inventory tool, you'll find it right here.
+3. If nothing comes up, click **Build Tool** and type a one-sentence description, for example: "Look up real-time stock quantity by product SKU." The platform builds the tool for you automatically.
+4. Go back to your product support Agent's detail page and tell it: "I also want you to check real-time inventory by SKU." The platform assigns the new tool to it.
+5. Head to the [Chat page](./chat.md) and try it — send "Is SKU-2046 in stock?" The Agent can now report the exact quantity available.
+
+::: tip This is "hot-plugging" a capability
+The Agent is already live, already talking to customers. You don't have to rebuild it — just assign the new tool and it **immediately** starts using it. This is a core strength of the Nexus-AI platform: add new abilities to an Agent at any time, with no downtime and no rebuild required.
+:::
+
 ## Bring In More Tools with MCP Servers
 
 Some abilities come from an **external tool server** — for example, a service dedicated to looking up references, connecting to a data source, or integrating with a particular system. Connect one of these servers and you add its whole set of tools to the platform at once, which you can then assign to your Agents just like any other tool.
@@ -152,3 +168,13 @@ Use "Test connection" on the server card to check. A failure usually means the c
 
 **Will the tools I bring in stay available?**
 Yes. Added MCP servers and built tools are all kept — they're still there next time you log in, and you can assign them to different Agents again and again.
+
+## Related Pages
+
+| What you want to do | Where to look |
+| --- | --- |
+| Browse the tool library, search or build a tool | [Tool Library](./tools.md) |
+| Equip an Agent with ready-made skill packs | [Skill Library](./skills.md) |
+| Understand how tools are auto-selected during Agent creation | [Create an Agent](./create-agent.md) |
+| Test your Agent after adding tools | [Chat with an Agent](./chat.md) |
+| Set up credentials that external tools need | [Integration Center](./integration-center.md) |

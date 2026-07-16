@@ -22,7 +22,7 @@ Business users in marketing, operations, analytics, support, and similar roles. 
 
 Click **Agents** in the left menu to open the list page.
 
-The top of the page shows the title **Agents** and the subtitle "Manage and monitor your Agents." In the top right are a few common buttons: **Interaction Network**, **Import Agent**, and the blue **+ Create Agent**.
+The top of the page shows the title **Agents** and the subtitle "Manage and monitor your Agents." In the top right are a few common buttons: **Interaction Network**, **Import Agent**, and the blue **+ Create Agent** (see [Creating an Agent](./create-agent.md) for the full walkthrough).
 
 ![agents-list](/images/agents-list.png)
 
@@ -45,7 +45,7 @@ Once you're on the list page, you'll see three areas from top to bottom.
 - A status tag (such as "Running") and version number
 - A one-line description
 - A source tag like "Local" or "Generated"
-- Tags for the tools it uses
+- Tags for the tools it uses (want to add more tools? See [Extending an Agent with Tools](./extend-agent-with-tools.md))
 - Its invocation count and when it was last used
 
 ## Searching, filtering, and sorting
@@ -60,7 +60,7 @@ Once you have a lot of Agents, use the row of tools in the middle of the list to
 6. **Clear**: whenever a filter is active, a **Clear** option appears on the right to return to the full list in one click.
 
 ::: tip Can't find an Agent you just created?
-A new Agent only appears in the list after it finishes building, with the status "Running". If it's still building, check its progress in the "Build progress" area on the home page.
+A new Agent only appears in the list after it finishes building, with the status "Running". If it's still building, check the [Build Progress](./build-progress.md) page to follow along.
 :::
 
 ## Opening an Agent to see its details
@@ -68,7 +68,7 @@ A new Agent only appears in the list after it finishes building, with the status
 Click any Agent card to open its detail page. Tabs at the top let you switch between different views:
 
 - **Overview**: the Agent's description, version info, and stats like invocation count and usage.
-- **Chat**: talk to the Agent right here to try it out anytime.
+- **Chat**: talk to the Agent right here to try it out anytime (see [Chatting with an Agent](./chat.md) for details).
 - **Files**: view the files associated with the Agent.
 
 The detail page also offers an **Export** option that packages the whole Agent for download—handy for backups or sharing.
@@ -83,7 +83,7 @@ On the list page, **right-click a card** (or **long-press** it on a phone or tou
 | View details | Opens the Agent's detail page |
 | Edit | Opens the detail page to change its information |
 | Share | Shares the Agent with a colleague to use together |
-| Create app | Uses this Agent as the basis for quickly creating an app |
+| Create app | Uses this Agent as the basis for quickly creating an app (see [Publishing Your First App](./publish-first-app.md)) |
 | Move to folder | Files it into a folder to keep things organized |
 | Delete | Deletes the Agent (see [Deleting an Agent](#deleting-an-agent) below) |
 

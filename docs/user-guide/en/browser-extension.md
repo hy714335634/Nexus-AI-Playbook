@@ -10,9 +10,16 @@ sync:
   generated_by: docs-sync v2
 ---
 
-# Browser Extension
+# Browser Extension (Nexus Bridge · Browser Mode)
 
-The browser extension lets a Nexus assistant **do things directly in your Chrome browser**: open pages, read what's on them, click buttons, and fill in forms. You describe the task in a chat, and the assistant works through it step by step in a dedicated browser tab. When something needs you personally — a CAPTCHA or a login — it stops and asks.
+The **Nexus Bridge** panel offers two connection modes:
+
+| Mode | Tab | Purpose |
+| --- | --- | --- |
+| **Remote Server** | "Remote Server" | Let an Agent run commands and manage files on your server (see [Connecting a Server to Run Tasks](./bridge-server.md)) |
+| **Browser** | "Browser" | Let an Agent control your Chrome browser directly (this page) |
+
+This page covers **Browser mode** — the browser extension lets a Nexus assistant **do things directly in your Chrome browser**: open pages, read what's on them, click buttons, and fill in forms. You describe the task in a chat, and the assistant works through it step by step in a dedicated browser tab. When something needs you personally — a CAPTCHA or a login — it stops and asks.
 
 Once the extension is installed and connected, you can see which browsers are linked to your account at any time and disconnect them when you no longer want them.
 

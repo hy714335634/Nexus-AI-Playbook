@@ -114,7 +114,7 @@ Changes take effect only after you click **Save**. Testing without saving does n
 
 ## Setting the default model in Config Management
 
-The catalog decides "which models are selectable"; "which one is the default" is set in Config Management:
+The catalog decides "which models are selectable"; "which one is the default" is set in [Config Management](./config-management.md):
 
 - Sidebar **Settings → Config Management**, find the **Model** parameter (`bedrock.model_id`).
 - This parameter carries a **hot-reload** badge, so switching it takes effect immediately for new conversations without a restart.
@@ -126,7 +126,7 @@ The "Just say what you want to tune" box at the top of the config page supports 
 
 ## Viewing model usage
 
-Actual model consumption is shown by model in the usage report:
+Actual model consumption is shown by model in the [usage report](./billing.md):
 
 - Sidebar **Management → Usage Report** (or `/admin/billing`), see **Consumption by Model**, including call counts and input / output tokens.
 
@@ -140,3 +140,8 @@ Actual model consumption is shown by model in the usage report:
 | **Test** fails | Check that the model ID matches an ID actually available in Bedrock; use **Reconcile with Bedrock** to align |
 | Changed the catalog but nothing happened | Confirm you clicked **Save**; changes apply only to new conversations |
 | Not sure which tier to pick | Use `pro` for complex reasoning, `standard` for everyday tasks, `lite` for high-frequency lightweight cases |
+
+## See Also
+
+- [Config Management](./config-management.md) — switching the default model, hot-reload parameters, and the Config Helper
+- [Usage & Billing](./billing.md) — token consumption reports by model / user / project

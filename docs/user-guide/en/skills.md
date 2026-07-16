@@ -19,7 +19,15 @@ Business folks in marketing, operations, analytics, support, and the like. All y
 :::
 
 ::: info How is a Skill different from a tool?
-In short: a **tool** is a single ability (like "check the time" — one action), while a **Skill** is a whole approach packaged up, often including instructions, a few tools, and reference material that teach an Agent to handle an entire kind of task. To add one small action to an Agent, use a [tool](./tools.md); to give it a whole way of working, use a Skill.
+In short: a **tool** is a single ability (like "check the time" — one action), while a **Skill** is a whole approach packaged up, often including instructions, a few tools, and reference material that teach an Agent to handle an entire kind of task. To add one small action to an Agent, use a [tool](./tools.md); to give it a whole way of working, use a Skill. For a fuller comparison, see the [Tools page](./tools.md).
+:::
+
+::: details Real scenario: Turn your company's report format into a reusable Skill
+Your company has a fixed way of writing customer-facing reports: every report must include a Summary, Findings, Recommendations, and Action Items section, in a tone that is professional but not cold. Before, every time someone wrote a report they had to dig up the template, cross-check the structure, and review every section. Now you build a Skill once — in the **Build Skill** requirement box, write:
+
+> Write customer reports following our company format with four sections: Summary / Findings / Recommendations / Action Items, in a professional but warm tone
+
+The platform packages that format into a Skill. From then on, any Agent you assign this Skill to will automatically follow that exact structure whenever it writes a customer report — no need to remind it each time. **This is the core value of Skills: codifying "the way we do things here" so every Agent can reuse it.**
 :::
 
 ## Open the Skills page
@@ -123,7 +131,7 @@ A combo can freely pick Skills from different groups — there's no restriction 
 A tool is a single ability, one action (like "check the time"); a Skill is a whole approach packaged up, usually including instructions, a few tools, and reference material that teach an Agent to handle a whole kind of task. Use a tool to add one small action to an Agent; use a Skill to give it a whole method.
 
 **How do I actually use these Skills?**
-A Skill doesn't run on its own — you assign it to an Agent, which then draws on it automatically while getting work done. All you do is pick the Skills you want when you create or edit an Agent, and leave the rest to the Agent.
+A Skill doesn't run on its own — you assign it to an Agent, which then draws on it automatically while getting work done. All you do is pick the Skills you want when you [create](./create-agent.md) or edit an Agent, and leave the rest to the Agent. For the exact steps to assign a Skill to an Agent, see [Extend an Agent with tools and skills](./extend-agent-with-tools.md).
 
 **Will a Skill I build get lost?**
 No. A finished Skill stays under the **Generated Skills** group, is still there next time you sign in, can be reused as often as you like, and can be assigned to your Agents.
@@ -133,3 +141,9 @@ They mark where a Skill comes from: **System** are internal Skills the platform 
 
 **Why did a delete window pop up when I tried to expand a group?**
 The trash icon on the right of a group's row is "delete group," and it sits close to the expand area, so it's easy to hit by mistake. When the "Confirm delete" window appears, just click **Back** to dismiss it — nothing changes — then click the folder-name row once more to expand it normally.
+
+## See also
+
+- [Tools](./tools.md) — How tools compare to Skills, and how to manage tools
+- [Extend an Agent with tools and skills](./extend-agent-with-tools.md) — How to assign Skills or tools to an Agent
+- [Create an Agent](./create-agent.md) — Build an Agent from scratch

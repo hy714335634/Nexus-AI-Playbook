@@ -12,7 +12,7 @@ sync:
 
 # Evolution/PFR/Troubleshoot
 
-Going live isn't the finish line. After an agent ships, you keep polishing it, gathering feedback, and pinpointing problems quickly when they come up — and those three jobs map to three tools:
+Going live isn't the finish line. After you [create](./create-agent.md) and deploy an agent, you keep polishing it, gathering feedback, and pinpointing problems quickly when they come up — and those three jobs map to three tools:
 
 - **Evolution management**: manage each agent's improvements like a project — sort improvement requests into "iterations" and track them through to release.
 - **Iteration review (PFR)**: score every version of an agent's changes and leave improvement notes so the next version is better.
@@ -125,7 +125,7 @@ To look back over past reviews:
 
 ## Troubleshoot: describe the problem, get a plan
 
-When an agent misbehaves — wrong answers, getting stuck, results that don't match expectations — the troubleshoot tool helps you think it through quickly and get a plan to handle it.
+When an agent misbehaves during a [conversation](./chat.md) — wrong answers, getting stuck, results that don't match expectations — the troubleshoot tool helps you think it through quickly and get a plan to handle it.
 
 ![troubleshoot-analysis-page](/images/troubleshoot-analysis-page.png)
 
@@ -160,7 +160,7 @@ In short: **evolution management** handles "what to change and how far along it 
 :::
 
 ::: tip How long until a submitted request goes live?
-It depends on the request's complexity and the owner's schedule. You can always see where it stands in the evolution swimlane view (Planning → Executing → Validating → Released).
+It depends on the request's complexity and the owner's schedule. You can always see where it stands in the evolution swimlane view (Planning → Executing → Validating → Released). Once released, the Agent appears on the [Manage Agents](./manage-agents.md) page where you can view and operate on it.
 :::
 
 ::: warning Check the context before you score

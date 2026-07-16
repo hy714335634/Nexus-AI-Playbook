@@ -17,6 +17,10 @@ The Audit Trail page brings "who did what to what, when, and with what outcome" 
 This page is admin-only. Auditing covers platform management actions such as logins, configuration changes, user management, denied access, and audit exports — even actions like "export audit" and "generate compliance report" are themselves recorded.
 :::
 
+### Typical Scenario
+
+A user reports their Agent was modified without their knowledge. You open「Audit Trail」->「Logs」, type that Agent's name in the search box, and instantly see who changed it, when, and what they changed. If the filter conditions are hard to assemble, click the「Nexus Assistant」button in the top-right corner and ask in plain language: "Who modified XX Agent in the past week?" The assistant returns the operator, timestamp, and a summary of what was changed.
+
 ## Opening the Audit Trail
 
 Sidebar「Settings」→「Audit Trail」, or go directly to `/settings/audit`.
@@ -164,3 +168,9 @@ The AI Audit Assistant only queries, summarizes, and reports — it **never alte
 - For a large export, narrow the range with filters first to stay under the single-export cap.
 - A subscription only takes effect after the recipient confirms the email — follow up on the confirmation status after adding one.
 - Not sure how to search? Ask the AI Audit Assistant first and use its jump button to reach the detail list.
+
+## See Also
+
+- [AI Assistants (incl. Audit Assistant)](./helper-agents.md) — full capabilities of the Audit Assistant
+- [Users & Permissions](./users-permissions.md) — context for user actions, role changes, and other events that appear in the audit
+- [SSO & Authentication](./sso-auth.md) — authentication mechanisms behind login audit events

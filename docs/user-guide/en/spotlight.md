@@ -12,6 +12,8 @@ sync:
 
 Spotlight is a site-wide search and shortcut hub. Wherever you are, one keyboard shortcut brings it up: type a few characters and instantly find a page, an Agent, an app, a past conversation, or run a common action like "Create Agent" or "Refresh page" in one step. No more clicking through menus to hunt things down.
 
+**Picture this**: you have 30 Agents and need a specific one right now — press the keyboard shortcut, type two or three characters, and the list narrows to just that Agent. Hit Enter and you're straight into the [conversation](./chat.md). The whole thing takes under two seconds, far faster than navigating through menus.
+
 ::: tip One shortcut for the whole site
 Just remember `⌘K` (Mac) or `Ctrl+K` (Windows). Wherever you want to go, whatever you want to find or do — press it first.
 :::
@@ -102,3 +104,11 @@ There's no match right now, and the panel shows a no-results message. Try a shor
 
 **Do I lose anything by closing the panel?**
 No. Spotlight is only a temporary search-and-jump layer; closing it doesn't affect whatever you were doing, and you can bring it back anytime with `⌘K`.
+
+---
+
+## Related pages
+
+- [Chat](./chat.md) — how to communicate with an Agent once you open it
+- [Manage Agents](./manage-agents.md) — view, edit, and favorite all your Agents
+- [Tips & Best Practices](./tips.md) — more ways to work faster

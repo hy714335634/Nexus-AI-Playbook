@@ -22,5 +22,8 @@
   "homepage": "https://github.com/hy714335634/Nexus-AI-Playbook#readme",
   "devDependencies": {
     "vitepress": "^1.6.4"
+  },
+  "dependencies": {
+    "medium-zoom": "^1.1.0"
   }
 }

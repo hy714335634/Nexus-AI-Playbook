@@ -23,11 +23,11 @@ When something goes wrong, these three steps are usually the fastest path:
 
 | Symptom | Look here first | Related chapter |
 |---------|-----------------|-----------------|
-| Page won't load / a service is unhealthy | Service Status overview + live logs | Service Status Monitoring |
-| Deploy failed midway, environment not found | `nexus-cli deploy` on the deploy host | Deployment & Upgrade |
-| Can't log in / SSO error | Login page + auth config | Login & SSO |
-| Build / chat returns `AccessDeniedException` | Bedrock console model access | Model Catalog & Access |
-| Backup or artifact sync fails | `nexus-cli` on the deploy host | Configuration Management / Deployment & Upgrade |
+| Page won't load / a service is unhealthy | Service Status overview + live logs | [Service Status Monitoring](./service-status.md) |
+| Deploy failed midway, environment not found | `nexus-cli deploy` on the deploy host | [Deployment & Upgrade](./deploy-upgrade.md) |
+| Can't log in / SSO error | Login page + auth config | [Login & SSO](./sso-auth.md) |
+| Build / chat returns `AccessDeniedException` | Bedrock console model access | [Model Catalog & Access](./model-access.md) |
+| Backup or artifact sync fails | `nexus-cli` on the deploy host | [Config Management](./config-management.md) / [Deployment & Upgrade](./deploy-upgrade.md) |
 | Logo / branding change didn't take effect | Branding config + hard-refresh browser | "Branding & Logo" in this chapter |
 
 ![admin-service-status](/images/admin-service-status.png)
@@ -48,7 +48,7 @@ When something goes wrong, these three steps are usually the fastest path:
 Stopping a service makes its features **immediately unavailable** (e.g. stopping the Worker halts build-job consumption). Both stop and restart are recorded as ops alerts. Do this during off-peak hours, and don't leave critical services stopped unless necessary.
 :::
 
-See Service Status Monitoring for the full guide to starting/stopping services, logs, and health.
+See [Service Status Monitoring](./service-status.md) for the full guide to starting/stopping services, logs, and health.
 
 ## Deployment & Upgrade
 
@@ -65,7 +65,7 @@ Deployment and upgrades both run on the **deploy host** via `nexus-cli`. Common 
 An upgrade only updates the code and local config on the compute node — **your data is untouched**, since the database, cache, and object storage all live outside the node. An upgrade restarts services and causes a brief interruption, so run it off-peak.
 :::
 
-See Deployment & Upgrade for the full deploy, upgrade, and teardown flow.
+See [Deployment & Upgrade](./deploy-upgrade.md) for the full deploy, upgrade, and teardown flow.
 
 ## Login & Authentication
 
@@ -76,7 +76,7 @@ See Deployment & Upgrade for the full deploy, upgrade, and teardown flow.
 | SSO rejects the domain | If an email-domain allowlist is configured, only domains on it can log in; confirm the user's email domain is allowed |
 | SSO fully down, need in urgently | Password-mode credentials are kept as a fallback config admin even after SSO is enabled, so you can use them for emergency access |
 
-See Login & SSO for login modes, IdP integration, and user-group assignment.
+See [Login & SSO](./sso-auth.md) for login modes, IdP integration, and user-group assignment.
 
 ## Model Access
 
@@ -88,7 +88,7 @@ Builds and chat depend on models on AWS Bedrock. **A new account must enable mod
 | Error mentions `aws-marketplace:ViewSubscriptions` / `Subscribe` | Same as above — the target model isn't subscribed/enabled in the account yet |
 | Some features work, others fail | The platform uses three tiers — default, lite, and pro models; confirm all three are enabled in the deploy region |
 
-See Model Catalog & Access for model tiers, regions, and how access works.
+See [Model Catalog & Access](./model-access.md) for model tiers, regions, and how access works.
 
 ## Backup, Restore & Artifact Sync
 
@@ -105,7 +105,7 @@ Project backups and Agent artifact sync use object storage and data tables. Thes
 Adding `--clean-data` when tearing down an environment also deletes the data in object storage, data tables, and queues — this **cannot be undone**. Confirm the data is no longer needed or has been backed up separately before running it.
 :::
 
-See Configuration Management and Deployment & Upgrade for day-to-day backup and artifact management.
+See [Config Management](./config-management.md) and [Deployment & Upgrade](./deploy-upgrade.md) for day-to-day backup and artifact management.
 
 ## Branding & Logo
 
@@ -142,7 +142,7 @@ nexus-cli service start --web         # start a specific service
 Service selectors include `--api`, `--worker`, `--web`, `--mcp`, etc.; the CLI actions match the web buttons. Add `--lang zh` to any command for Chinese prompts.
 
 ::: tip
-`nexus-cli service` commands run on the application node. See MCP Service Management for starting/stopping the MCP service and managing its token.
+`nexus-cli service` commands run on the application node. See [MCP Service Management](./mcp.md) for starting/stopping the MCP service and managing its token.
 :::
 
 ## How the Built-in Helpers Assist Troubleshooting
@@ -161,7 +161,7 @@ Every management page has an on-hand AI helper, so you can ask in natural langua
 The Ops Helper only diagnoses — checking status, reading logs, suggesting where to look. It **won't** restart or stop services for you; those risky actions still require you to click the button on the service card and confirm.
 :::
 
-See Built-in AI Helpers (Admin) for the helpers' full capabilities.
+See [Built-in AI Helpers](./helper-agents.md) for the helpers' full capabilities.
 
 ## Notes
 
@@ -171,3 +171,9 @@ See Built-in AI Helpers (Admin) for the helpers' full capabilities.
 - Always change the password-mode default credentials (`admin` / `nexus`) in production.
 - Options like `--clean-data` on teardown and source-delete on backup **cannot be undone** — confirm carefully before running them.
 - When「Infrastructure connections」shows `error`, the problem is likely in an underlying managed dependency, not the platform service itself.
+
+## See Also
+
+- [Built-in AI Helpers](./helper-agents.md) — full capabilities of the Ops / Config / Audit helpers
+- [Service Status Monitoring](./service-status.md) — health, logs, and service start/stop guide
+- [Config Management](./config-management.md) — parameter tuning and the Config Helper

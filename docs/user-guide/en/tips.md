@@ -37,7 +37,7 @@ A few practical habits:
 4. **Write the way you normally talk**: no technical or specialist jargon needed — that's the whole point of the platform.
 
 ::: tip Not sure how to phrase it?
-Just adapt one of the lines in the table above. If you're not happy with the result, you can always have it adjust — you don't need to get it perfect on the first try. See [Creating an Agent](./create-agent.md) for more.
+Just adapt one of the lines in the table above. If you're not happy with the result, you can always have it adjust — you don't need to get it perfect on the first try. See [Creating an Agent](./create-agent.md) for detailed steps and [Build Progress](./build-progress.md) for what happens next.
 :::
 
 ## 2. Don't expect perfection on the first try
@@ -59,7 +59,7 @@ Building an Agent isn't a one-shot deal. **Treat the first version as a draft**,
 - **One topic per session**: you can open several sessions under one Agent, each independent — one for real work, one for experiments — and find them all later.
 
 ::: tip Long conversation getting slow?
-Click **Compact Context** on the chat toolbar to have the system tidy up and condense earlier content so the Agent keeps replying smoothly. See [Chat](./chat.md) for the day-to-day details.
+Click **Compact Context** on the chat toolbar to have the system tidy up and condense earlier content so the Agent keeps replying smoothly. See [Chat](./chat.md) for the day-to-day details. Want to jump to a specific Agent quickly? Try the [Spotlight Command Palette](./spotlight.md) — press `⌘K`, type a few characters, and go straight there.
 :::
 
 ## 4. Make good use of files
@@ -92,6 +92,7 @@ Once the basics feel comfortable, you can go further in a few directions:
 - **Connect it to real data and systems**: add [Tools](./tools.md) to an Agent, or connect it to your company's existing systems (see [Integration Center](./integration-center.md)), so it can look up real information and get real work done.
 - **Let it run on a schedule**: use [Scheduled Tasks](./events.md) to have the Agent work automatically by time — for example, produce a report every morning without you prompting it.
 - **Summon it anywhere**: the [Built-in Assistants](./assistants.md) in the interface can look things up, answer questions, and point you to the right place — ask them first when you're unsure.
+- **Jump anywhere instantly**: use the [Spotlight Command Palette](./spotlight.md) (`⌘K`) to search and jump to any Agent, app, page, or past conversation without navigating menus.
 
 ## 7. Don't panic when something goes wrong
 
@@ -115,4 +116,4 @@ No. They all stay in your account, still there next time you log in, ready to re
 No. Each session is independent, so you can safely use one for real work and one for experiments.
 
 **What should I learn next?**
-Go back to the [Learning Path](./learning-path.md) and pick the next page that matches your goal.
+Go back to the [Learning Path](./learning-path.md) and pick the next page that matches your goal. You might also check out the [Spotlight Command Palette](./spotlight.md) to learn site-wide quick navigation, or [Manage Agents](./manage-agents.md) to see how to organize and maintain your Agent list.

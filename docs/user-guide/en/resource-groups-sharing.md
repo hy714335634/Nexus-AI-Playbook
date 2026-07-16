@@ -19,6 +19,19 @@ sync:
 Whenever you want to hand a related set of resources to someone else. For example, put your "Support Assistant" and the few skills it relies on into one folder, share it with the support team, and everyone on the team can use it right away.
 :::
 
+## Scenario: sharing a content-creation Agent across marketing
+
+Imagine someone on your marketing team spent two days building a "Content Creator" agent — it generates social media copy based on product highlights, and comes with a custom "Brand Voice Check" skill and a "Competitor Analysis" tool. Without sharing, the other 15 team members would each have to build their own, or keep asking for links.
+
+Shared Resources solves this:
+
+1. That person creates a folder called "Marketing Content Kit."
+2. They add the "Content Creator" agent and its two companion skills to the folder.
+3. They click **Share**, pick the "Marketing" user group, and set the permission to **Viewer**.
+4. All 15 team members immediately see the folder under **Shared with me**, open it, and start chatting with the agent — no one has to rebuild anything.
+
+This is the core value of Shared Resources: **one person builds it, the whole team benefits, ready to use instantly.**
+
 ## Open "Shared Resources"
 
 1. Click **Shared Resources** in the left navigation bar.
@@ -151,3 +164,10 @@ For privacy, only the folder's creator and administrators can see the full acces
 ::: tip Can I change a permission after sharing?
 Yes. Share with the same person again and pick a new permission level to overwrite the old one; or remove them from the **Access** section and share again.
 :::
+
+## Related guides
+
+- [Create an Agent](./create-agent.md) — build the agent you want to share
+- [Publish your first app](./publish-first-app.md) — if you want broader access beyond folder members, publish the agent as an app
+- [App Center](./app-center.md) — understand app-level sharing vs. resource-group sharing
+- [Team collaboration](./team-collaboration.md) — more collaboration features (user groups, permissions, and more)

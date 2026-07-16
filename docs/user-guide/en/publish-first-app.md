@@ -13,11 +13,17 @@ sync:
 
 This page walks you through the whole thing once: turn an Agent into a **shareable web app**, publish it, and let other people use it just by opening a link — no login, no tech knowledge needed. It takes about fifteen minutes. Just follow along and click.
 
-::: tip Before you start
-You need at least one usable Agent. If you don't have any yet, see [Creating an Agent](./create-agent.md); to try things quickly, just use one of the ready-made general assistants like **General Assistant** on screen.
+::: info What you'll achieve
+Imagine you already have a compliance-review Agent — it has your company's policy knowledge base, document analysis tools, and custom review rules baked in. Now you want the legal team to use it, but they don't want to learn a new system. Just follow this guide to publish it as an app: your colleagues open the link, paste in contract clauses, click submit, and get a structured compliance report. No login, no training, no bugging you.
+
+That's the point of "publishing an app": you turn a carefully customized Agent (tailored rules + specialized tools + knowledge base) into a **self-service experience anyone can use**.
 :::
 
-Once you've done this once, see [App Center](./app-center.md) for the full feature set (version management, access control, usage records, and more).
+::: tip Before you start
+You need at least one usable Agent. If you don't have any yet, see [Creating an Agent](./create-agent.md); to try things quickly, just use one of the ready-made general assistants like **General Assistant** on screen. Before publishing, it helps to [test it in Chat](./chat.md) for a few rounds to make sure it responds well.
+:::
+
+Once you've done this once, see [App Center](./app-center.md) for the full feature set (version management, access control, usage records, and more). To let teammates co-manage the app, see [Resource Groups & Sharing](./resource-groups-sharing.md).
 
 ## The whole flow at a glance
 
@@ -108,5 +114,15 @@ Congratulations — your first app is live. Next you might want to:
 - **Change something**: no need to rebuild. In the left column of the detail page, click **Version & Update**, describe your change in one sentence, and the system updates it and creates a new version — see [App Center](./app-center.md#update-your-app-and-manage-versions).
 - **See how people use it**: click **Invocations** at the top to view the full course of each visit.
 - **Swap the Agent or add capabilities**: click **Edit Config** on the "Agents Involved" card to adjust.
+- **Let teammates manage this app too**: share the app with your team — see [Resource Groups & Sharing](./resource-groups-sharing.md).
 
 All of these advanced steps are documented in full in [App Center](./app-center.md).
+
+## Related docs
+
+| If you want to... | Go to |
+|-------------------|-------|
+| Create an Agent from scratch | [Create an Agent](./create-agent.md) |
+| Test your Agent in conversation before publishing | [Chat](./chat.md) |
+| Manage versions, access stats, and more | [App Center](./app-center.md) |
+| Share Agents and apps with your team | [Resource Groups & Sharing](./resource-groups-sharing.md) |

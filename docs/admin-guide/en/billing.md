@@ -89,7 +89,7 @@ On the user's usage and quota detail page, you can set a **monthly token quota**
 After saving, the **Quota usage** column in the user list uses this to compute the amber / red markers.
 
 ::: warning Quota changes are audited
-Every quota change is written to the **audit log** (searchable under **Settings** → **Audit Trail**). The record includes the acting admin, the target user, and the new budget and threshold values. Be careful with **Disable on exceed** — once enabled, a user who goes over budget can no longer make calls.
+Every quota change is written to the **audit log** (searchable under **Settings** → **[Audit Trail](./audit.md)**). The record includes the acting admin, the target user, and the new budget and threshold values. Be careful with **Disable on exceed** — once enabled, a user who goes over budget can no longer make calls.
 :::
 
 ## App usage and app quotas
@@ -125,3 +125,8 @@ The Usage & Billing page has no floating AI helper of its own. To ask natural-la
 - **No cost amounts shown**: this is by design (see the note at the top). Use token consumption for cost accounting.
 - **A user / app always shows "-" or "Unlimited" quota**: it means no budget has been set yet — this is normal and does not affect usage tracking.
 - **Data goes empty after switching months**: that month has no usage records; switch back to a month with activity.
+
+## See Also
+
+- [Model Catalog & Access](./model-access.md) — manage selectable model tiers and switch to lower-cost models as needed
+- [Users & Permissions](./users-permissions.md) — the role / permission system that works alongside user quotas

@@ -40,8 +40,8 @@ Sign in, get familiar with the screen, then spend five minutes producing your fi
 
 | Order | Document | What you'll learn |
 | --- | --- | --- |
-| 1 | [Sign In & UI Tour](./first-login) | How to sign in and what each area of the screen is for |
-| 2 | [Quickstart](./quickstart) | Describe what you need in one sentence and get your first result fast |
+| 1 | [Sign In & UI Tour](./first-login.md) | How to sign in and what each area of the screen is for |
+| 2 | [Quickstart](./quickstart.md) | Describe what you need in one sentence and get your first result fast |
 | 3 | Learning Path (this page) | Plan the order to learn everything else |
 
 ## Stage 2 · Build your first agent
@@ -50,9 +50,9 @@ An agent is a "digital helper" that does work for you. This stage takes you from
 
 | Order | Document | What you'll learn |
 | --- | --- | --- |
-| 1 | [Creating an Agent](./create-agent) | Describe what you want in plain language and start the build |
-| 2 | [Build Progress](./build-progress) | What you'll see during the build and roughly how long to wait |
-| 3 | [Chat & Sessions](./chat) | Chat with your agent, upload files, and manage multi-turn conversations |
+| 1 | [Creating an Agent](./create-agent.md) | Describe what you want in plain language and start the build |
+| 2 | [Build Progress](./build-progress.md) | What you'll see during the build and roughly how long to wait |
+| 3 | [Chat & Sessions](./chat.md) | Chat with your agent, upload files, and manage multi-turn conversations |
 
 ::: tip How long does building take?
 From describing what you need to the agent being ready takes about 20–40 minutes on average. You can go do something else in the meantime—the platform finishes the work in the background, and you come back when it's done.
@@ -64,10 +64,10 @@ Now that you have an agent, learn where to find your agents, how to organize the
 
 | Order | Document | What you'll learn |
 | --- | --- | --- |
-| 1 | [Dashboard](./dashboard) | Your home screen: recent activity and common shortcuts at a glance |
-| 2 | [Project Management](./projects) | Group related work together and keep it organized |
-| 3 | [Managing Agents](./manage-agents) | View, enable, disable, and adjust your agents |
-| 4 | [App Center](./app-center) | Turn an agent into a ready-to-use app and share it with others |
+| 1 | [Dashboard](./dashboard.md) | Your home screen: recent activity and common shortcuts at a glance |
+| 2 | [Project Management](./projects.md) | Group related work together and keep it organized |
+| 3 | [Managing Agents](./manage-agents.md) | View, enable, disable, and adjust your agents |
+| 4 | [App Center](./app-center.md) | Turn an agent into a ready-to-use app and share it with others |
 
 ## Stage 4 · Make your agents more capable
 
@@ -75,9 +75,10 @@ Give agents "tools" and "skills," then connect them to your company's existing s
 
 | Order | Document | What you'll learn |
 | --- | --- | --- |
-| 1 | [Tools](./tools) | Give agents the ability to look things up and do calculations |
-| 2 | [Skills](./skills) | Teach agents a way of doing things and reuse it across scenarios |
-| 3 | [Integration Center](./integration-center) | Connect agents to the business systems your company already uses |
+| 1 | [Tools](./tools.md) | Give agents the ability to look things up and do calculations |
+| 2 | [Skills](./skills.md) | Teach agents a way of doing things and reuse it across scenarios |
+| 3 | [Integration Center](./integration-center.md) | Connect agents to the business systems your company already uses |
+| 4 | [Connect a Server](./bridge-server.md) | Let agents run commands and gather information on your own server |
 
 ## Stage 5 · Automation and on-the-go help
 
@@ -85,11 +86,11 @@ Let agents work without you watching: run automatically on a schedule, a helper 
 
 | Order | Document | What you'll learn |
 | --- | --- | --- |
-| 1 | [Event Jobs](./events) | Have agents run on a schedule—like a report every morning |
-| 2 | [Helper Assistants](./assistants) | An in-screen AI that helps you look things up, answer questions, and find your way |
-| 3 | [Spotlight Command Palette](./spotlight) | A quick launcher to find any feature or item fast |
-| 4 | [Browser Extension](./browser-extension) | Call your agents on any web page |
-| 5 | [Avatar Space](./avatar-space) | Your "digital home" that organizes information, builds up memory, and reminds you proactively |
+| 1 | [Event Jobs](./events.md) | Have agents run on a schedule—like a report every morning |
+| 2 | [Helper Assistants](./assistants.md) | An in-screen AI that helps you look things up, answer questions, and find your way |
+| 3 | [Spotlight Command Palette](./spotlight.md) | A quick launcher to find any feature or item fast |
+| 4 | [Browser Extension](./browser-extension.md) | Call your agents on any web page |
+| 5 | [Avatar Space](./avatar-space.md) | Your "digital home" that organizes information, builds up memory, and reminds you proactively |
 
 ## Stage 6 · Team collaboration and sharing
 
@@ -97,8 +98,8 @@ Once it's working well for you, share your results with colleagues so the whole 
 
 | Order | Document | What you'll learn |
 | --- | --- | --- |
-| 1 | [Resource Groups & Sharing](./resource-groups-sharing) | Bundle a set of agents and tools and share them as a unit with a person or department |
-| 2 | [Team Collaboration](./team-collaboration) | Work with colleagues to use and maintain the same agents and results |
+| 1 | [Resource Groups & Sharing](./resource-groups-sharing.md) | Bundle a set of agents and tools and share them as a unit with a person or department |
+| 2 | [Team Collaboration](./team-collaboration.md) | Work with colleagues to use and maintain the same agents and results |
 
 ## Hands-on tutorials
 
@@ -106,9 +107,9 @@ The sections above explain "how each feature works." These walk through "how to 
 
 | Tutorial | What you'll produce |
 | --- | --- |
-| [Publish Your First App](./publish-first-app) | Turn an agent into an app you can share with colleagues |
-| [Extend Agent with Tools](./extend-agent-with-tools) | Add tools to an agent so it can look up real data |
-| [Build a Knowledge Q&A Agent](./build-knowledge-qa) | Build a helper that answers questions about your company's materials |
+| [Publish Your First App](./publish-first-app.md) | Turn an agent into an app you can share with colleagues |
+| [Extend Agent with Tools](./extend-agent-with-tools.md) | Add tools to an agent so it can look up real data |
+| [Build a Knowledge Q&A Agent](./build-knowledge-qa.md) | Build a helper that answers questions about your company's materials |
 
 ## Get better over time
 
@@ -116,8 +117,9 @@ After using the platform for a while, come back to these two. They help you get 
 
 | Document | What you'll learn |
 | --- | --- |
-| [Tips & Best Practices](./tips) | Tricks for sharper descriptions and more useful results |
-| [Evolution / PFR / Troubleshoot](./evolution-pfr-troubleshoot) | Make agents smarter with use, and how to investigate when something breaks |
+| [Tips & Best Practices](./tips.md) | Tricks for sharper descriptions and more useful results |
+| [Evolution / PFR / Troubleshoot](./evolution-pfr-troubleshoot.md) | Make agents smarter with use, and how to investigate when something breaks |
+| [Orchestration Recipes](./orchestration-recipes.md) | Combine multiple features to accomplish a complete goal |
 
 ::: tip Come back anytime
 The learning path isn't a one-time read. Whenever you're unsure what to learn next, come back to this page and check it against your goal.

@@ -12,12 +12,12 @@ sync:
 
 # Avatar Space
 
-Your Avatar is your **digital counterpart** in Nexus-AI, and it has a space of its own called "My Home." It quietly keeps an eye on your recent activity in the background — which Agents you've chatted with, what you've built, what you've done on the platform — then organizes it into reminders, insights, and to-dos and brings them to you. You can also drop in any time to chat with it and tell it your preferences and rules.
+Your Avatar is your **digital self** in Nexus-AI, and it has a space of its own called "My Home." It continuously observes your activity on the platform — which Agents you've chatted with, what you've built, what you've done — maps those behaviors into a knowledge network about you, then distills that into reminders, insights, and to-dos and brings them to you. You can also drop in any time to chat with it and tell it your preferences and rules.
 
 This page walks you through activating your Avatar, gets you familiar with every area in My Home, and shows you how to read reminders, talk to your Avatar, and pause it when you need to.
 
 ::: tip How is the Avatar different from normal chat?
-Normal [Chat](./chat.md) is you going to an Agent to ask something. The Avatar works the other way around — it organizes things for you in the background and proactively reminds you what to pay attention to. Think of it as a personal assistant who gets to know you and looks out for you.
+Normal [Chat](./chat.md) is you going to an Agent to ask something. The Avatar works the other way around — it observes everything you do on the platform, maps your work patterns, habits, and preferences into a knowledge network, then proactively surfaces what it finds. It's not an assistant that runs errands for you — it's a **mirror that reflects your work patterns back with added clarity**.
 :::
 
 ## Open My Home
@@ -28,7 +28,7 @@ Click **My Home** in the left sidebar to open your Avatar Space.
 
 The first time you enter My Home, you'll see a setup page:
 
-1. The center shows the heading **"Start your personal AI space"**, with a **"Activate Avatar"** button below it.
+1. The center shows the heading **"Start your digital self space"**, with a **"Activate Avatar"** button below it.
 2. Click **"Activate Avatar"**.
 3. Wait about 2–3 seconds while the system sets up your dedicated space.
 4. When it's ready, you're taken to the **Reminders** tab, where you'll find a few welcome cards your Avatar has already made for you.
@@ -47,7 +47,7 @@ After activation, the top of My Home has a row of tabs for five areas:
 |------|---------------|
 | **Reminders** | Cards your Avatar pushes to you: reminders, insights, to-dos, and items to confirm. The number on the tab is the current count |
 | **Chat** | Talk to your Avatar directly |
-| **My Home** | A virtual room that lays out everything your Avatar has organized, area by area |
+| **My Home** | A virtual room displaying everything your Avatar has observed and distilled, sorted by area |
 | **Knowledge Graph** | The web of knowledge your Avatar has built, showing how people, things, and content connect |
 | **Settings** | Adjust your Avatar's options |
 
@@ -115,7 +115,7 @@ This is a dedicated place to talk to your Avatar. It's a completely separate rec
 
 ## My Home: a virtual room
 
-**My Home** uses the look of a virtual room to lay out everything your Avatar has organized, sorted by kind — more intuitive than a pile of folders.
+**My Home** uses the look of a virtual room to display everything your Avatar has distilled from your activity, sorted by kind — more intuitive than a pile of folders.
 
 ![avatar-my-home](/images/avatar-my-home.png)
 
@@ -149,6 +149,18 @@ The **Knowledge Graph** shows the people, things, and content your Avatar has pu
 ::: info The graph is empty right after activation
 Your Avatar needs to build up some activity before it can weave this web. An empty graph right after activation is normal — come back after a while and it'll have content.
 :::
+
+## Real-world example: Avatar spotting your own patterns
+
+> You've been on the platform for two weeks and have built several data-analysis Agents, each time adding similar tools (read CSV, clean data, generate charts). One day you open My Home and see an insight card:
+>
+> **"You seem to do data analysis often — want me to bundle those common tools into a reusable [Skill](./skills.md)? Next time you build an Agent, you can attach it in one click."**
+>
+> You never asked for this. Avatar spotted the pattern in your behavior and brought the suggestion to you.
+
+This is the core of what Avatar does as your digital self: it doesn't wait for you to ask — it proactively distills insights from your **behavior patterns**. A regular Agent only answers questions you ask; Avatar can tell you things you haven't noticed about yourself yet.
+
+---
 
 ## How often does the Avatar organize? Can I make it act now?
 
@@ -195,3 +207,11 @@ Respond to the prompt card in **Reminders**, or write your preferences and hard 
 
 **Can I change my mind after activating the Avatar?**
 Yes. Go to **Settings** and choose "Pause but keep data" to stop it for now; if you're sure you no longer need it, you can also "Close completely" to erase the data.
+
+---
+
+## Related pages
+
+- [Dashboard](./dashboard.md) — Cards from your Avatar also show up on the main dashboard
+- [Skills](./skills.md) — Avatar may suggest bundling your common tools into a Skill
+- [Chat](./chat.md) — Avatar chat and normal Agent chat are two separate records

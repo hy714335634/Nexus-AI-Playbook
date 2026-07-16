@@ -180,3 +180,9 @@ Regular users can manage their own account without an admin:
 - Decide on a resource-transfer target before deleting a user; deletion cannot be undone.
 - The basic edition has a user cap; exceeding it requires an upgrade.
 - After moving a user or adjusting groups, permission changes may take a brief moment to apply.
+
+## See Also
+
+- [Resource Group Administration](./resource-group-admin.md) — control team access to Agents, projects, and other resources by resource group
+- [SSO & Authentication](./sso-auth.md) — SAML SSO setup and IdP-based user provisioning
+- [Audit Trail](./audit.md) — view the full record of user management actions (creation, role changes, disabling, etc.)

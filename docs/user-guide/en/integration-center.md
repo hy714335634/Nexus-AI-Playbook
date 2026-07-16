@@ -107,6 +107,10 @@ At the bottom of the left filter bar you can switch between **Assets view** and 
 
 Connectors let an Agent read your company's **business data** — sales records in an online spreadsheet, reports stored in the cloud, a customer list in an internal system. Once connected, when you ask the Agent in chat "how much did the East region sell last month," it can look up the data and answer on its own.
 
+::: info Example scenario: Let your Agent query live CRM sales data
+Your Agent needs to pull sales figures from your company's CRM to answer performance questions. In the Integration Center, you create a new Connector pointing at your CRM's data interface, then bind a set of access credentials you saved earlier. Once connected, you ask in chat "who closed the most deals this quarter" and the Agent queries the live data and answers you — no coding, no IT ticket needed.
+:::
+
 ::: warning Ask a technical colleague to help fill this in
 Creating a connector requires some connection details (address, account, and so on), which usually need help from someone technical. Your job is to make clear "which data to connect and who it's for," and let IT fill in the exact settings.
 :::
@@ -306,3 +310,12 @@ By default they're private — only you can see them. To let colleagues use them
 ::: warning Can't find what you just created?
 Click **Refresh** at the top right, or re-enter the section. The lists are live counts and occasionally need a manual refresh.
 :::
+
+---
+
+## Further reading
+
+- [Extend your Agent with Tools](./tools.md) — Tools can use the access credentials you store here
+- [Build a Knowledge Q&A Agent](./build-knowledge-qa.md) — Feed business data into your Agent's knowledge base via Connectors
+- [Create an Agent](./create-agent.md) — During creation the Agent auto-connects to data sources and keys you set up
+- [Bridge Server](./bridge-server.md) — An alternative for reaching internal systems that aren't accessible over a public interface

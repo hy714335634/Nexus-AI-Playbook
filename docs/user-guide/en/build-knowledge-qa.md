@@ -36,6 +36,19 @@ A few common uses:
 | Too many policy clauses to remember | Policy documents, contract templates |
 | A long report you want to ask about | The report, data notes |
 
+### Real scenario: Company-wide self-service policy Q&A
+
+Say you work in HR and your company has 200 pages of internal policy documents that get revised every quarter. Before, whenever a colleague had a question about leave policy, expense claims, or transfer rules, they pinged you directly — dozens of messages a day.
+
+Now you can:
+
+1. Upload the policy documents and build a Knowledge Q&A Agent.
+2. [Publish it as an app](./publish-first-app.md) and drop the link in the company-wide chat.
+3. 500 colleagues can self-serve policy questions 24/7, no waiting for your reply.
+4. Next quarter the policies update? Hand it the new files via "Update" and it immediately knows the latest answers.
+
+This is exactly where a Knowledge Q&A Agent shines: **material that changes periodically + many people need to look up the same content repeatedly**. You maintain one Agent and save the entire team hours of repetitive back-and-forth.
+
 ## The flow at a glance
 
 | Step | What you do | Rough time |
@@ -137,7 +150,11 @@ When your material changes (a policy revision, an updated price list), add the n
 
 ## Let more people use it (optional)
 
-Once it works well for you, you can turn this Knowledge Q&A Agent into a web app and publish it, so coworkers—or even customers—can ask by opening a link, with no login and no technical know-how. See [Publish Your First App](./publish-first-app.md).
+Once it works well for you, you can turn this Knowledge Q&A Agent into a web app and publish it, so coworkers—or even customers—can ask by opening a link, with no login and no technical know-how. See [Publish Your First App](./publish-first-app.md). Once published, manage its versions and access in the [App Center](./app-center.md).
+
+::: tip Have many sources and want automatic sync?
+If your material lives in Confluence, Notion, Google Drive, or similar platforms, you can connect the data source in the [Integration Center](./integration-center.md) so the Agent stays current without manual uploads.
+:::
 
 ## FAQ
 
@@ -155,3 +172,11 @@ No. Just say in your request "answer based on the material I upload", and the pl
 
 **Reword the question and it can't answer?**
 First confirm the material actually covers it. If it does but the Agent still can't answer, that part is probably too vaguely worded—rewrite it more clearly and update the Agent (see [Step 5](#step-5-refine-when-answers-are-off)).
+
+## Related guides
+
+- [Creating an Agent](./create-agent.md) — full walkthrough of Agent creation options
+- [Publish Your First App](./publish-first-app.md) — turn your Q&A Agent into a link anyone can open
+- [App Center](./app-center.md) — manage published app versions, access, and usage
+- [Integration Center](./integration-center.md) — connect external data sources to auto-sync material
+- [Orchestration Recipes — Recipe 4](./orchestration-recipes.md#recipe-4-turn-internal-material-into-company-wide-self-service-qa) — end-to-end orchestration path from upload to publish to iterate

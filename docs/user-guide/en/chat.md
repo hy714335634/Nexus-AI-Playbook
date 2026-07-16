@@ -46,7 +46,7 @@ The top of the left column has a few **quick-start** general assistants you can 
 To use an Agent you built yourself, click the **Select Agent** dropdown and pick one from the list. Once selected, the left column shows that Agent's **session list**.
 
 ::: tip The Agent and APP tabs
-The selector has two tabs: **Agent** and **APP**. For normal use, stick with Agent. The APP tab is for chatting with **apps** that have already been published — see [App Center](../guides/apps.md) for how that works.
+The selector has two tabs: **Agent** and **APP**. For normal use, stick with Agent. The APP tab is for chatting with **apps** that have already been published — see [App Center](./app-center.md) for how that works.
 :::
 
 ## Step 2: Create a session

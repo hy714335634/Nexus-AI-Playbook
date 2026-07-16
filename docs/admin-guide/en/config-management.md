@@ -18,6 +18,18 @@ The Configuration Management page lets you tune platform-wide runtime parameters
 Configuration is stored "database-first, file-fallback": edits made here are saved to the platform database and do not overwrite the config files on the server.
 :::
 
+### Typical Scenario: Switching the Platform Default Model
+
+> Your team just gained access to a new model and you want the whole platform to use it by default.
+>
+> 1. Open sidebar "Settings" → "Configuration Management".
+> 2. Click the "AI & Models" category tab.
+> 3. Find the "Standard Model" parameter and select the new model from the dropdown.
+> 4. Click "Save" — this item is tagged 🟢 Hot-reload, so it takes effect on save.
+> 5. Within one minute, every user's new conversation uses the new model — no SSH into the server, no editing config files, no restarting services.
+>
+> This is the core value of web-based hot-reload configuration: high-frequency parameters like models and strategies are adjusted in the browser, take effect in real time, with zero downtime.
+
 ## Opening Configuration Management
 
 Sidebar「Settings」→「Configuration Management」, or go directly to `/settings/config`.
@@ -210,4 +222,9 @@ Below are the more frequently tuned parameters and their effect type (not exhaus
 - Batch restart-required changes into a single off-peak window to minimize service interruptions.
 - Export the current snapshot as a rollback point before importing configuration.
 - Sensitive items aren't edited here — use config files / environment variables.
-- Unsure what a parameter does or affects? Use the「Ask AI」button on the field to ask the Config Helper before changing it.
+- Unsure what a parameter does or affects? Use the "Ask AI" button on the field to ask the Config Helper before changing it.
+
+## Related Pages
+
+- [Built-in AI Assistants](./helper-agents.md) — full capabilities and guardrails of the Config Advisor
+- [Service Status](./service-status.md) — view service health and manually restart services for restart-required changes
